@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Qs from 'qs'
+import Qs from 'qs'      //请求接口序列化使用
 import store from '@/store'
 import router from '@/router'
 import Vue from 'vue'
@@ -7,11 +7,14 @@ import { Loading, Message } from 'element-ui' // 引用element-ui的加载和消
 
 const $axios = axios.create({
   // 设置超时时间
-  timeout: 20000,
+  timeout: 30000,
   // 基础url，会在请求url中自动添加前置链接
-  baseURL: process.env.VUE_APP_BASE_API
+  // baseURL: process.env.VUE_APP_BASE_API,
+  baseURL: 'https://www.fastmock.site/mock/f5c04b8fcc4877eb3f840e9097a6e834/test'
+
 })
 Vue.prototype.$http = axios // 并发请求
+
 // 在全局请求和响应拦截器中添加请求状态
 let loading = null
 
@@ -35,12 +38,15 @@ $axios.interceptors.response.use(
     if (loading) {
       loading.close()
     }
-    const code = response.status
-    if ((code >= 200 && code < 300) || code === 304) {
-      return Promise.resolve(response.data)
-    } else {
-      return Promise.reject(response)
-    }
+    // const code = response.status
+    // if ((code >= 200 && code < 300) || code === 304) {
+    //   return Promise.resolve(response.data)
+    // } else {
+    //   return Promise.reject(response)
+    // }
+    console.log('response', response)
+    return Promise.resolve(response.data)
+
   },
   error => {
     if (loading) {
