@@ -78,7 +78,37 @@
       </div>
     </div>
     <!-- dashboard 下面内容 -->
-    <div class="dash_d_pad">dash下内容</div>
+    <div class="dash_d_pad">
+      <div class="dash_d_pad_title">
+        <span>授课班级</span>
+      </div>
+      <div class="dash_d_pad_info">
+        <div>
+          <!-- 出勤,复习,自学 -->
+          <div class="test_div">
+            <div class="wrap_flex wrap_padding">
+              <div>
+                <i>图haha </i>
+                <span class="span1">出勤</span>
+              </div>
+              <span class="span2">58人</span>
+            </div>
+            <!-- 下面灰色文字   margintop 23 -->
+
+            <div class="describe">
+              <span
+                >老师使用“艺术素质测评与学习平台”或“行知艺+APP”记录学生出勤的人数</span
+              >
+            </div>
+          </div>
+          <div class="test_div"></div>
+          <div class="test_div"></div>
+        </div>
+        <div>
+          <!-- 练习,闯关,上传档案 -->
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -146,9 +176,9 @@ export default {
 }
 
 .dash_d_pad {
-  width: 100%;
+  width: 1676px;
   height: 482px;
-  background-color: indigo;
+  background-color: #ffffff;
   margin-top: 35px;
 }
 
@@ -222,6 +252,71 @@ export default {
   }
   i {
     line-height: 69px;
+  }
+}
+.dash_d_pad_title {
+  height: 71px;
+  background-color: #ffffff;
+  padding-left: 26px;
+  span {
+    line-height: 71px;
+
+    font-size: 24px;
+    font-family: PingFang SC;
+    font-weight: 800;
+    color: #303133;
+  }
+}
+.dash_d_pad_info {
+  display: flex;
+  height: 411px;
+}
+.dash_d_pad_info > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.test_div {
+  width: 838px;
+  height: 137px;
+  // background-color: green;
+  .describe {
+    margin-top: 23px;
+    padding-left: 25px;
+    span {
+      font-size: 18px;
+      font-family: PingFang SC;
+      font-weight: 500;
+      color: #909399;
+    }
+  }
+}
+
+.test_div {
+  .wrap_padding {
+    align-items: center;
+    padding-left: 27px;
+    padding-right: 116px;
+    i {
+      // vertical-align: middle;
+      line-height: 87px;
+      width: 50px;
+      height: 50px;
+      background-image: url("../../../assets/imgs/sucai1.png");
+    }
+    .span1 {
+      font-size: 22px;
+      font-family: PingFang SC;
+      font-weight: 500;
+      color: #303133;
+      margin-left: 19px;
+    }
+    .span2 {
+      font-size: 22px;
+      font-family: PingFang SC;
+      font-weight: 500;
+      color: #67c23a;
+    }
   }
 }
 </style>

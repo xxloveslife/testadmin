@@ -1,4 +1,6 @@
 <template>
+  <!-- dashboard -->
+
   <div class="dashboard">
     <!-- dashboard 上面内容 -->
     <div class="dash_t_pad">
