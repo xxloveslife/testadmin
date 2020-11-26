@@ -23,7 +23,7 @@
               <span class="font-des" slot="title">{{ item.title }}</span>
             </template>
 
-            <div v-for="(subItem, i) in item.subs" :key="i">
+            <div class="cussubitem" v-for="(subItem, i) in item.subs" :key="i">
               <el-menu-item :index="subItem.index">{{
                 subItem.title
               }}</el-menu-item>
@@ -77,42 +77,65 @@ export default {
 };
 </script>
 <style lang="scss" >
-// .sidebar {
-//   display: block;
-//   position: absolute;
-//   left: 0;
-//   top: 0;
-//   bottom: 0;
-//   overflow-y: scroll;
-// }
-// .sidebar::-webkit-scrollbar {
-//   width: 0;
-// }
-.sidebar > ul {
-  height: 100%;
+.sidebar {
   width: 100%;
-  background-color: white !important;
+  // width: 200px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.sidebar > ul {
+  width: 100%;
+  // background-color: white !important;
 }
 
 .logo {
   height: 118px;
+  background-color: #409eff;
 }
 .el-icon-arrow-down:before {
   color: #ffffff;
+}
+
+// el-menu-item > li {
+//   padding-left: 60px !important;
+// }
+
+.el-menu {
+  background-color: white !important;
+}
+
+// 工作台
+
+.el-menu-item > span {
+  font-size: 16px;
+  margin-left: 20px;
 }
 
 .el-menu-item:focus {
   background-color: #79bbff !important;
   margin-left: 5px;
 }
+
 // .el-menu-item:hover {
 //   background-color: #409eff !important;
 // }
-// .el-submenu__title {
+
+//题库题卷
+.el-submenu__title > span {
+  font-size: 16px;
+  margin-left: 20px;
+}
+
+// .el-submenu__title:hover {
 //   background-color: #409eff !important;
 // }
-.el-menu {
-  background-color: white !important;
+
+//二级 制作试题
+.cussubitem > li {
+  // margin-left: 60px;
+  font-size: 14px;
+  padding-left: 60px !important;
 }
 </style>
 

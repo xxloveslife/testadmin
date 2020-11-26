@@ -5,6 +5,7 @@
       <el-aside width="200px" class="side">
         <m-sidebar></m-sidebar>
       </el-aside>
+      <!-- rightside -->
       <el-container class="rt_container">
         <!-- 头部 -->
         <el-header height="118px" class="header">
@@ -32,25 +33,54 @@ export default {
 };
 </script>
 <style lang="scss" >
+@import "@/style/variable.scss";
+// .home {
+//   height: 100%;
+//   width: 100%;
+//   .container {
+//     height: 100%;
+//   }
+// }
+// .main {
+//   padding: 0;
+//   width: 100%;
+//   background-color: $bg-gary;
+//   overflow: hidden;
+// }
+// .side {
+//   background-color: #409eff;
+// }
+// .header {
+//   padding-top: 13px;
+//   padding-right: 28px;
+//   padding-left: 17px;
+//   // background-color: #f2f6fc;
+// }
+// .rt_container {
+//   width: 100%;
+//   background-color: #f2f6fc;
+// }
 .home {
+  width: 100%;
   height: 100%;
   .container {
+    width: 100%;
     height: 100%;
+    .side {
+      background-color: #409eff;
+    }
+    .rt_container {
+      .main {
+        background-color: pink;
+      }
+    }
   }
 }
-.main {
-  padding: 0;
-  // background-color: #f2f6fc;
+
+.el-main {
+  padding: 0px;
 }
-.side {
-  background-color: #409eff;
-}
-.header {
-  padding-top: 13px;
-  padding-right: 28px;
-  // background-color: #f2f6fc;
-}
-.rt_container {
-  background-color: #f2f6fc;
+.el-header {
+  padding: 13px 28px 0 17px;
 }
 </style>

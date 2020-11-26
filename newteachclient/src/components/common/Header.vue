@@ -7,7 +7,7 @@
     </div>
     <!-- teacherInfo -->
     <div class="teacherInfo">
-      <span>xx | xx | 系统账号:</span>
+      <span>xx | xx | 系统账号:0000</span>
     </div>
     <!-- logout -->
     <div class="logout">
@@ -29,9 +29,9 @@ export default {
   float: left;
   width: 100%;
   height: 80px;
-  background-color: #ffffff;
+  background-color: green;
   .teacher {
-    // float: left;
+    float: left;
 
     span {
       line-height: 80px;
@@ -43,7 +43,7 @@ export default {
   }
   .teacherInfo {
     margin-left: 24px;
-    // float: left;
+    float: left;
     span {
       display: inline-block;
       margin-top: 37px;
