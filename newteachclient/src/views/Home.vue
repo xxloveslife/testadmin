@@ -71,16 +71,18 @@ export default {
     }
     .rt_container {
       .main {
-        background-color: pink;
+        background-color: #f2f6fc;
       }
     }
   }
 }
 
 .el-main {
-  padding: 0px;
+  padding-left: 17px;
+  padding-right: 28px;
 }
 .el-header {
   padding: 13px 28px 0 17px;
+  background-color: #f2f6fc;
 }
 </style>

@@ -29,7 +29,7 @@ export default {
   float: left;
   width: 100%;
   height: 80px;
-  background-color: green;
+  background-color: #ffffff;
   .teacher {
     float: left;
 

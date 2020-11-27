@@ -84,6 +84,7 @@
       </div>
       <div class="dash_d_pad_info">
         <div>
+          <!-- left -->
           <!-- 出勤,复习,自学 -->
           <div class="test_div">
             <div class="wrap_flex wrap_padding">
@@ -101,11 +102,93 @@
               >
             </div>
           </div>
-          <div class="test_div"></div>
-          <div class="test_div"></div>
+          <div class="test_div">
+            <div class="wrap_flex wrap_padding">
+              <div>
+                <i>图haha </i>
+                <span class="span1">出勤</span>
+              </div>
+              <span class="span2">58人</span>
+            </div>
+            <!-- 下面灰色文字   margintop 23 -->
+
+            <div class="describe">
+              <span
+                >老师使用“艺术素质测评与学习平台”或“行知艺+APP”记录学生出勤的人数</span
+              >
+            </div>
+          </div>
+          <div class="test_div">
+            <div class="wrap_flex wrap_padding">
+              <div>
+                <i>图haha </i>
+                <span class="span1">出勤</span>
+              </div>
+              <span class="span2">58人</span>
+            </div>
+            <!-- 下面灰色文字   margintop 23 -->
+
+            <div class="describe">
+              <span
+                >老师使用“艺术素质测评与学习平台”或“行知艺+APP”记录学生出勤的人数</span
+              >
+            </div>
+          </div>
         </div>
         <div>
           <!-- 练习,闯关,上传档案 -->
+          <div>
+            <!-- left -->
+            <!-- 出勤,复习,自学 -->
+            <div class="test_div">
+              <div class="wrap_flex wrap_padding">
+                <div>
+                  <i>图haha </i>
+                  <span class="span1">出勤</span>
+                </div>
+                <span class="span2">58人</span>
+              </div>
+              <!-- 下面灰色文字   margintop 23 -->
+
+              <div class="describe">
+                <span
+                  >老师使用“艺术素质测评与学习平台”或“行知艺+APP”记录学生出勤的人数</span
+                >
+              </div>
+            </div>
+            <div class="test_div">
+              <div class="wrap_flex wrap_padding">
+                <div>
+                  <i>图haha </i>
+                  <span class="span1">出勤</span>
+                </div>
+                <span class="span2">58人</span>
+              </div>
+              <!-- 下面灰色文字   margintop 23 -->
+
+              <div class="describe">
+                <span
+                  >老师使用“艺术素质测评与学习平台”或“行知艺+APP”记录学生出勤的人数</span
+                >
+              </div>
+            </div>
+            <div class="test_div">
+              <div class="wrap_flex wrap_padding">
+                <div>
+                  <i>图haha </i>
+                  <span class="span1">出勤</span>
+                </div>
+                <span class="span2">58人</span>
+              </div>
+              <!-- 下面灰色文字   margintop 23 -->
+
+              <div class="describe">
+                <span
+                  >老师使用“艺术素质测评与学习平台”或“行知艺+APP”记录学生出勤的人数</span
+                >
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -153,9 +236,6 @@ export default {
 <style lang="scss" >
 .dashboard {
   height: 100%;
-  margin-left: 17px;
-  margin-right: 28px;
-  background-color: orange;
 }
 
 .dash_t_pad {
@@ -165,13 +245,13 @@ export default {
   .dash_lf_t_pad {
     width: 940px;
     height: 324px;
-    background-color: grey;
+    // background-color: grey;
   }
   .dash_rt_t_pad {
     margin-left: 23px;
     height: 324px;
     width: 712px;
-    background-color: indianred;
+    background-color: #ffffff;
   }
 }
 
@@ -243,7 +323,7 @@ export default {
 
 .first_row:nth-child(1) {
   height: 69px;
-  background-color: cadetblue;
+  // background-color: cadetblue;
   .shortcuts {
     border-bottom: 1px solid #ebeef5;
   }
@@ -302,7 +382,7 @@ export default {
       line-height: 87px;
       width: 50px;
       height: 50px;
-      background-image: url("../../../assets/imgs/sucai1.png");
+      // background-image: url("../../../assets/imgs/sucai1.png");
     }
     .span1 {
       font-size: 22px;

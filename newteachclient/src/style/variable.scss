@@ -6,3 +6,10 @@ $white: #ffffff;
   width: 100%;
   height: 100%;
 }
+
+%div-focus-one {
+    background-color: $sky-blue;
+    outline: none;
+    border-radius: 0.25rem;
+
+}

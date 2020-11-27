@@ -1,7 +1,6 @@
 @import './variable.scss';
 html {
   height: 100%;
-  overflow-y: overlay;
 }
 body,
 div,
@@ -85,3 +84,24 @@ div{
   display:flex;
   justify-content: space-between;
 }
+.wrap_flex_normal {
+  display: flex;
+  
+}
+.clear_border{
+    border: 0; // 去除未选中状态边框
+    outline: none; // 去除选中状态边框
+}
+.wrap_flex_center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} 
+
+.div_focus_one{
+  background-color: $sky-blue;
+    outline: none;
+    border-radius: 0.25rem;
+}
+
+
