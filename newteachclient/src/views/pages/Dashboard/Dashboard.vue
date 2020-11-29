@@ -88,8 +88,10 @@
           <!-- 出勤,复习,自学 -->
           <div class="test_div">
             <div class="wrap_flex wrap_padding">
-              <div>
-                <i>图haha </i>
+              <div class="wrap_flex_normal">
+                <i class="test_i"
+                  ><img src="../../../assets/imgs/house.png"
+                /></i>
                 <span class="span1">出勤</span>
               </div>
               <span class="span2">58人</span>
@@ -104,8 +106,10 @@
           </div>
           <div class="test_div">
             <div class="wrap_flex wrap_padding">
-              <div>
-                <i>图haha </i>
+              <div class="wrap_flex_normal">
+                <i class="test_i"
+                  ><img src="../../../assets/imgs/house.png"
+                /></i>
                 <span class="span1">出勤</span>
               </div>
               <span class="span2">58人</span>
@@ -120,8 +124,10 @@
           </div>
           <div class="test_div">
             <div class="wrap_flex wrap_padding">
-              <div>
-                <i>图haha </i>
+              <div class="wrap_flex_normal">
+                <i class="test_i"
+                  ><img src="../../../assets/imgs/house.png"
+                /></i>
                 <span class="span1">出勤</span>
               </div>
               <span class="span2">58人</span>
@@ -142,8 +148,10 @@
             <!-- 出勤,复习,自学 -->
             <div class="test_div">
               <div class="wrap_flex wrap_padding">
-                <div>
-                  <i>图haha </i>
+                <div class="wrap_flex_normal">
+                  <i class="test_i"
+                    ><img src="../../../assets/imgs/house.png"
+                  /></i>
                   <span class="span1">出勤</span>
                 </div>
                 <span class="span2">58人</span>
@@ -158,8 +166,10 @@
             </div>
             <div class="test_div">
               <div class="wrap_flex wrap_padding">
-                <div>
-                  <i>图haha </i>
+                <div class="wrap_flex_normal">
+                  <i class="test_i"
+                    ><img src="../../../assets/imgs/house.png"
+                  /></i>
                   <span class="span1">出勤</span>
                 </div>
                 <span class="span2">58人</span>
@@ -174,8 +184,10 @@
             </div>
             <div class="test_div">
               <div class="wrap_flex wrap_padding">
-                <div>
-                  <i>图haha </i>
+                <div class="wrap_flex_normal">
+                  <i class="test_i"
+                    ><img src="../../../assets/imgs/house.png"
+                  /></i>
                   <span class="span1">出勤</span>
                 </div>
                 <span class="span2">58人</span>
@@ -338,6 +350,7 @@ export default {
   height: 71px;
   background-color: #ffffff;
   padding-left: 26px;
+  border-bottom: 1px solid #ebeef5;
   span {
     line-height: 71px;
 
@@ -359,6 +372,7 @@ export default {
 .test_div {
   width: 838px;
   height: 137px;
+  padding-top: 0.8125rem;
   // background-color: green;
   .describe {
     margin-top: 23px;
@@ -398,5 +412,17 @@ export default {
       color: #67c23a;
     }
   }
+}
+
+.test_i {
+  display: flex;
+  background-color: blue;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+}
+img {
+  width: 1.5625rem;
+  // height: 3.125rem;
 }
 </style>

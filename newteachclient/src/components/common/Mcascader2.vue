@@ -9,13 +9,17 @@
       </div>
       <!-- cascader_result & reset button -->
       <div class="wrap_flex top_row_rt">
-        <span class="span1">默认选择全部/已选择我的</span>
+        <span class="span1">{{ default_select }}</span>
         <span class="span2">重置筛选</span>
       </div>
     </div>
     <!-- second_row -->
-    <div class="second_row">
-      <el-radio-group class="m_radio_group" v-model="radio" @change="changeVal">
+    <div class="second_row no_copy">
+      <el-radio-group
+        class="m_radio_group"
+        v-model="radio"
+        @change="changeCate"
+      >
         <el-radio-button
           class="m_radio"
           v-for="(item, i) in infos"
@@ -27,8 +31,8 @@
     </div>
 
     <!-- third_row -->
-    <div class="third_row">
-      <el-radio-group v-model="third_radio_default" @change="changeCate">
+    <div class="third_row no_copy">
+      <el-radio-group v-model="third_radio_default" @change="changeSubCate">
         <el-radio-button class="_all" label="全部">全部</el-radio-button>
 
         <el-radio-button
@@ -43,16 +47,18 @@
 
     <!-- slot  -->
     <div class="m_slot"></div>
+    <!-- Pagination  -->
   </div>
 </template>
 
 <script>
+import { getTestLibraryCategory } from "../../api/testLibrary";
 export default {
   props: {
     infos: {
       type: Array,
     },
-    // radio 父组件给的值,绑定radio group v-model  , 当前默认被选中   ,监听radio的值,发生变化下级类目发生变化
+    // radio 父组件给的值,绑定radio group v-model  , 当前默认被选中的值   ,监听radio的值,发生变化下级类目发生变化
     radio: {
       type: String,
     },
@@ -63,16 +69,24 @@ export default {
 
       // third_row list
       third_radio: [],
-      c_radio: this.radio,
+
+      //current Radio   label
+      // c_radio: this.radio,
+      c_radio: "",
       third_radio_default: "全部",
+      //默认选择全部
+      // defaultSelect: "默认选择全部",
+      m_select: {},
+      default_select: "默认选择全部",
     };
   },
   watch: {
     c_radio: function (newV, oldV) {
       //   发生变化了,更新third_row的内容对象
       //  利用newV 找到,新的内容
+      // console.log("c_radiochange");
       this.infos.forEach((item, i) => {
-        // console.log(oldV);
+        // console.log("oldV", oldV);
         if (this.infos) {
           if (item.title == newV) {
             this.third_radio = this.infos[i].category;
@@ -85,14 +99,39 @@ export default {
   },
 
   methods: {
-    changeVal() {
+    changeCate(val) {
       //change的时候给c_radio
       // console.log("radio", this.radio);
-      this.c_radio = this.radio;
-      //   console.log("c_radio", this.c_radio);
+      this.c_radio = val;
     },
-    changeCate(val) {
-      // console.log("cate", val);
+    changeSubCate(val) {
+      //当变化时设置subCate的label到m_select里面  ,
+
+      this.m_select[this.c_radio] = val;
+
+      this.changeMyselecting();
+
+      // 发送请求,得到值,传给父组件
+      // 第二个参数有待修改,根据接口不同,调整传入的查询条件
+      this.$store.dispatch(
+        "testQuestionLibrary/getTestLibraryResult",
+        this.m_select
+      );
+    },
+    changeMyselecting() {
+      //拼接m_select里面的值, 更换 default_select,
+      let selectedInfos = [];
+      this.infos.forEach((item, i) => {
+        if (this.m_select[item.title] === "") {
+          // 等于空字符串,就不push,不加顿号
+          return;
+        }
+        selectedInfos.push(this.m_select[item.title]);
+      });
+
+      const str_selected = selectedInfos.join("、");
+      // console.log(str_selected);
+      this.default_select = "已选择" + str_selected;
     },
     getCurrentCate(radio) {
       //'题库'
@@ -104,11 +143,20 @@ export default {
           }
         });
       }
-      // console.log(this.third_radio);
     },
   },
   mounted() {
+    this.c_radio = this.radio;
+    //设置v-model的第一个默认值
     this.getCurrentCate(this.radio);
+    // 拿到父组件传进来的infos, 设置m_selectd的key值;
+    // console.log(this.infos);
+    if (this.infos) {
+      this.infos.forEach((item, i) => {
+        // infos当前title作key值
+        this.m_select[item.title] = "";
+      });
+    }
   },
 };
 </script>
@@ -203,6 +251,12 @@ export default {
 //   }
 // }
 .second_row {
+  // -moz-user-select: none; /* Firefox私有属性 */
+  // -webkit-user-select: none; /* WebKit内核私有属性 */
+  // -ms-user-select: none; /* IE私有属性(IE10及以后) */
+  // -khtml-user-select: none; /* KHTML内核私有属性 */
+  // -o-user-select: none; /* Opera私有属性 */
+  // user-select: none; /* CSS3属性 */
   margin-top: 1.125rem;
   .m_radio_group {
     display: flex;
