@@ -46,8 +46,19 @@
     </div>
 
     <!-- slot  -->
-    <div class="m_slot"></div>
+    <slot></slot>
     <!-- Pagination  -->
+    <div class="m_pagination wrap_flex_center">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-size="pageSize"
+        layout="prev, pager, next, jumper"
+        :total="totalNum"
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -62,6 +73,16 @@ export default {
     radio: {
       type: String,
     },
+
+    // 父组件created得到值
+    pageSize: {
+      type: Number,
+      default: 13,
+    },
+    totalNum: {
+      type: Number,
+      default: 500,
+    },
   },
   data() {
     return {
@@ -71,13 +92,19 @@ export default {
       third_radio: [],
 
       //current Radio   label
-      // c_radio: this.radio,
       c_radio: "",
+
+      //current SubRadio label
       third_radio_default: "全部",
       //默认选择全部
       // defaultSelect: "默认选择全部",
       m_select: {},
       default_select: "默认选择全部",
+
+      // 分页
+
+      // currentPage
+      currentPage: { c_page: 1 },
     };
   },
   watch: {
@@ -101,7 +128,6 @@ export default {
   methods: {
     changeCate(val) {
       //change的时候给c_radio
-      // console.log("radio", this.radio);
       this.c_radio = val;
     },
     changeSubCate(val) {
@@ -113,10 +139,13 @@ export default {
 
       // 发送请求,得到值,传给父组件
       // 第二个参数有待修改,根据接口不同,调整传入的查询条件
-      this.$store.dispatch(
-        "testQuestionLibrary/getTestLibraryResult",
-        this.m_select
-      );
+      //通知父组件发送请求
+      this.$emit("getItemfromCondition", this.m_select);
+
+      console.log("infos", { ...this.m_select });
+
+      //当前选择
+      // console.log("mounted", this.c_radio, this.third_radio_default);
     },
     changeMyselecting() {
       //拼接m_select里面的值, 更换 default_select,
@@ -144,6 +173,19 @@ export default {
         });
       }
     },
+
+    // 分页methods
+    handleSizeChange(val) {
+      // console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      // console.log(`当前页: ${val}`);
+
+      this.m_select.currentPage = val;
+
+      // 通知父组件
+      this.$emit("getItemfromCondition", this.m_select);
+    },
   },
   mounted() {
     this.c_radio = this.radio;
@@ -157,10 +199,17 @@ export default {
         this.m_select[item.title] = "";
       });
     }
+
+    // 页面加载时根据级联组件条件获取，以及当前分页条件获取数据
+    // 当前选择
+    console.log("mounted", this.c_radio, this.third_radio_default);
+  },
+  created() {
+    this.m_select.currentPage = 1;
   },
 };
 </script>
-<style lang="scss" >
+<style lang="scss">
 @import "../../style/variable.scss";
 .top_row {
   width: 100%;
@@ -303,5 +352,8 @@ export default {
 .m_slot {
   height: 12.4375rem;
   background-color: olive;
+}
+.m_pagination {
+  height: 2.75rem;
 }
 </style>

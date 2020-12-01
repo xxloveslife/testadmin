@@ -210,6 +210,7 @@
 
 <script>
 import $axios from "@/api/index.js";
+
 export default {
   data() {
     return {
@@ -242,6 +243,24 @@ export default {
         this.$store.commit("user/SET_TOKEN", res.token);
       });
     },
+  },
+  created() {
+    const url = "api/workbench/getWorkbenchData";
+    // const data = { sid: "" };
+    console.log(url);
+    $axios
+      .post(url)
+      .then((res) => {
+        console.log("res", res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // $http({
+    //   method: "post",
+    //   url: "http://test.laoshi.yishenhang.com/workbench/getWorkbenchData",
+    // });
   },
 };
 </script>

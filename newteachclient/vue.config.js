@@ -1,28 +1,30 @@
 
 module.exports = {
+  //     // [process.env.VUE_APP_BASE_API]: {
+  //     //   target: process.env.VUE_APP_BASE_API,   //配置地址
+  //     //   ws: true,
+  //     //   changeOrigin: true,
+  //     //   pathRewrite: {
+  //     //     ['^' + process.env.VUE_APP_BASE_API]: ''
+  //     //   }
+  //     // }
+  //   }
+  // }
   devServer: {
-    host: 'localhost',
+    // open: true, //是否自动弹出浏览器页面
+    host: "localhost",
     port: '8080',
+    https: false,
+    hotOnly: false,
     proxy: {
-
-      // www.baidu.com/post    =>     localhost:8080/api/post
-      // '/api': {
-      //   target: process.env.VUE_APP_BASE_API,   //配置地址
-      //   ws: true,
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     '^/api': ''
-      //   }
-      // }
-
-      [process.env.VUE_APP_BASE_API]: {
-        target: process.env.VUE_APP_BASE_API,   //配置地址
-        ws: true,
+      '/api': {
+        target: 'http://test.laoshi.yishenhang.com', //API服务器的地址
+        // ws: true,
         changeOrigin: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
+          '^/api': ''
         }
       }
-    }
+    },
   }
 }

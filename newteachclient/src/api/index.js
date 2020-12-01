@@ -10,7 +10,7 @@ const $axios = axios.create({
   timeout: 30000,
   // 基础url，会在请求url中自动添加前置链接
   // baseURL: process.env.VUE_APP_BASE_API,
-  baseURL: 'https://www.fastmock.site/mock/f5c04b8fcc4877eb3f840e9097a6e834/test'
+  // baseURL: '/api/',
 
 })
 Vue.prototype.$http = axios // 并发请求
@@ -25,6 +25,7 @@ $axios.interceptors.request.use(
     const token = store.getters.token
     if (token) {
       config.headers.Authorization = token // 请求头部添加token
+
     }
     return config
   },
