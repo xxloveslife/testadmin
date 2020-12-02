@@ -1,5 +1,5 @@
 <template>
-  <div class="multiple-choice-container">
+  <div class="multiple-choice-container" ref="multiple">
     <div class="chooseType">
       <span>选择类型 :</span>
       <el-radio-group v-model="textRadio" @change="changeRadio">
@@ -8,7 +8,7 @@
           v-for="item in list"
           :key="item.id"
           :label="item.name"
-          >{{ item.name }}</el-radio-button
+          >{{ item.name }}类</el-radio-button
         >
       </el-radio-group>
     </div>
@@ -50,9 +50,10 @@
       </div>
       <!-- 题目主体子组件 -->
       <topic-theme
-        :changeRadioVal="changeRadioVal"
+        :changeRadioVal="textRadio"
         :radioDefault="radioDefault"
         :testQuestionlists="testQuestionlists"
+        :knowledgeList="knowledgeList"
       ></topic-theme>
     </el-form>
   </div>
@@ -73,6 +74,369 @@ export default {
       radioDefault: "单项选择题",
       // 选择题型数据
       multipleChoiceList: [],
+      knowledgeList: [
+        {
+          parents: "演唱演奏创编",
+          children: [
+            {
+              parents: "歌曲演唱",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "乐器演奏",
+              children: [
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "音乐创编",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "五线谱",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "简谱",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          parents: "乐谱视唱练耳",
+          children: [
+            {
+              parents: "歌曲演唱1",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "乐器演奏1",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "音乐创编",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "五线谱",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "简谱",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          parents: "音乐聆听欣赏",
+          children: [
+            {
+              parents: "歌曲演唱2",
+              children: [
+                {
+                  parents: "歌唱",
+                },
+                {
+                  parents: "歌唱1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "乐器演奏2",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱1",
+                },
+                {
+                  parents: "歌唱1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "音乐创编",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱1",
+                },
+              ],
+            },
+            {
+              parents: "五线谱",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "简谱",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          parents: "音乐表现要素",
+          children: [
+            {
+              parents: "1",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "乐器演奏",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "音乐创编",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "五线谱",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+            {
+              parents: "简谱",
+              children: [
+                {
+                  parents: "歌唱知识",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+                {
+                  parents: "歌唱知识1",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+
       // 试题list,给后台
       testQuestionlists: {},
     };
@@ -94,15 +458,15 @@ export default {
     changeRadio(val) {
       this.changeRadioVal = val;
       this.testQuestionlists.changeRadioVal = val;
-      // console.log(this.testQuestionlists)
     },
     changeSubRadio(val) {
-      console.log(val);
       this.changeMultipleChoice = val;
       this.testQuestionlists.changeMultipleChoice = val;
+
       // console.log(this.testQuestionlists)
       // 发起请求获取不同数据
     },
+
     // multipleChoiceList默认值
     getMultipleChoiceList(radio) {
       if (this.list) {

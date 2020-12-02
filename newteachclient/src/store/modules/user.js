@@ -1,5 +1,8 @@
+
+import { getBenchInfos } from '../../api/getBenchInfos';
 const state = {
     token: localStorage.getItem('token') ? localStorage.getItem('token') : '',   //token
+    userWorkBench: {},
 }
 
 const mutations = {
@@ -13,10 +16,26 @@ const mutations = {
         state.token = ''
         localStorage.removeItem('token')
     },
+    SET_USERWORKBENCH(state, val) {
+        state.userWorkBench = val;
+    }
 }
 
 const actions = {
+    getWorkBench({ commit }) {
+        return new Promise((reslove, reject) => {
+            getBenchInfos().then(res => {
+                if (res || res.code == 0) {
+                    commit('SET_USERWORKBENCH', res.data)
+                }
+                reslove(res)
+            }).catch(error => {
+                reject(error)
+            })
+        })
 
+
+    }
 
 }
 

@@ -11,7 +11,7 @@
       background-color="#409EFF"
       text-color="#FFFFFF"
       active-text-color="#FFFFFF"
-      router="true"
+      router
     >
       <!-- //  列表渲染 -->
       <div v-for="(item, i) in items" :key="i">
@@ -39,7 +39,7 @@
       </div>
     </el-menu>
   </div>
-</template> 
+</template>
 
 <script>
 export default {
@@ -71,12 +71,38 @@ export default {
             },
           ],
         },
+        {
+          icon: "",
+          index: "",
+          title: "账号中心",
+          //二级菜单
+          subs: [
+            {
+              index: "/personalInformation",
+              title: "个人资料",
+            },
+            {
+              index: "/operationLog",
+              title: "操作日志",
+            },
+            {
+              index: "/messageCenter",
+              title: "消息中心",
+            },
+          ],
+        },
       ],
     };
   },
+  methods: {
+    handleOpen() {
+      // console.log("handleOpen");
+    },
+    handleClose() {},
+  },
 };
 </script>
-<style lang="scss" >
+<style lang="scss">
 .sidebar {
   width: 100%;
   // width: 200px;
@@ -138,4 +164,3 @@ export default {
   padding-left: 60px !important;
 }
 </style>
-

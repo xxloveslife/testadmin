@@ -3,24 +3,50 @@
   <div class="home_header">
     <!-- teacher -->
     <div class="teacher">
-      <span>你好,</span>
+      <span>你好,{{ teacher_name }}</span>
     </div>
     <!-- teacherInfo -->
     <div class="teacherInfo">
-      <span>xx | xx | 系统账号:0000</span>
+      <span> {{ m_teacher_style }} | 系统账号: {{ login_account }}</span>
     </div>
     <!-- logout -->
     <div class="logout">
-      <span>注销</span>
+      <span></span>
     </div>
   </div>
 </template>
 <script>
 export default {
+  props: {
+    teacher_name: String,
+    teacher_style: {
+      type: Number,
+      default: 0,
+    },
+    login_account: String,
+  },
   date() {
     return {
       name: "XX",
     };
+  },
+
+  computed: {
+    m_teacher_style: function () {
+      if (this.teacher_style) {
+        // console.log("jinlail");
+        // console.log(this.teacher_style);
+        if (this.teacher_style == 1) {
+          return "音乐";
+          // console.log(this.m_teacher_style);
+        } else if (this.teacher_style == 2) {
+          return "美术";
+        } else {
+          return "音乐 | 美术";
+        }
+      }
+      return "";
+    },
   },
 };
 </script>
@@ -52,17 +78,27 @@ export default {
     }
   }
   .logout {
+    width: 2.5rem;
+
     float: right;
     margin-top: 17px;
     margin-right: 27px;
+    background-image: url("../../assets/imgs/workbench/logout.png");
+    background-size: 2.5rem 2.5rem;
+    background-repeat: no-repeat;
     span {
       display: inline-block;
       width: 40px;
       height: 40px;
-      background-color: orange;
+      // background-color: orange;
       text-align: center;
       line-height: 40px;
     }
+  }
+  .logout:hover {
+    // background-color: rgba(255, 255, 255, 0.8);
+    background-color: red;
+    z-index: 1;
   }
 }
 </style>

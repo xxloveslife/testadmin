@@ -12,9 +12,11 @@ export default {
       list: [
         {
           id: 1,
-          name: '音乐类',
+          name: '音乐',
           questionType: [
-            { questionTypeName: '单项选择题' },
+            {
+              questionTypeName: '单项选择题',
+            },
             { questionTypeName: '多项选择题' },
             { questionTypeName: '判断题' },
             { questionTypeName: '连线题' },
@@ -22,13 +24,13 @@ export default {
         },
         {
           id: 2,
-          name: '美术类',
+          name: '美术',
           questionType: [
             { questionTypeName: '单项选择题' },
             { questionTypeName: '多项选择题' },
             { questionTypeName: '判断题' },
             { questionTypeName: '连线题' },
-            { questionTypeName: '表答题' },
+            { questionTypeName: '表现题' },
           ],
         },
       ],
@@ -40,4 +42,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.makeTestquestion-header {
+  height: 2000px;
+}
+</style>
