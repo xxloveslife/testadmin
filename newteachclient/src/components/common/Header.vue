@@ -20,8 +20,8 @@ export default {
   props: {
     teacher_name: String,
     teacher_style: {
-      type: Number,
-      default: 0,
+      type: String,
+      default: "",
     },
     login_account: String,
   },
@@ -34,12 +34,9 @@ export default {
   computed: {
     m_teacher_style: function () {
       if (this.teacher_style) {
-        // console.log("jinlail");
-        // console.log(this.teacher_style);
-        if (this.teacher_style == 1) {
+        if (this.teacher_style == "1") {
           return "音乐";
-          // console.log(this.m_teacher_style);
-        } else if (this.teacher_style == 2) {
+        } else if (this.teacher_style == "2") {
           return "美术";
         } else {
           return "音乐 | 美术";

@@ -57,7 +57,7 @@
           <el-col :span="24"
             ><div class="shortcuts">
               <span>快捷操作</span>
-              <i class="el-icon-arrow-right"></i></div
+              <i></i></div
           ></el-col>
         </el-row>
         <el-row class="first_row">
@@ -286,7 +286,7 @@ export default {
       return (
         (this.userWorkBench.statistics &&
           this.userWorkBench.statistics.total_attendance) ||
-        ""
+        0
       );
     },
     mobile_review_records: function () {
@@ -307,21 +307,21 @@ export default {
       return (
         (this.userWorkBench.statistics &&
           this.userWorkBench.statistics.game_through_records) ||
-        ""
+        0
       );
     },
     total_homeworks: function () {
       return (
         (this.userWorkBench.statistics &&
           this.userWorkBench.statistics.total_homeworks) ||
-        ""
+        0
       );
     },
     evaluation_student_uploads: function () {
       return (
         (this.userWorkBench.statistics &&
           this.userWorkBench.statistics.evaluation_student_uploads) ||
-        ""
+        0
       );
     },
   },

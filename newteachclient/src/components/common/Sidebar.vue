@@ -4,10 +4,8 @@
     <div class="logo">logo</div>
     <!-- sidebar -->
     <el-menu
-      default-active="2"
+      :unique-opened="uniqueopen"
       class="el-menu-vertical-demo"
-      @open="handleOpen"
-      @close="handleClose"
       background-color="#409EFF"
       text-color="#FFFFFF"
       active-text-color="#FFFFFF"
@@ -17,7 +15,7 @@
       <div v-for="(item, i) in items" :key="i">
         <!-- 子路径判断 -->
         <template v-if="item.subs">
-          <el-submenu :index="item.index" :key="item.index">
+          <el-submenu :index="i.toString()" :key="item.index">
             <template class="submenu" slot="title">
               <i :class="item.icon"></i>
               <span class="font-des" slot="title">{{ item.title }}</span>
@@ -45,6 +43,7 @@
 export default {
   data() {
     return {
+      uniqueopen: true,
       items: [
         {
           icon: "",
@@ -57,6 +56,10 @@ export default {
           title: "题库卷库",
           //二级菜单
           subs: [
+            {
+              index: "/testquestionlibrary",
+              title: "试题库",
+            },
             {
               index: "/maketestquestion",
               title: "制作试题",
@@ -95,10 +98,10 @@ export default {
     };
   },
   methods: {
-    handleOpen() {
-      // console.log("handleOpen");
-    },
-    handleClose() {},
+    // handleOpen() {
+    //   // console.log("handleOpen");
+    // },
+    // handleClose() {},
   },
 };
 </script>

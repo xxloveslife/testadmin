@@ -10,21 +10,22 @@ const $axios = axios.create({
   timeout: 30000,
   // 基础url，会在请求url中自动添加前置链接
   // baseURL: process.env.VUE_APP_BASE_API,
-  // baseURL: '/api/',
+  baseURL: '/api/',
 
 })
 Vue.prototype.$http = axios // 并发请求
 
 // 在全局请求和响应拦截器中添加请求状态
-let loading = null
+// let loading = null  
 
 // 请求拦截器
 $axios.interceptors.request.use(
   config => {
-    loading = Loading.service({ text: '拼命加载中' })
+    // loading = Loading.service({ text: '拼命加载中' })
     const token = store.getters.token
     if (token) {
-      config.headers.Authorization = token // 请求头部添加token
+      // config.headers.Authorization = token // 请求头部添加token
+      config.headers.SID = token // 请求头部添加token
 
     }
     return config
@@ -36,23 +37,23 @@ $axios.interceptors.request.use(
 // 响应拦截器
 $axios.interceptors.response.use(
   response => {
-    if (loading) {
-      loading.close()
-    }
-    // const code = response.status
-    // if ((code >= 200 && code < 300) || code === 304) {
-    //   return Promise.resolve(response.data)
-    // } else {
-    //   return Promise.reject(response)
+    // if (loading) {
+    //   loading.close()
     // }
-    console.log('response', response)
-    return Promise.resolve(response.data)
+    const code = response.status
+    if ((code >= 200 && code < 300) || code === 304) {
+      return Promise.resolve(response.data)
+    } else {
+      return Promise.reject(response)
+    }
+    // console.log('response', response)
+    // return Promise.resolve(response.data)
 
   },
   error => {
-    if (loading) {
-      loading.close()
-    }
+    // if (loading) {
+    //   loading.close()
+    // }
     console.log(error)
     if (error.response) {
       switch (error.response.status) {

@@ -44,7 +44,7 @@ export default {
     this.$store.dispatch("user/getWorkBench").then((res) => {
       this.userWorkBench = this.$store.getters.userWorkBench;
       // console.log("res", res);
-      console.log("storeinfos", this.$store.getters.userWorkBench);
+      // console.log("benchworkinfos", this.$store.getters.userWorkBench);
     });
   },
 };
@@ -73,7 +73,7 @@ export default {
   padding-left: 17px;
   padding-right: 28px;
 }
-.el-header {
+.header {
   // width: 107.5rem;
   padding: 13px 28px 0 17px;
   background-color: #f2f6fc;

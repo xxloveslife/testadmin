@@ -3,21 +3,25 @@
     <!-- top_row -->
     <div class="wrap_flex top_row">
       <div class="search wrap_flex">
-        <input type="text" v-model="input" placeholder="请输入关键词和ID" />
+        <input
+          type="text"
+          v-model="searchInput"
+          placeholder="请输入关键词和ID"
+        />
 
         <button>搜索</button>
       </div>
       <!-- cascader_result & reset button -->
       <div class="wrap_flex top_row_rt">
         <span class="span1">{{ default_select }}</span>
-        <span class="span2">重置筛选</span>
+        <span class="span2" @click="resetSelect">重置筛选</span>
       </div>
     </div>
     <!-- second_row -->
     <div class="second_row no_copy">
       <el-radio-group
         class="m_radio_group"
-        v-model="radio"
+        v-model="second_radio_default"
         @change="changeCate"
       >
         <el-radio-button
@@ -33,7 +37,7 @@
     <!-- third_row -->
     <div class="third_row no_copy">
       <el-radio-group v-model="third_radio_default" @change="changeSubCate">
-        <el-radio-button class="_all" label="全部">全部</el-radio-button>
+        <!-- <el-radio-button class="_all" label="全部">全部</el-radio-button> -->
 
         <el-radio-button
           v-for="(item, i) in third_radio"
@@ -48,11 +52,10 @@
     <!-- slot  -->
     <slot></slot>
     <!-- Pagination  -->
-    <div class="m_pagination wrap_flex_center">
+    <div class="m_pagination wrap_flex_allcenter">
       <el-pagination
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page.sync="currentPage"
+        :current-page="currentPage"
         :page-size="pageSize"
         layout="prev, pager, next, jumper"
         :total="totalNum"
@@ -74,85 +77,92 @@ export default {
       type: String,
     },
 
-    // 父组件created得到值
+    // 分页
     pageSize: {
       type: Number,
-      default: 13,
     },
     totalNum: {
       type: Number,
-      default: 500,
+    },
+    currentPage: {
+      type: Number,
     },
   },
   data() {
     return {
       // 当前radio是父级传进来的,第一个选项,拿到该选项所在位置的category
 
-      // third_row list
+      // third_row list  label 集合
       third_radio: [],
 
       //current Radio   label
       c_radio: "",
-
+      second_radio_default: "",
       //current SubRadio label
       third_radio_default: "全部",
       //默认选择全部
-      // defaultSelect: "默认选择全部",
+
+      //后台接口必传字段,题库,类别,教材,默认选择全部
       m_select: {},
+
       default_select: "默认选择全部",
 
-      // 分页
-
-      // currentPage
-      currentPage: { c_page: 1 },
+      // 搜索框
+      searchInput: "",
     };
   },
   watch: {
     c_radio: function (newV, oldV) {
       //   发生变化了,更新third_row的内容对象
       //  利用newV 找到,新的内容
-      // console.log("c_radiochange");
       this.infos.forEach((item, i) => {
-        // console.log("oldV", oldV);
         if (this.infos) {
           if (item.title == newV) {
-            this.third_radio = this.infos[i].category;
+            const savelabel = [];
+            // 全都剃出来
+            this.infos[i].category.forEach((item, i) => {
+              savelabel.push(item.label);
+            });
+            this.third_radio = savelabel;
           }
         }
-
-        // console.log(this.third_radio);
       });
     },
   },
 
   methods: {
+    // 第一层的单项回调
     changeCate(val) {
       //change的时候给c_radio
       this.c_radio = val;
     },
+    // 第二层的单选回调
     changeSubCate(val) {
       //当变化时设置subCate的label到m_select里面  ,
 
       this.m_select[this.c_radio] = val;
-
+      // 修改已选择的详细显示
       this.changeMyselecting();
 
-      // 发送请求,得到值,传给父组件
-      // 第二个参数有待修改,根据接口不同,调整传入的查询条件
+      // 切换的时候改回分页
+      this.m_select.currentPage = 1;
+
       //通知父组件发送请求
       this.$emit("getItemfromCondition", this.m_select);
 
-      console.log("infos", { ...this.m_select });
-
-      //当前选择
-      // console.log("mounted", this.c_radio, this.third_radio_default);
+      // 父组件判断如果是题库里面子内容,调整star 和shared 的展示
+      this.$emit("changeOperationStyle", val);
     },
+    //修改右上角选择样式
     changeMyselecting() {
       //拼接m_select里面的值, 更换 default_select,
       let selectedInfos = [];
       this.infos.forEach((item, i) => {
-        if (this.m_select[item.title] === "") {
-          // 等于空字符串,就不push,不加顿号
+        if (
+          this.m_select[item.title] === "" ||
+          this.m_select[item.title] === "全部"
+        ) {
+          // 等于空字符串,或者全部,就不push,不加顿号
           return;
         }
         selectedInfos.push(this.m_select[item.title]);
@@ -160,7 +170,7 @@ export default {
 
       const str_selected = selectedInfos.join("、");
       // console.log(str_selected);
-      this.default_select = "已选择" + str_selected;
+      this.default_select = "已选择 " + str_selected;
     },
     getCurrentCate(radio) {
       //'题库'
@@ -175,37 +185,51 @@ export default {
     },
 
     // 分页methods
-    handleSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
-    },
+
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
 
       this.m_select.currentPage = val;
 
+      console.log("fenye ", this.m_select);
+
       // 通知父组件
       this.$emit("getItemfromCondition", this.m_select);
     },
+    //重置选择
+    resetSelect() {
+      // this.default_select = "默认选择全部";
+      // this.second_radio_default = this.radio;
+      // this.third_radio_default = "全部";
+
+      // this.c_radio = this.radio;
+
+      // // 清空
+      // this.selectedInfos = [];
+      // //通知父组件发送请求
+      // this.$emit("resetSelect");
+
+      location.reload();
+    },
   },
   mounted() {
+    this.second_radio_default = this.radio;
     this.c_radio = this.radio;
     //设置v-model的第一个默认值
     this.getCurrentCate(this.radio);
-    // 拿到父组件传进来的infos, 设置m_selectd的key值;
-    // console.log(this.infos);
+
+    // infos 设置m_selectd的key值;
     if (this.infos) {
       this.infos.forEach((item, i) => {
         // infos当前title作key值
-        this.m_select[item.title] = "";
+        this.m_select[item.title && item.title] = "";
       });
     }
-
-    // 页面加载时根据级联组件条件获取，以及当前分页条件获取数据
-    // 当前选择
-    console.log("mounted", this.c_radio, this.third_radio_default);
+    console.log("my_", this.m_select);
   },
   created() {
     this.m_select.currentPage = 1;
+    console.log("fenyeinfos", this.pageSize, this.totalNum, this.currentPage);
   },
 };
 </script>
@@ -252,6 +276,7 @@ export default {
     margin-right: 1rem;
   }
   .span2 {
+    cursor: pointer;
     font-size: 0.875rem;
     font-family: Microsoft YaHei;
     font-weight: 400;
@@ -354,6 +379,9 @@ export default {
   background-color: olive;
 }
 .m_pagination {
+  background: #ffffff;
+  border-radius: 8px;
+  width: 105.25rem;
   height: 2.75rem;
 }
 </style>

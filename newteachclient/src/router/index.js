@@ -19,6 +19,14 @@ const routes = [
             /* webpackChunkName: "dashboard" */ '@/views/pages/Dashboard/Dashboard.vue'
           ),
       },
+      // 试题库
+      {
+        path: '/testquestionlibrary',
+        component: () =>
+          import(
+            /* webpackChunkName: "testquestionlibrary" */ '@/views/pages/TestquestionLibrary/index.vue'
+          ),
+      },
       //试卷库
       {
         path: '/testpaperlibrary',

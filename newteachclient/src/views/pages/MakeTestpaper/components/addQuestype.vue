@@ -1,7 +1,10 @@
 <template>
   <div class="questType">
     <div class="wrap_flex_normal">
-      <span class="title_style">音乐题型:</span>
+      <div class="title_style wrap_flex_allcenter">
+        <span>{{ title }}:</span>
+      </div>
+
       <div class="addOne">
         <!-- title -->
         <div class="c_title wrap_flex_normal">
@@ -14,14 +17,19 @@
         <!-- 选择框 第一个下拉-->
         <div class="second_row">
           <div class="m_dropdown">
-            <el-dropdown trigger="click">
-              <span class="el-dropdown-link">
-                下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>黄金糕</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+            <el-select
+              v-model="value"
+              :popper-append-to-body="false"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
           </div>
         </div>
         <!-- 添加按钮 -->
@@ -32,15 +40,31 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    title: {
+      type: String,
+    },
+  },
+  date() {
+    return {
+      options: [{ value: 1, label: "one" }],
+      // allQuestTypes : [{type:1,label:'音乐题型'},{type:2,label:'美术题型'},{}]
+      allExams: [{}],
+    };
+  },
+};
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
 .questType {
   .title_style {
-    font-size: 12px;
-    font-family: Microsoft YaHei;
-    font-weight: bold;
-    color: #303133;
+    width: 3.25rem;
+    span {
+      font-size: 12px;
+      font-family: Microsoft YaHei;
+      font-weight: bold;
+      color: #303133;
+    }
   }
   .addOne {
     width: 97.5rem;
@@ -72,20 +96,12 @@ export default {};
     margin-top: 1rem;
   }
 }
-// .el-dropdown-link {
-//   cursor: pointer;
-//   color: #409eff;
-// }
-// .el-icon-arrow-down {
-//   font-size: 12px;
-//   // color: red;
-// }
 
 .m_dropdown {
   width: 18.75rem;
   height: 2rem;
   border-radius: 0.375rem;
-  border: 1px solid #dcdfe6;
+  // border: 1px solid #dcdfe6;
   margin-left: 3.9375rem;
   .el-dropdown {
     width: 18.75rem;
@@ -107,6 +123,24 @@ export default {};
 
   .el-icon-arrow-down:before {
     color: gray;
+  }
+
+  .el-popper {
+    margin-top: -0.125rem !important;
+  }
+
+  .el-input {
+    width: 18.75rem;
+    height: 2rem;
+  }
+  .el-select__caret {
+    line-height: 2rem;
+  }
+  .el-select-dropdown {
+    margin-top: 0.4375rem !important;
+  }
+  .popper__arrow {
+    display: none;
   }
 }
 </style>

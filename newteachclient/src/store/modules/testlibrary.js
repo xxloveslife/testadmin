@@ -1,4 +1,4 @@
-import { getTestLibraryCategory } from '../../api/testLibrary'
+import { getTestLibraryCategory, getSysTestLibraryCategory } from '../../api/testLibrary'
 const state = {
     library_result: {}
 }
@@ -10,12 +10,30 @@ const mutations = {
 }
 
 const actions = {
+    // 试题库
     getTestLibraryResult({ commit }, quesCondition) {
         return new Promise((reslove, reject) => {
             getTestLibraryCategory(quesCondition).then(res => {
                 // 修改状态码    
                 if (res.code === 0) {
-                    commit('SET_LIBRARY_RESULT', res)
+                    commit('SET_LIBRARY_RESULT', res.data)
+                }
+                reslove(res)
+
+            }).catch(error => {
+                reject(error)
+            })
+
+        })
+    },
+
+
+    getSysTestLibraryResult({ commit }, quesCondition) {
+        return new Promise((reslove, reject) => {
+            getSysTestLibraryCategory(quesCondition).then(res => {
+                // 修改状态码    
+                if (res.code === 0) {
+                    commit('SET_LIBRARY_RESULT', res.data)
                 }
                 reslove(res)
 
