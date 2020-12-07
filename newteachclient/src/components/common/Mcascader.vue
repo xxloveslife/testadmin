@@ -191,7 +191,7 @@ export default {
 
       this.m_select.currentPage = val;
 
-      console.log("fenye ", this.m_select);
+      // console.log("fenye ", this.m_select);
 
       // 通知父组件
       this.$emit("getItemfromCondition", this.m_select);
@@ -229,7 +229,7 @@ export default {
   },
   created() {
     this.m_select.currentPage = 1;
-    console.log("fenyeinfos", this.pageSize, this.totalNum, this.currentPage);
+    // console.log("fenyeinfos", this.pageSize, this.totalNum, this.currentPage);
   },
 };
 </script>
@@ -339,6 +339,19 @@ export default {
       .el-radio-button__inner {
         width: 100%;
         height: 2.8125rem;
+
+        font-size: 14px;
+        font-family: Microsoft YaHei;
+        font-weight: bold;
+        color: #303133;
+      }
+    }
+    .is-active {
+      span {
+        font-size: 14px;
+        font-family: Microsoft YaHei;
+        font-weight: bold;
+        color: #ffffff !important;
       }
     }
   }

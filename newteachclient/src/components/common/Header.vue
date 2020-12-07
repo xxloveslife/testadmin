@@ -76,7 +76,7 @@ export default {
   }
   .logout {
     width: 2.5rem;
-
+    cursor: pointer;
     float: right;
     margin-top: 17px;
     margin-right: 27px;
@@ -94,8 +94,11 @@ export default {
   }
   .logout:hover {
     // background-color: rgba(255, 255, 255, 0.8);
-    background-color: red;
-    z-index: 1;
+    // background-color: red;
+    // z-index: 1;
+
+    opacity: 0.5;
+    filter: alpha(opacity=40); /* 针对 IE8 以及更早的版本 */
   }
 }
 </style>

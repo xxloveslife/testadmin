@@ -293,14 +293,14 @@ export default {
       return (
         (this.userWorkBench.statistics &&
           this.userWorkBench.statistics.mobile_review_records) ||
-        ""
+        0
       );
     },
     mobile_exams: function () {
       return (
         (this.userWorkBench.statistics &&
           this.userWorkBench.statistics.mobile_exams) ||
-        ""
+        0
       );
     },
     game_through_records: function () {

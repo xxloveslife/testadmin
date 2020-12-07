@@ -75,6 +75,14 @@ const routes = [
             /* webpackChunkName: "maketestpaper" */ '@/views/pages/MessageCenter/index.vue'
           ),
       },
+      // test
+      {
+        path: '/test',
+        component: () =>
+          import(
+            /* webpackChunkName: "test" */ '@/views/pages/Test/index.vue'
+          ),
+      },
     ],
   },
 ]

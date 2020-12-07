@@ -94,6 +94,11 @@ export default {
             },
           ],
         },
+        {
+          icon: "",
+          index: "/test",
+          title: "test",
+        },
       ],
     };
   },

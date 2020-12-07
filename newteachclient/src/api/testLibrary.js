@@ -19,3 +19,20 @@ export function getSysTestLibraryCategory(data) {
   const url = '/exercises/getSysExercisesData'
   return $axios.post(url, data)
 }
+
+
+
+// 我的卷库 + 校本卷库
+export function getTestPaperLib(data) {
+
+  const url = '/examinationPaper/getExaminationPaperData'
+  return $axios.post(url, data)
+}
+
+
+// 系统卷库
+export function getSysTestPaperLib(data) {
+
+  const url = '/examinationPaper/getSysExaminationPaperData'
+  return $axios.post(url, data)
+}
