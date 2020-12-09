@@ -9,7 +9,7 @@
           placeholder="请输入关键词和ID"
         />
 
-        <button>搜索</button>
+        <button @click="searchButtons">搜索</button>
       </div>
       <!-- cascader_result & reset button -->
       <div class="wrap_flex top_row_rt">
@@ -109,6 +109,9 @@ export default {
 
       // 搜索框
       searchInput: "",
+
+      // 当前所在位置
+      m_val: "全部",
     };
   },
   watch: {
@@ -139,8 +142,8 @@ export default {
     // 第二层的单选回调
     changeSubCate(val) {
       //当变化时设置subCate的label到m_select里面  ,
-
-      this.m_select[this.c_radio] = val;
+      this.m_val = val;
+      this.m_select[this.c_radio] = this.m_val;
       // 修改已选择的详细显示
       this.changeMyselecting();
 
@@ -151,7 +154,7 @@ export default {
       this.$emit("getItemfromCondition", this.m_select);
 
       // 父组件判断如果是题库里面子内容,调整star 和shared 的展示
-      this.$emit("changeOperationStyle", val);
+      this.$emit("changeOperationStyle", this.m_val);
     },
     //修改右上角选择样式
     changeMyselecting() {
@@ -211,6 +214,13 @@ export default {
 
       location.reload();
     },
+
+    // 搜索框搜索
+    searchButtons() {
+      this.m_select.keyword = this.searchInput;
+      // 通知父组件
+      this.$emit("getItemfromCondition", this.m_select);
+    },
   },
   mounted() {
     this.second_radio_default = this.radio;
@@ -225,11 +235,14 @@ export default {
         this.m_select[item.title && item.title] = "";
       });
     }
-    console.log("my_", this.m_select);
+    // console.log("my_", this.m_select);
   },
   created() {
     this.m_select.currentPage = 1;
     // console.log("fenyeinfos", this.pageSize, this.totalNum, this.currentPage);
+
+    // 重新加载的时候也通知一次 ,当前currentLib为全部
+    this.$emit("changeOperationStyle", this.m_val);
   },
 };
 </script>

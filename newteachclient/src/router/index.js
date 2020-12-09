@@ -83,6 +83,14 @@ const routes = [
             /* webpackChunkName: "test" */ '@/views/pages/Test/index.vue'
           ),
       },
+      // edit paper
+      {
+        path: '/editPaper',
+        component: () =>
+          import(
+            /* webpackChunkName: "editpaper" */ '@/views/pages/EditTestPaper/index.vue'
+          ),
+      },
     ],
   },
 ]

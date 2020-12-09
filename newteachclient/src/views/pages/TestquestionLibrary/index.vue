@@ -22,7 +22,7 @@
         <div
           class="wrap_flex_center itemhover"
           v-for="(item, i) in (libDatas && libDatas) || []"
-          :key="i"
+          :key="item.id"
         >
           <div class="listItem" @click="itemGetClick(item)">
             <div class="showNum wrap_flex_allcenter">
@@ -41,14 +41,32 @@
               class="star"
               @click="isfavorite(item, i)"
               :class="changeStar == item.is_favorite ? 'changeStar' : ''"
+              :title="(item.is_favorite == 1 && '已收藏') || '点击收藏'"
             ></i>
-            <i
+            <div
               v-if="showShared"
-              class="shared"
-              @click="isShared(item, i)"
-              :class="changeShare == isshare ? 'changeShare' : ''"
-              :isshare="isshare"
-            ></i>
+              class="shared_wrap"
+              :class="changeShare == item.is_share ? 'changeShared' : ''"
+              :title="(item.is_share == 1 && '已分享') || '点击分享'"
+            >
+              <el-button type="text" @click="open(item, i)"
+                ><i class="shared"></i
+              ></el-button>
+            </div>
+
+            <div
+              class="cancleshared"
+              v-if="showCancleShared"
+              :title="item.is_share == 1 && '点击取消分享'"
+              :class="
+                changeCancleShare == item.is_share ? 'changeCancleShared' : ''
+              "
+              @click="open(item, i)"
+            >
+              <el-button type="text">
+                <i class="cancleshared"></i>
+              </el-button>
+            </div>
           </div>
         </div>
 
@@ -218,22 +236,28 @@ export default {
       //  分享判断
       isshare: 0,
       changeShare: 1,
+      changeCancleShare: 1,
 
       // 收藏和分享的条件判断
       showFav: true,
       showShared: false,
+      showCancleShared: false,
 
       requestObj: { _from: "", category: "", paper_range: "" },
       templibDatas: {},
 
       // 分页
       pagesize: 20,
+
+      // 当前是否是校本题库
+      currentLib: "",
     };
   },
   components: { mCascader },
 
   methods: {
     getItems(val) {
+      this.requestObj.keyword = (val.keyword && val.keyword) || "";
       this.requestObj.page = val.currentPage && val.currentPage;
 
       this.requestObj = {
@@ -250,11 +274,13 @@ export default {
             this.templibDatas = res.data && res.data;
           });
       } else {
-        // console.log("传我的题库和校本题库接口");
+        console.log("传我的题库和校本题库接口");
+        console.log("request", this.requestObj);
         this.$store
           .dispatch("testlibrary/getTestLibraryResult", this.requestObj)
           .then((res) => {
             this.templibDatas = res.data && res.data;
+            console.log("request_result", this.templibDatas);
           });
       }
 
@@ -298,32 +324,6 @@ export default {
 
       //  点击修改
     },
-    // 分享题库
-    isShared(item, i) {
-      if (this.libDatas[i].is_favorite == 0) {
-        this.libDatas[i].is_favorite = 1;
-        // 发送分享请求
-        $axios
-          .post("/exercises/favorite", {
-            question_id: item.id,
-            action: "add_favorite ",
-          })
-          .then((res) => {
-            // console.log("分享", res);
-          });
-      } else {
-        this.libDatas[i].is_favorite = 0;
-        // 发送取消分享请求
-        $axios
-          .post("/exercises/favorite", {
-            question_id: item.id,
-            action: "del_favorite ",
-          })
-          .then((res) => {
-            // console.log("取消分享", res);
-          });
-      }
-    },
 
     reformVal(val, infos) {
       // 三个必传字段
@@ -350,16 +350,19 @@ export default {
     // 改变操作的样式
     changeOpstyle(val) {
       // this.showShared = val == "校本题库" && val == "校本题库";
-
+      this.currentLib = val;
       if (val == "校本题库") {
-        this.showShared = true;
+        this.showShared = false;
         this.showFav = false;
+        this.showCancleShared = true;
       } else if (val == "我的题库") {
         this.showShared = true;
         this.showFav = true;
+        this.showCancleShared = false;
       } else {
         this.showShared = false;
         this.showFav = true;
+        this.showCancleShared = false;
       }
     },
 
@@ -375,6 +378,104 @@ export default {
     },
     // dialog
     handleClose() {},
+
+    // 分享
+    open(item, i) {
+      const isShared = item.is_share;
+      // console.log("isShared", isShared);
+      this.$confirm(
+        `确定${(isShared == 1 && "取消") || ""}分享该题至校本题库吗？`,
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "info",
+        }
+      )
+        .then(() => {
+          // 请求网络
+          if (isShared == 0) {
+            // 添加分享
+            $axios
+              .post("/exercises/schoolShareQuestion", {
+                question_id: item.id,
+                action: "add",
+              })
+              .then((res) => {
+                // console.log("res", res);
+                if (res.code == 0) {
+                  // 修改样式
+                  // console.log("res", res);
+                  if (this.libDatas[i].is_share == 0) {
+                    this.libDatas[i].is_share = 1;
+                  }
+                }
+                // console.log(res);
+              });
+          } else if (isShared == 1) {
+            // 取消分享
+            $axios
+              .post("/exercises/schoolShareQuestion", {
+                question_id: item.id,
+                action: "del",
+              })
+              .then((res) => {
+                // console.log("cancleres", res);
+                if (res.code == 0) {
+                  // 修改样式
+                  // console.log("res", res);
+                  if (this.currentLib === "校本题库") {
+                    // console.log("在校本题库");   在校本题库时修改的样式,删除一条
+                    if (item.is_share == 1) {
+                      // this.libDatas[i].is_share = 1;
+                      const m_index = this.libDatas.findIndex((m_item) => {
+                        return m_item.id === item.id;
+                      });
+
+                      this.libDatas.splice(m_index, 1);
+                    }
+                  } else if (this.libDatas[i].is_share == 1) {
+                    // console.log("不在校本题库");
+                    this.libDatas[i].is_share = 0;
+                  }
+                }
+                // console.log(res);
+              });
+          }
+        })
+        .catch(() => {});
+    },
+
+    // 取消分享
+    cancleShared(item) {
+      if (item.is_share == 1) {
+        console.log("dianji");
+        $axios
+          .post("/exercises/schoolShareQuestion", {
+            question_id: item.id,
+            action: "del",
+          })
+          .then((res) => {
+            // console.log("res", res);
+            if (res.code == 0) {
+              // 修改样式, 删除整个item
+              console.log("res", res);
+
+              if (item.is_share == 1) {
+                // this.libDatas[i].is_share = 1;
+                const m_index = this.libDatas.findIndex((m_item) => {
+                  return m_item.id === item.id;
+                });
+                console.log("index", m_index);
+
+                this.libDatas.splice(m_index, 1);
+                console.log("after", this.libDatas.length);
+              }
+            }
+            // console.log(res);
+          });
+      }
+    },
   },
   computed: {
     libDatas: function () {
@@ -483,7 +584,16 @@ export default {
           background-image: url("../../../assets/imgs/testquestlibrary/starsc.png");
         }
       }
+      .shared_wrap {
+        width: 1.125rem;
+        height: 1.125rem;
 
+        cursor: pointer;
+        background-image: url("../../../assets/imgs/testquestlibrary/sharedefault.png");
+        background-size: 1.125rem;
+        background-repeat: no-repeat;
+        margin-left: 1.4375rem;
+      }
       // 分享
       .shared {
         width: 1.125rem;
@@ -499,9 +609,38 @@ export default {
       }
 
       .changeShared {
-        background-image: url("../../../assets/imgs/testquestlibrary/cancleShareddefault.png");
+        background-image: url("../../../assets/imgs/testquestlibrary/cancleSharedhover.png");
         &:hover {
-          background-image: url("../../../assets/imgs/testquestlibrary/cancleSharedhover.png");
+          background-image: url("../../../assets/imgs/testquestlibrary/cancleShareddefault.png");
+        }
+      }
+
+      .cancleshared {
+        width: 1.125rem;
+        height: 1.125rem;
+        cursor: pointer;
+        // background-image: url("../../../assets/imgs/testquestlibrary/cancleSharedhover.png");
+        // background-size: 1.125rem;
+        // background-repeat: no-repeat;
+        margin-left: 1.4375rem;
+        &:hover {
+          background-image: url("../../../assets/imgs/testquestlibrary/cancleShareddefault.png");
+          background-size: 1.125rem;
+          background-repeat: no-repeat;
+        }
+      }
+      .changeCancleShared {
+        width: 1.125rem;
+        height: 1.125rem;
+        cursor: pointer;
+        background-image: url("../../../assets/imgs/testquestlibrary/cancleSharedhover.png");
+        background-size: 1.125rem;
+        background-repeat: no-repeat;
+        margin-left: 1.4375rem;
+        &:hover {
+          background-image: url("../../../assets/imgs/testquestlibrary/cancleShareddefault.png");
+          background-size: 1.125rem;
+          background-repeat: no-repeat;
         }
       }
     }
