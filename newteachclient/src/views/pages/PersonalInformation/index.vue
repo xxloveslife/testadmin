@@ -21,19 +21,23 @@
         <ul>
           <li>
             <span>姓 名：</span>
-            <i>{{ list.name }}</i>
+            <i>{{ list.teacher_name }}</i>
           </li>
           <li>
             <span>账 号：</span>
-            <i>{{ list.accountNumber }}</i>
+            <i>{{ list.teacher_account }}</i>
           </li>
           <li>
             <span>学 校：</span>
-            <i>{{ list.school }}</i>
+            <i>{{ list.school_name }}</i>
           </li>
           <li>
             <span>系统账号：</span>
-            <i>{{ list.systemAccount }}</i>
+            <i>{{ list.login_account }}</i>
+          </li>
+          <li>
+            <span>绑定手机：</span>
+            <i>{{ phoneNumber.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') }}</i>
             <el-button type="text" @click="messageBoxStatus = true"
               >解绑手机</el-button
             >
@@ -52,22 +56,28 @@
           :rules="changePasswordFormRule"
         >
           <div class="formItem">
-            <el-form-item label="当前密码：" prop="oldPassword">
+            <el-form-item label="当前密码：" prop="before">
               <el-input
-                v-model="changePasswordList.oldPassword"
+                type="password"
+                v-model="changePasswordList.before"
                 placeholder="请输入当前密码"
+                autocomplete="off"
               ></el-input>
             </el-form-item>
-            <el-form-item label="输入密码：" prop="newPassword">
+            <el-form-item label="输入密码：" prop="pwd">
               <el-input
-                v-model="changePasswordList.newPassword"
+                type="password"
+                v-model="changePasswordList.pwd"
                 placeholder="请输入新的设置密码"
+                autocomplete="off"
               ></el-input>
             </el-form-item>
-            <el-form-item label="再次输入：" prop="rePassword">
+            <el-form-item label="再次输入：" prop="pwd2">
               <el-input
-                v-model="changePasswordList.rePassword"
+                type="password"
+                v-model="changePasswordList.pwd2"
                 placeholder="请重复输入新的设置密码"
+                autocomplete="off"
               ></el-input>
             </el-form-item>
             <el-form-item>
@@ -81,7 +91,7 @@
     </div>
     <!-- 弹出框 -->
     <message-box
-      :phoneNumber="list.phoneNumber"
+      :phoneNumber="phoneNumber.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')"
       :messageBoxStatus="messageBoxStatus"
       @closeMessage="messageBoxStatus = false"
     ></message-box>
@@ -94,39 +104,46 @@ export default {
   name: 'personalInformation',
   data() {
     return {
+      phoneNumber: '',
       messageBoxStatus: false,
       tabstatus: true,
-      list: {
-        name: '王浩',
-        accountNumber: '18745685950',
-        school: '青年路小学',
-        systemAccount: 't4951069',
-        phoneNumber: '13333333333',
-      },
+      list: {},
       changePasswordList: {
-        oldPassword: '',
-        newPassword: '',
-        rePassword: '',
+        before: '',
+        pwd: '',
+        pwd2: '',
       },
       changePasswordFormRule: {
-        oldPassword: [
+        before: [
           { required: true, message: '请输入当前密码', trigger: 'blur' },
+          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
         ],
-        newPassword: [
+        pwd: [
           { required: true, message: '请输入新的设置密码', trigger: 'blur' },
+          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
         ],
-        rePassword: [
+        pwd2: [
           {
             required: true,
             message: '请重复输入新的设置密码',
             trigger: 'blur',
           },
+          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
         ],
       },
     }
   },
   components: {
     messageBox,
+  },
+  created() {
+    this.$store.dispatch('manageAccount/makeUserInfo').then((res) => {
+      if (res || res.code == 0) {
+        this.list = res.data
+        this.phoneNumber = res.data.phone
+        console.log(this.list)
+      }
+    })
   },
   methods: {
     changeTabstatus() {
@@ -138,6 +155,23 @@ export default {
     },
     changePasswordOperating() {
       // 预验证并修改
+      this.$refs.changePasswordForm.validate((valid) => {
+        if (valid) {
+          this.$store
+            .dispatch('manageAccount/resetPwd', this.changePasswordList)
+            .then((res) => {
+              if (res || res.code == 0) {
+                this.$message.success('修改密码成功')
+              } else if (res.code == 400) {
+                this.$message.error('原密码输入有误')
+              } else {
+                this.$message.error('修改密码失败，请稍后重试')
+              }
+            })
+        } else {
+          return this.$message.error('修改密码有误，请重新输入')
+        }
+      })
     },
   },
 }
@@ -187,7 +221,7 @@ export default {
     ul {
       display: flex;
       flex-direction: column;
-      width: 206px;
+      width: 260px;
       height: 137px;
       font-size: 14px;
       font-family: Microsoft YaHei;
@@ -195,6 +229,9 @@ export default {
       color: #303133;
       li {
         flex: 1;
+        .el-button {
+          padding: 0px 13px;
+        }
       }
       i {
         font-style: normal;

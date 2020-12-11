@@ -3,41 +3,84 @@
     <div class="rightBox">
       <div class="rightBoxItem" v-for="(item, i) in singleChoiceList" :key="i">
         <div class="rightBox-header">
-          <span>{{ item.options }}.</span>
-          <el-input class="elInput" type="text" placeholder="请输入题目内容" />
-          <i class="el-icon-delete"></i>
+          <span
+            v-if="
+              radioDefault === '单项选择题' || radioDefault === '多项选择题'
+            "
+            >{{ optionsList[i].options }}.</span
+          >
+          <span v-else>{{ optionsList[i].options1 }}.</span>
+          <el-input
+            class="elInput"
+            type="text"
+            placeholder="请输入题目内容"
+            v-model="item.op_text"
+          />
+          <i class="el-icon-delete" @click="removeAnswer(i)"></i>
         </div>
         <div class="rightBox-body">
           <el-button
             v-if="changeRadioVal === '音乐'"
             type="primary"
-            @click="$refs.file.click()"
+            @click="elButtonClick(item, i)"
             >图片/音频</el-button
           >
-          <el-button v-else type="primary" @click="$refs.file.click()"
+          <el-button v-else type="primary" @click="elButtonClick(item, i)"
             >上传图片</el-button
           >
-          <el-checkbox-group v-model="item.content">
-            <el-checkbox :label="item.content" :key="item.content">{{
+          <el-radio-group
+            v-model="radio"
+            @change="singleSelectionChange"
+            v-if="radioDefault !== '连线题' && radioDefault !== '多项选择题'"
+          >
+            <el-radio :label="i" :key="item.content">{{
+              item.checked
+            }}</el-radio>
+          </el-radio-group>
+          <!-- 111   item.content-->
+          <el-checkbox-group
+            v-model="multipleRadio"
+            v-if="radioDefault == '多项选择题'"
+            @change="multipleSelectionChanges"
+          >
+            <el-checkbox :label="i" :key="item.content">{{
               item.checked
             }}</el-checkbox>
           </el-checkbox-group>
         </div>
+
         <div class="rightBox-footer">
-          <p>111</p>
+          <audio-part
+            v-if="item.audioState === 'mp3'"
+            :id="'transferAudio' + i"
+            :audioUrl="item.op_file"
+          ></audio-part>
+          <div v-else class="imgShow">
+            <img :src="item.imgfile" alt="" />
+          </div>
         </div>
       </div>
-      <input
-        type="file"
-        ref="file"
-        hidden
-        accept="image/png,image/jpg,audio/3gpp"
-      />
     </div>
+    <input
+      type="file"
+      ref="file"
+      hidden
+      @change="fileChange($event)"
+      v-if="changeRadioVal === '音乐'"
+      accept="image/png,image/jpeg,audio/mpeg"
+    />
+    <input
+      type="file"
+      ref="file"
+      hidden
+      @change="fileChange"
+      v-else
+      accept="image/png,image/jpeg"
+    />
     <div class="footerBox">
       <div class="boxLeft">
-        <el-button type="primary">新增答案选项</el-button>
-        <span v-if="radioDefault === '连线题'">最多五个选项</span>
+        <el-button type="primary" @click="addAnswer">新增答案选项</el-button>
+        <span class="span" v-if="radioDefault === '连线题'">最多五个选项</span>
       </div>
       <div class="boxRight">
         <span v-if="changeRadioVal === '音乐'"
@@ -53,40 +96,39 @@
 </template>
 
 <script>
+import audioPart from './audioPart'
 export default {
-  name: "optionComponents",
+  name: 'optionComponents',
   data() {
     return {
-      // 单选list
-      singleChoiceList: [
-        {
-          // 选项
-          options: "A",
-          checked: "设置为正确答案",
-          content: "",
-        },
-        {
-          // 选项
-          options: "B",
-          checked: "设置为正确答案",
-          content: "",
-        },
-        {
-          // 选项
-          options: "C",
-          checked: "设置为正确答案",
-          content: "",
-        },
-        {
-          // 选项
-          options: "D",
-          checked: "设置为正确答案",
-          content: "",
-        },
+      index: null,
+      radio: 0,
+      multipleRadio: [0],
+      optionsList: [
+        { options: 'A', options1: '1' },
+        { options: 'B', options1: '2' },
+        { options: 'C', options1: '3' },
+        { options: 'D', options1: '4' },
+        { options: 'E', options1: '5' },
       ],
-    };
+    }
+  },
+  watch: {
+    changeRadioVal() {
+      this.clearData()
+      this.$store.commit('makeTestquestion/set_singleSelectionVal', null)
+      this.$store.commit('makeTestquestion/set_multipleSelectionVal', [])
+    },
+    radioDefault() {
+      this.clearData()
+      this.$store.commit('makeTestquestion/set_singleSelectionVal', null)
+      this.$store.commit('makeTestquestion/set_multipleSelectionVal', [])
+    },
   },
   props: {
+    singleChoiceList: {
+      type: Array,
+    },
     // 类型选择值
     changeRadioVal: {
       type: String,
@@ -100,28 +142,128 @@ export default {
       type: String,
     },
   },
-  methods: {},
-  mounted() {
-    console.log(this.testQuestionlists);
+  components: {
+    audioPart,
   },
-};
+  methods: {
+    // 清空数据
+    clearData() {
+      this.index = null
+      this.radio = 0
+      this.multipleRadio = [0]
+      this.singleChoiceList.forEach((element) => {
+        element.op_text = ''
+        element.op_file = ''
+        element.audioState = ''
+        element.imgfile = ''
+      })
+    },
+    // 单选
+    singleSelectionChange(val) {
+      console.log(val)
+      this.$store.commit('makeTestquestion/set_singleSelectionVal', val)
+    },
+    // 多选
+    multipleSelectionChanges(val) {
+      console.log(val)
+      console.log(this.multipleRadio)
+      this.$store.commit('makeTestquestion/set_multipleSelectionVal', val)
+    },
+    addAnswer() {
+      let num = this.singleChoiceList.length
+      console.log(num)
+      let num1 = this.singleChoiceList[num - 1].content
+      let obj = {
+        // 选项
+        checked: '设置为正确答案',
+        content: num1 + 1,
+        op_text: '',
+        op_file: '',
+        audioState: '',
+        imgfile: '',
+      }
+      if (num >= 5) {
+        this.$message.error('最多添加5个选项')
+      } else {
+        console.log(obj)
+        this.singleChoiceList.push(obj)
+      }
+    },
+    removeAnswer(i) {
+      this.singleChoiceList.splice(i, 1)
+      this.radio = ''
+      this.multipleRadio = []
+      this.$store.commit('makeTestquestion/set_singleSelectionVal', null)
+      this.$store.commit('makeTestquestion/set_multipleSelectionVal', [])
+    },
+    // 上传文件变化时
+    fileChange() {
+      const localFile = this.$refs.file.files[0]
+      var paths = this.$refs.file.value //源文件路径
+      // console.log(paths)
+      console.log(localFile)
+
+      const reader = new FileReader() // 创建读取文件对象
+      reader.readAsDataURL(localFile) // 发起异步请求，读取文件
+      const that = this
+      reader.onload = function() {
+        // 文件读取完成后
+        // 读取完成后，将结果赋值给img的src
+        // console.log(this.result)
+
+        that.singleChoiceList[that.index].imgfile = this.result
+      }
+      // var reader = new FileReader()
+      // reader.readAsDataURL(localFile)
+      // var url = ''
+      // reader.onload = function() {
+      //   console.log(reader.result) //获取到base64格式图片
+      //   url = reader.result
+      // }
+      // this.singleChoiceList[this.index].imgfile = paths
+
+      const formData = new window.FormData()
+      formData.append('file_name', localFile)
+      this.$http.post('/makeExercises/uploadFile', formData).then((res) => {
+        if (res || res.code == 0) {
+          // console.log(res.data.file_path)
+          this.singleChoiceList[this.index].op_file = res.data.file_path
+          var stringlength = res.data.file_path.length
+          var newstring = res.data.file_path.substring(
+            stringlength - 3,
+            stringlength
+          )
+          this.singleChoiceList[this.index].audioState = newstring
+        }
+      })
+    },
+    elButtonClick(item, i) {
+      this.$refs.file.click()
+      console.log(item, i)
+      this.index = i
+    },
+  },
+  mounted() {
+    // console.log(this.testQuestionlists)
+  },
+}
 </script>
 
 <style lang="scss" scoped>
 .option-components-container {
   position: relative;
+
   .leftTitle {
     position: absolute;
     left: 0;
     top: 13px;
   }
   .rightBox {
-    margin-left: 130px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin-left: 56px;
+    overflow: hidden;
     .rightBoxItem {
-      margin-right: 39px;
+      float: left;
+      margin-right: 16px;
       .rightBox-header {
         display: flex;
         span {
@@ -154,9 +296,30 @@ export default {
         }
       }
       .rightBox-body {
-        margin: 10px 23px;
+        position: relative;
+        left: 25px;
+        width: 316px;
+        margin-top: 10px;
         display: flex;
         justify-content: space-between;
+        .el-button {
+          width: 104px;
+          height: 32px;
+          border-radius: 6px;
+          padding: 7px 20px;
+        }
+      }
+      .rightBox-footer {
+        .imgShow {
+          max-width: 260px;
+          max-height: 158px;
+          margin: 0 0 10px 24px;
+          img {
+            margin-top: 15px;
+            max-height: 158px;
+            max-width: 260px;
+          }
+        }
       }
     }
   }
@@ -165,7 +328,13 @@ export default {
     padding-left: 68px;
     justify-content: space-between;
     .boxLeft {
-      span {
+      .el-button {
+        width: 104px;
+        height: 32px;
+        border-radius: 6px;
+        padding: 7px 4px;
+      }
+      .span {
         margin-left: 11px;
         font-size: 12px;
         font-family: Microsoft YaHei;

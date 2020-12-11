@@ -22,15 +22,16 @@
         >
           <div class="m_dropdown">
             <el-select
-              v-model="value"
+              v-model="item.currentVal"
               :popper-append-to-body="false"
-              placeholder="请选择"
+              placeholder="请选择题型"
+              @change="changeVal(item.currentVal, item, i)"
             >
               <el-option
                 v-for="item in options"
-                :key="item.value"
+                :key="item.mark"
                 :label="item.label"
-                :value="item.value"
+                :value="item.label"
               >
               </el-option>
             </el-select>
@@ -38,22 +39,39 @@
 
           <!-- 数量 -->
           <div class="amount">
-            <el-input v-model="amount" placeholder="请输入内容"></el-input>
+            <el-input
+              v-model="item.amount"
+              :disabled="title == '笔试题型' || title == '小乐器'"
+              :placeholder="computedNum"
+              @change="changeAmount(item.amount, item)"
+            ></el-input>
           </div>
 
           <!-- 分值 -->
           <div class="score">
-            <el-input v-model="score" placeholder="请输入内容"></el-input>
+            <el-input
+              v-model="item.scoreVal"
+              :placeholder="computedScore"
+              :disabled="title == '小乐器'"
+              @change="changeScore(item.scoreVal, item)"
+            ></el-input>
           </div>
           <!-- 总共 -->
           <div class="total">
-            <el-input v-model="total" placeholder="请输入内容"></el-input>
+            <el-input
+              :disabled="true"
+              :placeholder="computedTotal(item)"
+            ></el-input>
           </div>
           <span class="deleteItem" @click="deleteTest(item, i)"></span>
         </div>
         <!-- 添加按钮 -->
-        <div class="addButton wrap_flex_allcenter" @click="addTest">
-          <span>添加题型</span>
+        <div
+          class="addButton wrap_flex_allcenter"
+          @click="addTest"
+          :class="title == '笔试题型' && 'changeAddbutton'"
+        >
+          <span>{{ (title == "小乐器" && "添加乐器") || "添加题型" }}</span>
         </div>
       </div>
     </div>
@@ -81,19 +99,30 @@ export default {
   },
   data() {
     return {
-      options: [{ value: 1, label: "one" }],
-      // allQuestTypes : [{type:1,label:'音乐题型'},{type:2,label:'美术题型'},{}]
-      // allExams: [{}],
-      paperTypes: [{ papertype: "", number: "", score: "", total: "" }],
+      // 数据类型分小乐器和其他
+      paperTypes: [{ question_type: "", number: "", score: "", total: "" }],
+      // paperTypes: [],
+      options: [],
 
       // 至少保留一项
       atleast_dialogVisible: false,
+      value: "",
+      // amount: "",
     };
   },
   methods: {
     // 添加题型
     addTest() {
-      this.paperTypes.push({});
+      if (this.title == "小乐器") {
+        this.paperTypes.push("");
+      } else {
+        this.paperTypes.push({
+          question_type: "",
+          number: "",
+          score: "",
+          total: "",
+        });
+      }
     },
     deleteTest(item, i) {
       if (this.paperTypes.length == 1) {
@@ -101,8 +130,128 @@ export default {
         this.atleast_dialogVisible = true;
       } else {
         this.paperTypes.splice(i, 1);
+        // 传给父组件
+        this.emitParent();
       }
     },
+
+    // 改变单选选择
+    changeVal(val, item, i) {
+      item.currentVal = val;
+      // console.log("thisval", val);
+      // console.log("thisitem", item);
+      // console.log("thisi", i);
+      // this.paperTypes[i].question_type = item.mark;
+      let valMark = "";
+      this.options.forEach((item, i) => {
+        if (item.label == val) {
+          valMark = item.mark;
+          return;
+        }
+      });
+
+      this.paperTypes[i].question_type = valMark;
+
+      console.log("current", this.paperTypes);
+      this.emitParent();
+    },
+
+    // 改变数量
+    changeAmount(amount, item) {
+      // console.log("amountanditem", amount, item);
+
+      item.number = amount;
+
+      this.emitParent();
+    },
+
+    // 改变分值
+    changeScore(scoreVal, item) {
+      if (this.title == "笔试题型") {
+        // console.log("jinlail");
+        item.number = 1;
+      }
+      item.score = scoreVal;
+      this.emitParent();
+    },
+
+    // 通知父组件
+    emitParent() {
+      this.$emit("changeForm", this.paperTypes, this.title);
+      // console.log("tijiaotypes", this.paperTypes);
+    },
+  },
+  computed: {
+    computedNum: function () {
+      if (this.title == "笔试题型") {
+        return "1";
+      } else if (this.title == "小乐器") {
+        // 拿到当前音乐题型里的演唱题的分值 ,如果没有,默认显示空字符串
+
+        return "与演唱题一致";
+      } else {
+        return "请输入题型数量";
+      }
+    },
+    computedScore: function () {
+      if (this.title == "小乐器") {
+        return "与演唱题一致";
+      } else {
+        return "请输入题型分值";
+      }
+    },
+    computedTotal: function () {
+      return function (item) {
+        if (this.title == "笔试题型" && item.scoreVal) {
+          item.total = item.scoreVal;
+          return item.scoreVal;
+        }
+        if (item.amount && item.scoreVal) {
+          // console.log("jinlai l ", item.scoreVal * item.amount);
+          item.total = item.scoreVal * item.amount;
+          return item.amount * item.scoreVal;
+        }
+        return "正在合计分数值";
+      };
+    },
+  },
+  created() {
+    if (this.title && this.title == "音乐题型") {
+      this.options = [
+        { mark: "1", label: "单项选择题", currentVal: "" },
+        { mark: "2", label: "多项选择题", currentVal: "" },
+        { mark: "3", label: "演唱题", currentVal: "" },
+        { mark: "8", label: "节奏题", currentVal: "" },
+        { mark: "10", label: "判断题", currentVal: "" },
+        { mark: "11", label: "连线题", currentVal: "" },
+      ];
+    } else if (this.title && this.title == "美术题型") {
+      this.options = [
+        { mark: "1", label: "单项选择题", currentVal: "" },
+        { mark: "2", label: "多项选择题", currentVal: "" },
+        { mark: "3", label: "判断题", currentVal: "" },
+        { mark: "4", label: "连线题", currentVal: "" },
+        { mark: "6", label: "排序题", currentVal: "" },
+        { mark: "7", label: "拼图题", currentVal: "" },
+        { mark: "8", label: "点线题", currentVal: "" },
+        { mark: "9", label: "填色题", currentVal: "" },
+        { mark: "10", label: "配色题", currentVal: "" },
+        { mark: "11", label: "填空题", currentVal: "" },
+      ];
+    } else if (this.title && this.title == "小乐器") {
+      this.options = [
+        { mark: "2", label: "口琴", currentVal: "" },
+        { mark: "3", label: "竖笛", currentVal: "" },
+        { mark: "4", label: "陶笛", currentVal: "" },
+        { mark: "5", label: "葫芦丝", currentVal: "" },
+        { mark: "6", label: "口风琴", currentVal: "" },
+      ];
+    } else if (this.title && this.title == "笔试题型") {
+      this.options = [{ mark: "5", label: " 表现题", currentVal: "" }];
+    }
+
+    // 组件生成就新建为空的对象
+    this.$emit("changeForm", this.paperTypes, this.title);
   },
 };
 </script>
@@ -177,11 +326,13 @@ export default {
         margin-top: -0.125rem !important;
         height: 2rem;
         // box-shadow: none;
-        .el-select-dropdown__item.hover,
-        .el-select-dropdown__item:hover {
-          background-color: #ffffff;
-        }
+        // .el-select-dropdown__item.hover,
+        // .el-select-dropdown__item:hover {
+        //   background-color: #ffffff;
+        // }
+
         .el-select-dropdown__list {
+          background-color: #ffffff;
           padding: 0;
         }
       }
@@ -234,6 +385,7 @@ export default {
     margin-left: 4rem;
     margin-bottom: 0.6875rem;
     border-radius: 0.375rem;
+    // visibility: hidden;
     cursor: pointer;
     span {
       // width: 6.25rem;
@@ -245,6 +397,9 @@ export default {
       font-weight: 400;
       color: #ffffff;
     }
+  }
+  .changeAddbutton {
+    visibility: hidden;
   }
   .el-input__inner {
     height: 32px;

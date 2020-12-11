@@ -1,13 +1,21 @@
 <template>
   <div class="topic-theme-container">
-    <!-- 单选选项组件 -->
-    <div class="leftTitle" v-if="radioDefault === '单项选择题'">选 项 :</div>
-    <option-components
-      v-if="radioDefault === '单项选择题'"
-      :changeRadioVal="changeRadioVal"
-      :testQuestionlists="testQuestionlists"
-      :radioDefault="radioDefault"
-    ></option-components>
+    <!-- 单多选选项组件 -->
+    <div class="option-components-box">
+      <div
+        class="leftTitle"
+        v-if="radioDefault === '单项选择题' || radioDefault === '多项选择题'"
+      >
+        选 项 :
+      </div>
+      <option-components
+        v-if="radioDefault === '单项选择题' || radioDefault === '多项选择题'"
+        :singleChoiceList="singleChoiceList"
+        :changeRadioVal="changeRadioVal"
+        :testQuestionlists="testQuestionlists"
+        :radioDefault="radioDefault"
+      ></option-components>
+    </div>
     <!-- 判断选项 -->
     <judgment-options v-if="radioDefault === '判断题'"></judgment-options>
     <!-- 连线题 -->
@@ -16,6 +24,8 @@
       :changeRadioVal="changeRadioVal"
       :testQuestionlists="testQuestionlists"
       :radioDefault="radioDefault"
+      :singleChoiceList="singleChoiceList"
+      :singleChoiceList1="singleChoiceList1"
     ></connection-question>
     <!-- 图片组件 -->
     <upload-image
@@ -24,7 +34,10 @@
       :testQuestionlists="testQuestionlists"
     ></upload-image>
     <!-- 音乐文件 -->
-    <upload-music v-if="changeRadioVal === '音乐'"></upload-music>
+    <upload-music
+      v-if="changeRadioVal === '音乐'"
+      :testQuestionlists="testQuestionlists"
+    ></upload-music>
     <!-- 知识相关 -->
     <knowledge-related
       :changeRadioVal="changeRadioVal"
@@ -49,6 +62,12 @@ export default {
     return {}
   },
   props: {
+    singleChoiceList: {
+      type: Array,
+    },
+    singleChoiceList1: {
+      type: Array,
+    },
     // 类型选择值
     changeRadioVal: {
       type: String,
@@ -57,7 +76,7 @@ export default {
     radioDefault: {
       type: String,
     },
-    // 试题list
+    // 试题list,给后台
     testQuestionlists: {
       type: Object,
     },
@@ -79,4 +98,13 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.option-components-box {
+  position: relative;
+  .leftTitle {
+    position: absolute;
+    left: 0;
+    top: 20px;
+  }
+}
+</style>

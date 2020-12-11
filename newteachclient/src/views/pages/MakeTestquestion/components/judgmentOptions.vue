@@ -5,14 +5,27 @@
       <div class="rightBoxItem" v-for="(item, i) in judgmentList" :key="i">
         <div class="rightBox-header">
           <span>{{ item.options }}.</span>
-          <el-input class="elInput" type="text" placeholder="请输入选项内容" />
+          <el-input
+            v-show="item.options === 'A'"
+            class="elInput"
+            type="text"
+            placeholder="正确"
+            :disabled="true"
+          />
+          <el-input
+            v-show="item.options === 'B'"
+            class="elInput"
+            type="text"
+            placeholder="错误"
+            :disabled="true"
+          />
         </div>
         <div class="rightBox-body">
-          <el-checkbox-group v-model="item.content">
-            <el-checkbox :label="item.content" :key="item.content">{{
+          <el-radio-group v-model="judgmentradio" @change="judgmentradioChange">
+            <el-radio :label="i" :key="item.content">{{
               item.checked
-            }}</el-checkbox>
-          </el-checkbox-group>
+            }}</el-radio>
+          </el-radio-group>
         </div>
       </div>
     </div>
@@ -24,6 +37,7 @@ export default {
   name: 'judgmentOptions',
   data() {
     return {
+      judgmentradio: 0,
       // 判断list
       judgmentList: [
         {
@@ -38,20 +52,13 @@ export default {
           checked: '设置为正确答案',
           content: '',
         },
-        {
-          // 选项
-          options: 'C',
-          checked: '设置为正确答案',
-          content: '',
-        },
-        {
-          // 选项
-          options: 'D',
-          checked: '设置为正确答案',
-          content: '',
-        },
       ],
     }
+  },
+  methods: {
+    judgmentradioChange(val) {
+      this.$store.commit('makeTestquestion/set_judgmentradioChangeVal', val)
+    },
   },
 }
 </script>
@@ -67,8 +74,7 @@ export default {
   .rightBox {
     margin-left: 63px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+
     .rightBoxItem {
       margin-right: 39px;
       .rightBox-header {
@@ -82,6 +88,13 @@ export default {
           color: #409eff;
           line-height: 41px;
           margin-right: 12px;
+        }
+        .el-input.is-disabled {
+          .el-input__inner {
+            background-color: #fff;
+            border-color: #fff;
+            color: #c0c4cc;
+          }
         }
         .elInput {
           width: 316px;

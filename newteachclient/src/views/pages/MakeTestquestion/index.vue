@@ -1,6 +1,6 @@
 <template>
   <div class="makeTestquestion-header">
-    <multiple-choice :list="list" :radio="list[0].name"></multiple-choice>
+    <multiple-choice :list="list" :radioItem="list[0].name"></multiple-choice>
   </div>
 </template>
 
@@ -14,23 +14,21 @@ export default {
           id: 1,
           name: '音乐',
           questionType: [
-            {
-              questionTypeName: '单项选择题',
-            },
-            { questionTypeName: '多项选择题' },
-            { questionTypeName: '判断题' },
-            { questionTypeName: '连线题' },
+            { question_type: 1, questionTypeName: '单项选择题' },
+            { question_type: 2, questionTypeName: '多项选择题' },
+            { question_type: 10, questionTypeName: '判断题' },
+            { question_type: 11, questionTypeName: '连线题' },
           ],
         },
         {
           id: 2,
           name: '美术',
           questionType: [
-            { questionTypeName: '单项选择题' },
-            { questionTypeName: '多项选择题' },
-            { questionTypeName: '判断题' },
-            { questionTypeName: '连线题' },
-            { questionTypeName: '表现题' },
+            { question_type: 1, questionTypeName: '单项选择题' },
+            { question_type: 2, questionTypeName: '多项选择题' },
+            { question_type: 3, questionTypeName: '判断题' },
+            { question_type: 4, questionTypeName: '连线题' },
+            { question_type: 5, questionTypeName: '表现题' },
           ],
         },
       ],
@@ -42,8 +40,4 @@ export default {
 }
 </script>
 
-<style>
-.makeTestquestion-header {
-  height: 2000px;
-}
-</style>
+<style></style>

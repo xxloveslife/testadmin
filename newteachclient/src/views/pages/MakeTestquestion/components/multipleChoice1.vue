@@ -46,7 +46,6 @@
               ref="subjectContentFile"
               @change="subjectContentFileChange($event)"
               id="uploadFile"
-              accept="image/png,image/jpeg"
             />
           </el-form-item>
         </div>
@@ -63,8 +62,6 @@
         :radioDefault="radioDefault"
         :testQuestionlists="testQuestionlists"
         :knowledgeList="knowledgeList"
-        :singleChoiceList="singleChoiceList"
-        :singleChoiceList1="singleChoiceList1"
       ></topic-theme>
 
       <div class="footerBox">
@@ -114,7 +111,7 @@
                     />
                   </el-button>
                   <div class="dropdown">
-                    <el-dropdown-menu slot="dropdown" class="dropdown1">
+                    <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item
                         v-for="(grade, i) in dropdownList.gande[0].gradeList"
                         :key="i"
@@ -141,7 +138,7 @@
                     />
                   </el-button>
                   <div class="dropdown">
-                    <el-dropdown-menu slot="dropdown" class="dropdown1">
+                    <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item
                         v-for="(semester, i) in dropdownList.semester[0]
                           .semesterList"
@@ -154,6 +151,7 @@
                 </el-dropdown>
               </li>
               <li>
+                <!-- unit -->
                 <el-dropdown
                   trigger="click"
                   @command="handleCommand3"
@@ -169,7 +167,7 @@
                     />
                   </el-button>
                   <div class="dropdown">
-                    <el-dropdown-menu slot="dropdown" class="dropdown1">
+                    <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item
                         v-for="(unit, i) in dropdownList.unit[0].unitList"
                         :key="i"
@@ -181,7 +179,6 @@
                 </el-dropdown>
               </li>
             </ul>
-            <p>请选择考试适用的年级范围</p>
           </div>
           <!-- 中 -->
           <div class="applicableGradeMiddle">
@@ -190,6 +187,7 @@
                 <span> 能力层次</span>
               </li>
               <li>
+                <!-- request -->
                 <el-dropdown
                   trigger="click"
                   @command="handleCommand4"
@@ -205,7 +203,7 @@
                     />
                   </el-button>
                   <div class="dropdown">
-                    <el-dropdown-menu slot="dropdown" class="dropdown1">
+                    <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item
                         v-for="(request, i) in dropdownList.request[0]
                           .requestList"
@@ -218,6 +216,7 @@
                 </el-dropdown>
               </li>
               <li>
+                <!-- difficult -->
                 <el-dropdown
                   trigger="click"
                   @command="handleCommand5"
@@ -233,7 +232,7 @@
                     />
                   </el-button>
                   <div class="dropdown">
-                    <el-dropdown-menu slot="dropdown" class="dropdown1">
+                    <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item
                         v-for="(difficult, i) in dropdownList.difficult[0]
                           .difficultList"
@@ -246,7 +245,6 @@
                 </el-dropdown>
               </li>
             </ul>
-            <p>请选择试题的能力层次</p>
           </div>
           <!-- 右 -->
           <div class="applicableGradeRight">
@@ -271,7 +269,7 @@
                     />
                   </el-button>
                   <div class="dropdown">
-                    <el-dropdown-menu slot="dropdown" class="dropdown1">
+                    <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item
                         v-for="(paperRange, index) in item.paperRange[0]
                           .paperRangeList"
@@ -284,11 +282,7 @@
                 </el-dropdown>
               </li>
             </ul>
-            <p>请选择试试卷版本</p>
           </div>
-          <el-button class="submit" type="primary" @click="submitData"
-            >确认提交</el-button
-          >
         </div>
       </div>
     </el-form>
@@ -297,100 +291,13 @@
 
 <script>
 import topicTheme from './topicTheme'
-import { mapGetters } from 'vuex'
+// import { getTestLibraryMultipleChoice } from '@/api/testLibrary'
 export default {
   name: 'multipleChoice',
   data() {
     return {
-      // 单选
-      changeradio: 0,
-      // 多选
-      changemultipleRadio: [0],
-      // 单选list
-      singleChoiceList: [
-        {
-          // 选项
-          checked: '设置为正确答案',
-          content: 0,
-          op_text: '',
-          op_file: '',
-          audioState: '',
-          imgfile: '',
-        },
-        {
-          // 选项
-
-          checked: '设置为正确答案',
-          content: 1,
-          op_text: '',
-          op_file: '',
-          audioState: '',
-          imgfile: '',
-        },
-        {
-          // 选项
-
-          checked: '设置为正确答案',
-          content: 2,
-          op_text: '',
-          op_file: '',
-          audioState: '',
-          imgfile: '',
-        },
-        {
-          // 选项
-
-          checked: '设置为正确答案',
-          content: 3,
-          op_text: '',
-          op_file: '',
-          audioState: '',
-          imgfile: '',
-        },
-      ],
-      singleChoiceList1: [
-        {
-          // 选项
-          checked: '设置为正确答案',
-          content: 0,
-          op_text: '',
-          op_file: '',
-          audioState: '',
-          imgfile: '',
-        },
-        {
-          // 选项
-
-          checked: '设置为正确答案',
-          content: 1,
-          op_text: '',
-          op_file: '',
-          audioState: '',
-          imgfile: '',
-        },
-        {
-          // 选项
-
-          checked: '设置为正确答案',
-          content: 2,
-          op_text: '',
-          op_file: '',
-          audioState: '',
-          imgfile: '',
-        },
-        {
-          // 选项
-
-          checked: '设置为正确答案',
-          content: 3,
-          op_text: '',
-          op_file: '',
-          audioState: '',
-          imgfile: '',
-        },
-      ],
       index: 0,
-      textRadio: this.radioItem,
+      textRadio: this.radio,
       // 选择类型选择值
       changeRadioVal: '',
       // 选择题型选择值
@@ -398,16 +305,570 @@ export default {
       radioDefault: '单项选择题',
       // 选择题型数据
       multipleChoiceList: [],
-      knowledgeList: [],
+      knowledgeList: [
+        {
+          a: 0,
+          parents: '演唱演奏创编',
+          children: [
+            {
+              a: 0,
+              parents: '歌曲演唱',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识2',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识3',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '乐器演奏',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '音乐创编',
+              children: [
+                {
+                  a: 0,
+                  parents: '1',
+                },
+                {
+                  a: 0,
+                  parents: '2',
+                },
+                {
+                  a: 0,
+                  parents: '3',
+                },
+                {
+                  a: 0,
+                  parents: '4',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '五线谱',
+              children: [
+                {
+                  a: 0,
+                  parents: '5',
+                },
+                {
+                  a: 0,
+                  parents: '6',
+                },
+                {
+                  a: 0,
+                  parents: '7',
+                },
+                { a: 0, parents: '8' },
+              ],
+            },
+            {
+              a: 0,
+              parents: '简谱',
+              children: [
+                { a: 0, parents: '9' },
+                { a: 0, parents: '0' },
+                { a: 0, parents: '11' },
+                { a: 0, parents: '111' },
+              ],
+            },
+            {
+              a: 0,
+              parents: '简谱',
+              children: [
+                { a: 0, parents: '111' },
+                { a: 0, parents: '1111' },
+                { a: 0, parents: '11111' },
+                { a: 0, parents: '22' },
+              ],
+            },
+          ],
+        },
+        {
+          a: 0,
+          parents: '乐谱视唱练耳',
+          children: [
+            {
+              a: 0,
+              parents: '歌曲演唱1',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '乐器演奏1',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '音乐创编',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '五线谱',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '简谱',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知识1',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          a: 0,
+          parents: '音乐聆听欣赏',
+          children: [
+            {
+              a: 0,
+              parents: '乐器演奏2',
+              children: [
+                {
+                  a: 0,
+                  parents: '222',
+                },
+                {
+                  a: 0,
+                  parents: '歌3唱1',
+                },
+                {
+                  a: 0,
+                  parents: '歌33唱1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱23知识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '音乐创编',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱12知识',
+                },
+                {
+                  a: 0,
+                  parents: '13334',
+                },
+                {
+                  a: 0,
+                  parents: '213',
+                },
+                {
+                  a: 0,
+                  parents: '歌234唱1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '五线谱',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱54知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知76识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌453唱1',
+                },
+                {
+                  a: 0,
+                  parents: '歌346唱知识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '简谱',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌45唱知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱908知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱77知识1',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          a: 0,
+          parents: '音乐表现要素',
+          children: [
+            {
+              a: 0,
+              parents: '1',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱56知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱5知8识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱567知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌5知657识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '乐器演奏',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱567知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知ert识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌sd唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌f唱知识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '音乐创编',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱知asd识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱zx知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌sa唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知zzs识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '五线谱',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌qws唱知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知z识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱z知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌z唱知识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '简谱',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌we唱知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱we识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知qsed识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌asd唱知识1',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          a: 0,
+          parents: '音乐表现要素',
+          children: [
+            {
+              a: 0,
+              parents: '1',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱56知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱5知8识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱567知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌5知657识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '乐器演奏',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱567知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知ert识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌sd唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌f唱知识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '音乐创编',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌唱知asd识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱zx知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌sa唱知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知zzs识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '五线谱',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌qws唱知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知z识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱z知识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌z唱知识1',
+                },
+              ],
+            },
+            {
+              a: 0,
+              parents: '简谱',
+              children: [
+                {
+                  a: 0,
+                  parents: '歌we唱知识',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱we识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌唱知qsed识1',
+                },
+                {
+                  a: 0,
+                  parents: '歌asd唱知识1',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      // 试题list,给后台
       testQuestionlists: {
         // 上传时去掉 \n
-        content: '',
+        content: '1212',
         question_type: 1,
         // 考点范围
         answer_range: '',
         // 题目解析
         answer_parse: '',
-        correct: null,
       },
 
       // 下拉框list
@@ -549,45 +1010,41 @@ export default {
     this.getknowledgeList('音乐')
   },
   mounted() {
-    this.getMultipleChoiceList(this.radioItem)
+    this.getMultipleChoiceList(this.radio)
+    this.testQuestionlists.changeRadioVal = this.radio
     console.log(this.testQuestionlists)
   },
   props: {
     list: {
       type: Array,
     },
-    radioItem: {
+    radio: {
       type: String,
+    },
+  },
+  computed: {
+    marginBottomHeight() {
+      console.log(this.index)
+      return (this.index == 0 ? 20 : 10 + Number(this.index) * 30) + 'px'
+    },
+    lineHeight() {
+      console.log(this.index)
+      return 32 + Number(this.index) * 30 + 'px'
     },
   },
   methods: {
     changeRadio(val) {
-      this.$store.commit('makeTestquestion/set_checked_cid', [])
-      this.$store.commit('makeTestquestion/set_judgmentradioChangeVal', null)
-      this.$store.commit('makeTestquestion/set_wx_music_pic', null)
-
-      this.$store.commit('makeTestquestion/set_jp_music_pic', null)
-
-      this.$store.commit('makeTestquestion/set_art_pic', null)
-
       this.changeRadioVal = val
       this.radioDefault = '单项选择题'
       this.testQuestionlists.question_type = 1
-      this.clearOptions()
+      this.testQuestionlists.changeRadioVal = val
       this.dropdownList.paperRangeList.forEach((ele) => {
         // console.log(ele)
         return (ele.paperRange[0].titleName = '版本')
       })
 
       this.getknowledgeList(val)
-      console.log(this.testQuestionlists)
     },
-    // 切换时清空选项
-    clearOptions() {
-      this.testQuestionlists.content = this.testQuestionlists.answer_range = this.testQuestionlists.answer_parse =
-        ''
-    },
-
     //
     getknowledgeList(val) {
       var type = null
@@ -602,31 +1059,11 @@ export default {
         .dispatch('makeTestquestion/getKnowledgePoints', data)
         .then((res) => {
           // get listItems
-          res.msg.forEach((element) => {
-            element.child = Object.values(element.child)
-            // console.log(element.child)
-          })
-          res.msg.forEach((ele) => {
-            ele.state = 0
-            ele.child.forEach((eles) => {
-              eles.state = 0
-              eles.child.forEach((element) => {
-                element.state = 0
-              })
-            })
-          })
-          // console.log(res.msg)
-          this.knowledgeList = res.msg
+          console.log(res.msg)
         })
     },
     changeSubRadio(val) {
       var i = 1
-      this.$store.commit('makeTestquestion/set_checked_cid', [])
-      this.$store.commit('makeTestquestion/set_wx_music_pic', null)
-      this.$store.commit('makeTestquestion/set_judgmentradioChangeVal', null)
-      this.$store.commit('makeTestquestion/set_jp_music_pic', null)
-
-      this.$store.commit('makeTestquestion/set_art_pic', null)
       this.changeMultipleChoice = val
       this.list.forEach((ele) => {
         if (ele.name === this.textRadio) {
@@ -638,15 +1075,14 @@ export default {
         }
       })
       this.testQuestionlists.question_type = i
-      this.clearOptions()
       console.log(this.testQuestionlists)
     },
 
     // multipleChoiceList默认值
-    getMultipleChoiceList(val) {
+    getMultipleChoiceList(radio) {
       if (this.list) {
         this.list.forEach((item, i) => {
-          if (item.name === val) {
+          if (item.name === radio) {
             this.multipleChoiceList = this.list[i].questionType
           }
         })
@@ -709,150 +1145,8 @@ export default {
           console.log(this.testQuestionlists.content)
           this.testQuestionlists.content =
             this.testQuestionlists.content + '\n' + res.data.file_path
-          console.log(this.testQuestionlists)
         }
       })
-    },
-    submitData() {
-      this.testQuestionlists.content = this.testQuestionlists.content.replace(
-        '\n',
-        ''
-      )
-      this.testQuestionlists.checked_cid = this.checked_cid.join(',')
-      if (this.textRadio === '音乐') {
-        let obj1 = { jp_music_pic: this.jp_music_pic }
-        let obj2 = { wx_music_pic: this.wx_music_pic }
-        let arr = []
-        arr.push(obj1)
-        arr.push(obj2)
-        this.testQuestionlists.answer = arr
-        if (this.radioDefault === '单项选择题') {
-          this.testQuestionlists.correct = this.singleSelectionVal
-            ? this.singleSelectionVal
-            : 0
-          console.log(this.singleChoiceList)
-          this.testQuestionlists.op_text = []
-          this.testQuestionlists.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            this.testQuestionlists.op_text.push(ele.op_text)
-            this.testQuestionlists.op_file.push(ele.op_file)
-          })
-          console.log(this.testQuestionlists)
-        } else if (this.radioDefault === '多项选择题') {
-          this.testQuestionlists.correct = this.multipleSelectionVal
-            ? this.multipleSelectionVal
-            : [0]
-          this.testQuestionlists.op_text = []
-          this.testQuestionlists.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            this.testQuestionlists.op_text.push(ele.op_text)
-            this.testQuestionlists.op_file.push(ele.op_file)
-          })
-          console.log(this.multipleSelectionVal)
-          console.log(this.testQuestionlists)
-        } else if (this.radioDefault === '判断题') {
-          this.testQuestionlists.op_text = ['正确', '错误']
-          this.testQuestionlists.correct = this.judgmentradioChangeVal
-          console.log(this.testQuestionlists)
-        } else {
-          this.testQuestionlists.op_text = []
-          this.testQuestionlists.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            this.testQuestionlists.op_text.push(ele.op_text)
-            this.testQuestionlists.op_file.push(ele.op_file)
-          })
-          this.testQuestionlists.op_text2 = []
-          this.testQuestionlists.op_file2 = []
-          this.singleChoiceList1.forEach((ele) => {
-            this.testQuestionlists.op_text2.push(ele.op_text)
-            this.testQuestionlists.op_file2.push(ele.op_file)
-          })
-          console.log(this.testQuestionlists)
-        }
-        this.$store
-          .dispatch(
-            'makeTestquestion/getExercisesMusicType',
-            this.testQuestionlists
-          )
-          .then((res) => {
-            console.log(res)
-          })
-      } else {
-        let obj = { jp_music_pic: this.art_pic }
-        let arr = []
-        arr.push(obj)
-        this.testQuestionlists.answer = arr
-        if (this.radioDefault === '单项选择题') {
-          this.testQuestionlists.correct = this.singleSelectionVal
-            ? this.singleSelectionVal
-            : 0
-          console.log(this.singleChoiceList)
-          this.testQuestionlists.op_text = []
-          this.testQuestionlists.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            this.testQuestionlists.op_text.push(ele.op_text)
-            this.testQuestionlists.op_file.push(ele.op_file)
-          })
-          console.log(this.testQuestionlists)
-        } else if (this.radioDefault === '多项选择题') {
-          this.testQuestionlists.correct = this.multipleSelectionVal
-            ? this.multipleSelectionVal
-            : [0]
-          this.testQuestionlists.op_text = []
-          this.testQuestionlists.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            this.testQuestionlists.op_text.push(ele.op_text)
-            this.testQuestionlists.op_file.push(ele.op_file)
-          })
-          console.log(this.multipleSelectionVal)
-          console.log(this.testQuestionlists)
-        } else if (this.radioDefault === '判断题') {
-          this.testQuestionlists.op_text = ['正确', '错误']
-          this.testQuestionlists.correct = this.judgmentradioChangeVal
-          console.log(this.testQuestionlists)
-        } else {
-          this.testQuestionlists.op_text = []
-          this.testQuestionlists.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            this.testQuestionlists.op_text.push(ele.op_text)
-            this.testQuestionlists.op_file.push(ele.op_file)
-          })
-          this.testQuestionlists.op_text2 = []
-          this.testQuestionlists.op_file2 = []
-          this.singleChoiceList1.forEach((ele) => {
-            this.testQuestionlists.op_text2.push(ele.op_text)
-            this.testQuestionlists.op_file2.push(ele.op_file)
-          })
-          console.log(this.testQuestionlists)
-        }
-        this.$store
-          .dispatch(
-            'makeTestquestion/getExercisesArtType',
-            this.testQuestionlists
-          )
-          .then((res) => {
-            console.log(res)
-          })
-      }
-    },
-  },
-  computed: {
-    ...mapGetters([
-      'checked_cid',
-      'singleSelectionVal',
-      'multipleSelectionVal',
-      'wx_music_pic',
-      'jp_music_pic',
-      'art_pic',
-      'judgmentradioChangeVal',
-    ]),
-    marginBottomHeight() {
-      console.log(this.index)
-      return (this.index == 0 ? 20 : 10 + Number(this.index) * 30) + 'px'
-    },
-    lineHeight() {
-      console.log(this.index)
-      return 32 + Number(this.index) * 30 + 'px'
     },
   },
   watch: {
@@ -864,12 +1158,6 @@ export default {
           }
         }
       })
-    },
-    textRadio() {
-      return (this.index = 0)
-    },
-    radioDefault() {
-      return (this.index = 0)
     },
   },
   components: {
@@ -1036,13 +1324,6 @@ export default {
     }
   }
   .footerBox {
-    position: relative;
-    p {
-      font-size: 12px;
-      font-family: Microsoft YaHei;
-      font-weight: 400;
-      color: #909399;
-    }
     .testSiteRange {
       position: relative;
       .testSiteRangeTitle {
@@ -1055,17 +1336,6 @@ export default {
     }
     .applicableGrade {
       position: relative;
-      height: 140px;
-      overflow: hidden;
-      .submit {
-        position: relative;
-        left: 60px;
-        top: 27px;
-        width: 93px;
-        height: 32px;
-        padding: 8px 16px;
-        border-radius: 6px;
-      }
       .testSiteRangeTitle {
         position: absolute;
         top: 10px;
@@ -1107,12 +1377,7 @@ export default {
 
     .applicableGradeLeft {
       margin-left: 60px;
-      p {
-        position: relative;
-        top: 5px;
-      }
       .applicableGradeLeftUl {
-        overflow: hidden;
         li {
           float: left;
           margin-right: 10px;
@@ -1120,14 +1385,7 @@ export default {
       }
     }
     .applicableGradeMiddle {
-      position: absolute;
-      left: 350px;
-      top: 0px;
-      p {
-        padding-left: 130px;
-      }
       .applicableGradeMiddleUl {
-        overflow: hidden;
         li {
           float: left;
           margin-right: 10px;
@@ -1145,14 +1403,7 @@ export default {
       }
     }
     .applicableGradeRight {
-      position: absolute;
-      left: 680px;
-      top: 0px;
-      p {
-        padding-left: 130px;
-      }
       .applicableGradeRightUl {
-        overflow: hidden;
         li {
           float: left;
           margin-right: 10px;
@@ -1170,12 +1421,8 @@ export default {
       }
     }
   }
-  .wordDescription {
-    position: relative;
-  }
 }
-
-.dropdown1,
+.el-dropdown__menu,
 .el-dropdown-menu__item:not(.is-disabled) {
   box-shadow: none;
   font-size: 12px;
@@ -1184,39 +1431,24 @@ export default {
   background: #ffffff;
   text-align: center;
 }
-.dropdown1 {
-  width: 93px;
-}
-.dropdown1 {
-  .el-dropdown-menu__item:focus,
-  .el-dropdown-menu__item:not(.is-disabled):hover {
-    font-size: 12px;
-    font-family: Microsoft YaHei;
-    font-weight: 400;
-    color: #ffffff;
-    background: #409eff !important;
-    text-align: center;
-  }
+.el-dropdown-menu__item:focus,
+.el-dropdown-menu__item:not(.is-disabled):hover {
+  font-size: 12px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #ffffff;
+  background: #409eff !important;
+  text-align: center;
 }
 // &::v-deep.el-select-dropdown {
 //   max-height: 500px !important;
 //   overflow: auto !important;
 // }
-.dropdown1:hover {
+.el-dropdown-menu:hover {
   border: 1px solid #409eff;
 }
-.dropdown1 {
-  .el-popper .popper__arrow,
-  .el-popper .popper__arrow::after {
-    display: none;
-  }
-}
-
-.dropdown1 {
-  max-height: 145px;
-  overflow: auto;
-}
-.dropdown1::-webkit-scrollbar {
+.el-popper .popper__arrow,
+.el-popper .popper__arrow::after {
   display: none;
 }
 </style>

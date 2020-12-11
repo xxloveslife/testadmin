@@ -3,6 +3,7 @@
     <div class="headerBox">
       <div class="leftTitle">第一列 :</div>
       <option-components
+        :singleChoiceList="singleChoiceList"
         class="optionBox"
         :changeRadioVal="changeRadioVal"
         :testQuestionlists="testQuestionlists"
@@ -12,6 +13,7 @@
     <div class="footerBox">
       <div class="bodyTitle">第二列 :</div>
       <option-components
+        :singleChoiceList="singleChoiceList1"
         class="optionBox"
         :changeRadioVal="changeRadioVal"
         :testQuestionlists="testQuestionlists"
@@ -21,6 +23,7 @@
     <div class="footerBox">
       <div class="footer">答 案 :</div>
       <el-input
+        v-model="testQuestionlists.correct"
         class="elInput"
         type="text"
         placeholder="填写格式，如：1-2 , 2-2 , 3-3"
@@ -31,11 +34,20 @@
 <script>
 import optionComponents from './optionComponents'
 export default {
+  data() {
+    return {}
+  },
   name: 'connectionQuestion',
   components: {
     optionComponents,
   },
   props: {
+    singleChoiceList1: {
+      type: Array,
+    },
+    singleChoiceList: {
+      type: Array,
+    },
     // 类型选择值
     changeRadioVal: {
       type: String,

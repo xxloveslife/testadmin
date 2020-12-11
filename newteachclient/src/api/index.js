@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Qs from 'qs'      //请求接口序列化使用
+import Qs from 'qs' //请求接口序列化使用
 import store from '@/store'
 import router from '@/router'
 import Vue from 'vue'
@@ -13,18 +13,15 @@ const $axios = axios.create({
   baseURL: '/api/',
 
   // headers: { "Content-Type": "multipart/form-data" },
-
-
 })
 Vue.prototype.$http = axios.create({
   baseURL: '/api/',
-  timeout: 1000,
-  headers: { 'Content-Type': 'multipart/form-data' }
+  timeout: 50000,
+  headers: { 'Content-Type': 'multipart/form-data' },
 }) // 并发请求
 
-
 Vue.prototype.$http.interceptors.request.use(
-  config => {
+  (config) => {
     // loading = Loading.service({ text: '拼命加载中' })
     const token = store.getters.token
     if (token) {
@@ -34,13 +31,13 @@ Vue.prototype.$http.interceptors.request.use(
     }
     return config
   },
-  error => {
+  (error) => {
     return Promise.reject(error)
   }
 )
 
 Vue.prototype.$http.interceptors.response.use(
-  response => {
+  (response) => {
     // if (loading) {
     //   loading.close()
     // }
@@ -52,9 +49,8 @@ Vue.prototype.$http.interceptors.response.use(
     }
     // console.log('response', response)
     // return Promise.resolve(response.data)
-
   },
-  error => {
+  (error) => {
     // if (loading) {
     //   loading.close()
     // }
@@ -67,8 +63,8 @@ Vue.prototype.$http.interceptors.response.use(
           router.replace({
             path: '/login',
             query: {
-              redirect: router.currentRoute.fullPath
-            }
+              redirect: router.currentRoute.fullPath,
+            },
           })
           break
         case 404:
@@ -89,32 +85,28 @@ Vue.prototype.$http.interceptors.response.use(
   }
 )
 
-
-
 // 在全局请求和响应拦截器中添加请求状态
-// let loading = null  
+// let loading = null
 
 // 请求拦截器
 $axios.interceptors.request.use(
-  config => {
+  (config) => {
     // loading = Loading.service({ text: '拼命加载中' })
     const token = store.getters.token
     if (token) {
       // config.headers.Authorization = token // 请求头部添加token
       config.headers.SID = token // 请求头部添加token
       // headers: {'Content-Type': 'multipart/form-data'}
-
-
     }
     return config
   },
-  error => {
+  (error) => {
     return Promise.reject(error)
   }
 )
 // 响应拦截器
 $axios.interceptors.response.use(
-  response => {
+  (response) => {
     // if (loading) {
     //   loading.close()
     // }
@@ -126,9 +118,8 @@ $axios.interceptors.response.use(
     }
     // console.log('response', response)
     // return Promise.resolve(response.data)
-
   },
-  error => {
+  (error) => {
     // if (loading) {
     //   loading.close()
     // }
@@ -141,8 +132,8 @@ $axios.interceptors.response.use(
           router.replace({
             path: '/login',
             query: {
-              redirect: router.currentRoute.fullPath
-            }
+              redirect: router.currentRoute.fullPath,
+            },
           })
           break
         case 404:
@@ -182,8 +173,7 @@ export default {
     return $axios({
       method: 'get',
       url,
-      params
+      params,
     })
-  }
+  },
 }
-

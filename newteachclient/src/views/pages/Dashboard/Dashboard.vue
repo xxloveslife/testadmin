@@ -121,7 +121,7 @@
 
             <div class="describe">
               <span
-                >老师使用“艺术素质测评与学习平台”或“行知艺+APP”记录学生出勤的人数</span
+                >老师使用“校园艺术学习平台”或“艺声行APP”记录学生出勤的人数</span
               >
             </div>
           </div>
@@ -139,7 +139,7 @@
 
             <div class="describe">
               <span
-                >老师使用“艺术素质测评与学习平台”或“行知艺+APP”记录学生出勤的人数</span
+                >学生使用“艺声行APP”完成一次复习的人数</span
               >
             </div>
           </div>
@@ -157,7 +157,7 @@
 
             <div class="describe">
               <span
-                >老师使用“艺术素质测评与学习平台”或“行知艺+APP”记录学生出勤的人数</span
+                >学生使用“艺声行APP”完成一次自学模考的人数</span
               >
             </div>
           </div>
@@ -181,7 +181,7 @@
 
               <div class="describe">
                 <span
-                  >老师使用“艺术素质测评与学习平台”或“行知艺+APP”记录学生出勤的人数</span
+                  >学生使用“艺声行APP”完成一次练习的人数</span
                 >
               </div>
             </div>
@@ -199,7 +199,7 @@
 
               <div class="describe">
                 <span
-                  >老师使用“艺术素质测评与学习平台”或“行知艺+APP”记录学生出勤的人数</span
+                  >学生使用“艺声行APP”完成一次闯关的人数</span
                 >
               </div>
             </div>
@@ -217,7 +217,7 @@
 
               <div class="describe">
                 <span
-                  >老师使用“艺术素质测评与学习平台”或“行知艺+APP”记录学生出勤的人数</span
+                  >学生使用“艺声行APP”完成一次个人档案上传的人数</span
                 >
               </div>
             </div>
@@ -228,106 +228,104 @@
   </div>
 </template>
 
-
 <script>
-import $axios from "@/api/index.js";
-import { mapGetters } from "vuex";
+import $axios from '@/api/index.js'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
       // userWorkBench: this.$store.getters.userWorkBench,
       items: [
         {
-          baseinfo: "授课班级",
-          des: "5",
+          baseinfo: '授课班级',
+          des: '5',
         },
         {
-          baseinfo: "授课学生",
-          des: "80",
+          baseinfo: '授课学生',
+          des: '80',
         },
         {
-          baseinfo: "消息中心",
-          des: "175",
+          baseinfo: '消息中心',
+          des: '175',
         },
         {
-          baseinfo: "最近练习",
-          des: "....",
+          baseinfo: '最近练习',
+          des: '....',
         },
       ],
-    };
+    }
   },
   methods: {
     //测试
     testService() {
-      const url = "/token";
+      const url = '/token'
       $axios.get(url).then((res) => {
-        console.log("token", res);
-        this.$store.commit("user/SET_TOKEN", res.token);
-      });
+        console.log('token', res)
+        this.$store.commit('user/SET_TOKEN', res.token)
+      })
     },
   },
   created() {
     // this.userWorkBench = this.$store.getters.userWorkBench;
   },
   computed: {
-    ...mapGetters(["userWorkBench"]),
-    recentprac: function () {
+    ...mapGetters(['userWorkBench']),
+    recentprac: function() {
       const infos =
-        this.userWorkBench.homework_record &&
-        this.userWorkBench.homework_record;
+        this.userWorkBench.homework_record && this.userWorkBench.homework_record
       if (infos) {
         if (infos.length > 12) {
-          return infos.slice(0, 11) + "...";
+          return infos.slice(0, 11) + '...'
         }
       }
-      return "";
+      return ''
     },
-    total_attendance: function () {
+    total_attendance: function() {
       return (
         (this.userWorkBench.statistics &&
           this.userWorkBench.statistics.total_attendance) ||
         0
-      );
+      )
     },
-    mobile_review_records: function () {
+    mobile_review_records: function() {
       return (
         (this.userWorkBench.statistics &&
           this.userWorkBench.statistics.mobile_review_records) ||
         0
-      );
+      )
     },
-    mobile_exams: function () {
+    mobile_exams: function() {
       return (
         (this.userWorkBench.statistics &&
           this.userWorkBench.statistics.mobile_exams) ||
         0
-      );
+      )
     },
-    game_through_records: function () {
+    game_through_records: function() {
       return (
         (this.userWorkBench.statistics &&
           this.userWorkBench.statistics.game_through_records) ||
         0
-      );
+      )
     },
-    total_homeworks: function () {
+    total_homeworks: function() {
       return (
         (this.userWorkBench.statistics &&
           this.userWorkBench.statistics.total_homeworks) ||
         0
-      );
+      )
     },
-    evaluation_student_uploads: function () {
+    evaluation_student_uploads: function() {
       return (
         (this.userWorkBench.statistics &&
           this.userWorkBench.statistics.evaluation_student_uploads) ||
         0
-      );
+      )
     },
   },
-};
+}
 </script>
-<style lang="scss" >
+<style lang="scss">
 .dashboard {
   height: 100%;
 }

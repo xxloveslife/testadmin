@@ -11,12 +11,12 @@
             :key="i"
           >
             <span class="iconBox" @click="iconBoxClick(item, i)">
-              <i class="el-icon-check" v-if="item.state"></i>
+              <i class="el-icon-check" v-if="item.a"></i>
             </span>
             <span
               class="cascaderItemTxt"
               @click="clickCascaderHeaderItem(item, i)"
-              >{{ item.name }}</span
+              >{{ item.parents }}</span
             >
           </li>
         </ul>
@@ -32,13 +32,11 @@
           <div class="cascaderBodyCander">
             <ul class="cascaderBodyHeader">
               <li
-                :class="
-                  item.state === 0 ? 'cascaderBodyTop' : 'cascaderBodyTop1'
-                "
+                :class="item.a === 0 ? 'cascaderBodyTop' : 'cascaderBodyTop1'"
                 v-for="(item, i) in secondKnowledgeList"
                 :key="i"
               >
-                <span @click="secondBoxClick(item, i)">{{ item.name }}</span>
+                <span @click="secondBoxClick(item, i)">{{ item.parents }}</span>
               </li>
               <div class="cascaderBodyBt ">
                 <div
@@ -49,15 +47,15 @@
                   <ul class="cascaderfooterBodyItem">
                     <li
                       class="cascaderfooterBodyItemList"
-                      v-for="(item2, index2) in item1.child"
+                      v-for="(item2, index2) in item1.children"
                       :key="index2"
                     >
                       <span
-                        :class="item2.state === 0 ? '' : 'blue'"
+                        :class="item2.a === 0 ? '' : 'blue'"
                         @click="thirdBoxClick(item2, index2)"
-                        >{{ item2.name }}</span
+                        >{{ item2.parents }}</span
                       >
-                      <i class="el-icon-check" v-if="item2.state === 1"></i>
+                      <i class="el-icon-check" v-if="item2.a === 1"></i>
                     </li>
                   </ul>
                   <div class="borderBox">
@@ -89,12 +87,12 @@ export default {
         expandTrigger: 'click',
         multiple: true,
         emitPath: false,
-        value: 'name',
-        label: 'name',
-        child: 'child',
+        value: 'parents',
+        label: 'parents',
+        children: 'children',
       },
       // 选择数据数组
-      checked_cid: [],
+      iconBoxchooseList: [],
       heightLength: 0,
     }
   },
@@ -116,22 +114,14 @@ export default {
       type: Array,
     },
   },
-  watch: {
-    changeRadioVal() {
-      this.removeFilter()
-    },
-    radioDefault() {
-      this.removeFilter()
-    },
-  },
   methods: {
     clickCascaderHeaderItem(item, i) {
-      console.log(item.child)
-      this.secondKnowledgeList = item.child
+      console.log(item.children)
+      this.secondKnowledgeList = item.children
       this.flag = i
       var arr = []
-      item.child.forEach((ele) => {
-        arr.push(ele.child.length)
+      item.children.forEach((ele) => {
+        arr.push(ele.children.length)
       })
       arr.sort(function(a, b) {
         return a - b
@@ -141,75 +131,75 @@ export default {
     iconBoxClick(item, i) {
       // console.log(item)
       // 点击全选添加数据
-      if (item.state) {
-        item.state = 0
-        // 删除checked_cid数组中多个元素
+      if (item.a) {
+        item.a = 0
+        // 删除iconBoxchooseList数组中多个元素
         var arr = []
-        item.child.forEach((element) => {
-          element.state = 0
-          element.child.forEach((ele) => {
-            ele.state = 0
-            arr.push(ele.cid)
+        item.children.forEach((element) => {
+          element.a = 0
+          element.children.forEach((ele) => {
+            ele.a = 0
+            arr.push(ele.parents)
           })
         })
         // this.newArr(arr)
         // console.log(arr.join(','))
-        this.removeArrayElements(this.checked_cid, arr.join(','))
-        // console.log(this.checked_cid)
+        this.removeArrayElements(this.iconBoxchooseList, arr.join(','))
+        // console.log(this.iconBoxchooseList)
       } else {
-        item.state = 1
-        item.child.forEach((element) => {
-          element.state = 1
-          element.child.forEach((ele) => {
-            ele.state = 1
-            this.checked_cid.push(ele.cid)
+        item.a = 1
+        item.children.forEach((element) => {
+          element.a = 1
+          element.children.forEach((ele) => {
+            ele.a = 1
+            this.iconBoxchooseList.push(ele.parents)
           })
         })
-        this.newArr(this.checked_cid)
-        // console.log(this.checked_cid)
+        this.newArr(this.iconBoxchooseList)
+        // console.log(this.iconBoxchooseList)
       }
     },
     secondBoxClick(item, i) {
       // console.log(item, i)
-      if (item.state) {
-        item.state = 0
+      if (item.a) {
+        item.a = 0
         var arr = []
-        item.child.forEach((element) => {
-          // console.log(element.name)
-          element.state = 0
-          arr.push(element.cid)
+        item.children.forEach((element) => {
+          // console.log(element.parents)
+          element.a = 0
+          arr.push(element.parents)
         })
         // this.newArr(arr)
         // console.log(arr.join(','))
-        this.removeArrayElements(this.checked_cid, arr.join(','))
-        // console.log(this.checked_cid)
+        this.removeArrayElements(this.iconBoxchooseList, arr.join(','))
+        // console.log(this.iconBoxchooseList)
       } else {
-        item.state = 1
-        item.child.forEach((element) => {
-          // console.log(element.name)
-          element.state = 1
-          this.checked_cid.push(element.cid)
+        item.a = 1
+        item.children.forEach((element) => {
+          // console.log(element.parents)
+          element.a = 1
+          this.iconBoxchooseList.push(element.parents)
         })
-        this.newArr(this.checked_cid)
-        // console.log(this.checked_cid)
+        this.newArr(this.iconBoxchooseList)
+        // console.log(this.iconBoxchooseList)
       }
-      this.invertedSelectionMethod(item.cid)
+      this.invertedSelectionMethod(item.parents)
     },
     thirdBoxClick(item, i) {
       // console.log(item, i)
-      if (item.state) {
-        // console.log(item.name)
-        item.state = 0
-        this.removeArrayElements(this.checked_cid, item.name)
-        // console.log(this.checked_cid)
+      if (item.a) {
+        // console.log(item.parents)
+        item.a = 0
+        this.removeArrayElements(this.iconBoxchooseList, item.parents)
+        // console.log(this.iconBoxchooseList)
       } else {
-        item.state = 1
-        this.checked_cid.push(item.cid)
-        this.newArr(this.checked_cid)
-        // console.log(this.checked_cid)
+        item.a = 1
+        this.iconBoxchooseList.push(item.parents)
+        this.newArr(this.iconBoxchooseList)
+        // console.log(this.iconBoxchooseList)
       }
 
-      this.invertedSelectionMethod(item.cid)
+      this.invertedSelectionMethod(item.parents)
     },
     // 反选方法
     invertedSelectionMethod(value) {
@@ -218,99 +208,99 @@ export default {
         // console.log(arr, i)
         // console.log(element, 1, i)
         var flag = true
-        if (element.state === 1) {
+        if (element.a === 1) {
           // console.log(element)
-          element.child.forEach((ele, idx) => {
+          element.children.forEach((ele, idx) => {
             // console.log(ele)
-            if (ele.state === 0) {
+            if (ele.a === 0) {
               return (flag = false)
             }
-            ele.child.forEach((ele1, index) => {
-              if (ele1.state === 0) {
+            ele.children.forEach((ele1, index) => {
+              if (ele1.a === 0) {
                 return (flag = false)
               }
             })
           })
           // console.log(flag)
           if (!flag) {
-            element.state = 0
+            element.a = 0
             flag = true
           } else {
-            element.state = 1
+            element.a = 1
             flag = false
           }
         } else {
           // console.log(element, i, 13333)
           // console.log(value)
           // console.log(element, '11111sss')
-          var nameArr = []
+          var parentsArr = []
 
-          element.child.forEach((ele, idx, arr) => {
+          element.children.forEach((ele, idx, arr) => {
             // console.log(ele)
-            if (ele.cid === value) {
+            if (ele.parents === value) {
               // console.log(ele)
               // console.log(arr)
-              nameArr = arr
+              parentsArr = arr
             } else {
               // console.log(ele)
-              ele.child.forEach((element1, index1, arr1) => {
+              ele.children.forEach((element1, index1, arr1) => {
                 // console.log(element1)
-                if (element1.cid === value) {
-                  nameArr = arr1
+                if (element1.parents === value) {
+                  parentsArr = arr1
                 }
               })
               var secendFlog = false
-              if (nameArr !== [] && ele.child === nameArr) {
+              if (parentsArr !== [] && ele.children === parentsArr) {
                 // console.log(ele)
-                nameArr = ele
-                ele.child.forEach((ele2) => {
-                  // console.log(ele2.name)
-                  if (ele2.state === 1) {
+                parentsArr = ele
+                ele.children.forEach((ele2) => {
+                  // console.log(ele2.parents)
+                  if (ele2.a === 1) {
                     secendFlog = true
                   }
                 })
                 // console.log(secendFlog)
                 if (!secendFlog) {
-                  ele.state = 0
+                  ele.a = 0
                   secendFlog = true
                 } else {
-                  ele.state = 1
+                  ele.a = 1
                   secendFlog = false
                 }
               }
-              // console.log(nameArr)
-              if (nameArr !== [] && ele.name === nameArr.name) {
+              // console.log(parentsArr)
+              if (parentsArr !== [] && ele.parents === parentsArr.parents) {
                 // console.log(element)
-                nameArr = element
+                parentsArr = element
               }
             }
           })
-          // console.log(nameArr)
+          // console.log(parentsArr)
           if (
-            (nameArr !== [] && element.child === nameArr) ||
-            nameArr.name === element.name
+            (parentsArr !== [] && element.children === parentsArr) ||
+            parentsArr.parents === element.parents
           ) {
             // console.log(element)
             var flag1 = true
-            element.child.forEach((ele3, idx) => {
-              // console.log(ele.state)
-              if (ele3.state === 0) {
+            element.children.forEach((ele3, idx) => {
+              // console.log(ele.a)
+              if (ele3.a === 0) {
                 flag1 = false
               }
               // console.log(ele3)
-              ele3.child.forEach((ele7) => {
-                // console.log(ele7.state)
-                if (ele7.state === 0) {
+              ele3.children.forEach((ele7) => {
+                // console.log(ele7.a)
+                if (ele7.a === 0) {
                   flag1 = false
                 }
               })
             })
             // console.log(flag1)
             if (!flag1) {
-              element.state = 0
+              element.a = 0
               flag1 = true
             } else {
-              element.state = 1
+              element.a = 1
               flag1 = false
             }
           }
@@ -347,34 +337,32 @@ export default {
       return originalArr
     },
     // 点击确定将选择的数组存入对象中
-    confirmButton() {
-      console.log(this.checked_cid)
-      this.$store.commit('makeTestquestion/set_checked_cid', this.checked_cid)
-    },
+    confirmButton() {},
     removeFilter() {
       // 清空数组
-      this.checked_cid = []
+      this.iconBoxchooseList = []
       this.secondKnowledgeList = []
       this.flag = null
       this.heightLength = 0
       // 遍历一级数组，所有的勾选为0
       this.knowledgeList.forEach((element) => {
-        element.state = 0
-        element.child.forEach((ele) => {
-          ele.state = 0
-          ele.child.forEach((ele1) => {
-            ele1.state = 0
+        element.a = 0
+        element.children.forEach((ele) => {
+          ele.a = 0
+          ele.children.forEach((ele1) => {
+            ele1.a = 0
           })
         })
       })
       // 若已经点了确定，清空对象里这个数组
-      this.$store.commit('makeTestquestion/set_checked_cid', [])
     },
   },
   computed: {
     scrollerHeight() {
-      const num = this.heightLength ? 1 : 0
-      return `${num ? 30 * this.heightLength + 90 : 0}` + 'px'
+      console.log(this.heightLength ? 1 : 0)
+      return (
+        40 * (this.heightLength + Number(`${this.heightLength ? 1 : 0}`)) + 'px'
+      )
     },
   },
 }
