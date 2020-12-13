@@ -74,6 +74,19 @@ export default {
             },
           ],
         },
+        // 课堂教学
+        {
+          icon: "",
+          index: "",
+          title: "课堂教学",
+          subs: [
+            { index: "/courselist", title: "课程列表" },
+            {
+              index: "/newcourse",
+              title: "新建课件",
+            },
+          ],
+        },
         {
           icon: "",
           index: "",

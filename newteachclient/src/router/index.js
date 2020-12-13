@@ -51,6 +51,16 @@ const routes = [
             /* webpackChunkName: "maketestpaper" */ '@/views/pages/MakeTestpaper/index.vue'
           ),
       },
+      // 课程列表
+      {
+        path: '/courselist',
+        component: () => import( /* webpackChunkName: "courselist" */ '@/views/pages/CourseList/index.vue')
+      },
+      // 新建课表
+      {
+        path: '/newcourse',
+        component: () => import( /* webpackChunkName: "newcourse" */ '@/views/pages/NewCourse/index.vue')
+      },
       // 个人资料
       {
         path: '/personalInformation',
