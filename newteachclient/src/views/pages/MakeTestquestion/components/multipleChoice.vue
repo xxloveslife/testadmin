@@ -1,7 +1,7 @@
 <template>
   <div class="multiple-choice-container" ref="multiple">
     <div class="chooseType">
-      <span>选择类型 :</span>
+      <span class="leftTitleText">选择类型 :</span>
       <el-radio-group v-model="textRadio" @change="changeRadio">
         <el-radio-button
           class="chooseTypeBtn"
@@ -14,7 +14,7 @@
     </div>
 
     <div class="multipleChoice">
-      <span>选择题型 :</span>
+      <span class="leftTitleText">选择题型 :</span>
       <el-radio-group v-model="radioDefault" @change="changeSubRadio">
         <el-radio-button
           class="chooseTypeBtn"
@@ -29,12 +29,14 @@
     <el-form ref="testQuestionlistsForm" :model="testQuestionlists">
       <!-- 题目内容 -->
       <div class="subjectContent" :style="{ marginBottom: marginBottomHeight }">
-        <div>题目内容 :</div>
+        <div class="leftTitleText">题目内容 :</div>
         <div class="subjectContentItem">
           <el-form-item>
             <el-input
+              @input="changeInput"
               type="textarea"
               placeholder="请输入题目内容"
+              class="stretchNone"
               v-model="testQuestionlists.content"
               :style="{ height: lineHeight }"
             >
@@ -70,7 +72,7 @@
       <div class="footerBox">
         <!-- 考点范围 -->
         <div class="testSiteRange">
-          <div class="testSiteRangeTitle">考点范围 :</div>
+          <div class="testSiteRangeTitle leftTitleText">考点范围 :</div>
           <div class="applicableGradeLeft">
             <el-form-item>
               <el-input
@@ -82,7 +84,7 @@
         </div>
         <!-- 题目解析 : -->
         <div class="testSiteRange">
-          <div class="testSiteRangeTitle">题目解析 :</div>
+          <div class="testSiteRangeTitle leftTitleText">题目解析 :</div>
           <div class="applicableGradeLeft">
             <el-form-item>
               <el-input
@@ -94,7 +96,7 @@
         </div>
         <!-- 适用年级 : -->
         <div class="applicableGrade">
-          <div class="testSiteRangeTitle">适用年级 :</div>
+          <div class="testSiteRangeTitle leftTitleText">适用年级 :</div>
           <!-- 左 -->
           <div class="applicableGradeLeft">
             <ul class="applicableGradeLeftUl">
@@ -286,22 +288,36 @@
             </ul>
             <p>请选择试试卷版本</p>
           </div>
-          <el-button class="submit" type="primary" @click="submitData"
+          <el-button
+            class="submit"
+            type="primary"
+            @click="submitData"
+            :disabled="confirmSubmitPopupStatus"
             >确认提交</el-button
           >
         </div>
       </div>
     </el-form>
+    <confirmSubmitPopup
+      :confirmSubmitPopupStatus="confirmSubmitPopupStatus"
+      @reEdit="reEdit"
+      @ContinueUploading="confirmSubmitPopupStatus = false"
+      @close="confirmSubmitPopupStatus = false"
+      @backTopicWarehouse="backTopicWarehouse"
+    ></confirmSubmitPopup>
   </div>
 </template>
 
 <script>
 import topicTheme from './topicTheme'
+import confirmSubmitPopup from './confirmSubmitPopup'
 import { mapGetters } from 'vuex'
 export default {
   name: 'multipleChoice',
   data() {
     return {
+      question_id: null,
+      confirmSubmitPopupStatus: false,
       // 单选
       changeradio: 0,
       // 多选
@@ -408,6 +424,12 @@ export default {
         // 题目解析
         answer_parse: '',
         correct: null,
+        grade: -1,
+        paper_range: 1,
+        semester: -1,
+        unit: 1,
+        request: 1,
+        difficult: 1,
       },
 
       // 下拉框list
@@ -415,7 +437,7 @@ export default {
         // 年级
         gande: [
           {
-            titleName: '年级',
+            titleName: '全部',
             gradeList: [
               { name: '全部', command: -1 },
               { name: '一年级', command: 4 },
@@ -436,7 +458,7 @@ export default {
         // 学期
         semester: [
           {
-            titleName: '学期',
+            titleName: '全学年',
             semesterList: [
               { name: '全学年', command: -1 },
               { name: '上学期', command: 1 },
@@ -448,7 +470,7 @@ export default {
         // 单元
         unit: [
           {
-            titleName: '单元',
+            titleName: '1单元',
             unitList: [
               { name: '1单元', command: 1 },
               { name: '2单元', command: 2 },
@@ -482,7 +504,7 @@ export default {
         // request 识记
         request: [
           {
-            titleName: '层次',
+            titleName: '识记',
             requestList: [
               { name: '识记', command: 1 },
               { name: '理解', command: 2 },
@@ -495,7 +517,7 @@ export default {
         // 难度
         difficult: [
           {
-            titleName: '难度',
+            titleName: '易',
             difficultList: [
               { name: '易 ', command: 1 },
               { name: '中', command: 2 },
@@ -511,7 +533,7 @@ export default {
             type: '音乐',
             paperRange: [
               {
-                titleName: '版本',
+                titleName: '苏少版',
                 paperRangeList: [
                   { name: '苏少版 ', command: 1 },
                   { name: '人教版 ', command: 2 },
@@ -528,7 +550,7 @@ export default {
             type: '美术',
             paperRange: [
               {
-                titleName: '版本',
+                titleName: '苏少版',
                 paperRangeList: [
                   { name: '苏少版 ', command: 1 },
                   { name: '人教版 ', command: 2 },
@@ -561,6 +583,21 @@ export default {
     },
   },
   methods: {
+    reEdit() {
+      console.log('重新编辑')
+      // 重新编辑页面 传入question_id
+      this.$router.push({
+        name: 'reEditpage',
+        params: { id: this.question_id },
+      })
+    },
+    backTopicWarehouse() {
+      console.log('返回题库')
+      this.$router.push('/testquestionlibrary')
+    },
+    changeInput() {
+      this.index = this.testQuestionlists.content.split('\n').length - 1
+    },
     changeRadio(val) {
       this.$store.commit('makeTestquestion/set_checked_cid', [])
       this.$store.commit('makeTestquestion/set_judgmentradioChangeVal', null)
@@ -574,9 +611,141 @@ export default {
       this.radioDefault = '单项选择题'
       this.testQuestionlists.question_type = 1
       this.clearOptions()
+      this.dropdownList = {
+        // 年级
+        gande: [
+          {
+            titleName: '全部',
+            gradeList: [
+              { name: '全部', command: -1 },
+              { name: '一年级', command: 4 },
+              { name: '二年级', command: 5 },
+              { name: '三年级', command: 6 },
+              { name: '四年级', command: 7 },
+              { name: '五年级', command: 8 },
+              { name: '六年级', command: 9 },
+              { name: '七年级', command: 1 },
+              { name: '八年级', command: 2 },
+              { name: '九年级', command: 3 },
+              { name: '高一', command: 10 },
+              { name: '高二', command: 11 },
+              { name: '高三', command: 12 },
+            ],
+          },
+        ],
+        // 学期
+        semester: [
+          {
+            titleName: '全学年',
+            semesterList: [
+              { name: '全学年', command: -1 },
+              { name: '上学期', command: 1 },
+              { name: '下学期', command: 2 },
+            ],
+          },
+        ],
+
+        // 单元
+        unit: [
+          {
+            titleName: '1单元',
+            unitList: [
+              { name: '1单元', command: 1 },
+              { name: '2单元', command: 2 },
+              { name: '3单元', command: 3 },
+              { name: '4单元', command: 4 },
+              { name: '5单元', command: 5 },
+              { name: '6单元', command: 6 },
+              { name: '7单元', command: 7 },
+              { name: '8单元', command: 8 },
+              { name: '9单元', command: 9 },
+              { name: '10单元', command: 10 },
+              { name: '11单元', command: 11 },
+              { name: '12单元', command: 12 },
+              { name: '13单元', command: 13 },
+              { name: '14单元', command: 14 },
+              { name: '15单元', command: 15 },
+              { name: '16单元', command: 16 },
+              { name: '17单元', command: 17 },
+              { name: '18单元', command: 18 },
+              { name: '19单元', command: 19 },
+              { name: '20单元', command: 20 },
+              { name: '21单元', command: 21 },
+              { name: '22单元', command: 22 },
+              { name: '23单元', command: 23 },
+              { name: '24单元', command: 24 },
+              { name: '25单元', command: 25 },
+            ],
+          },
+        ],
+
+        // request 识记
+        request: [
+          {
+            titleName: '识记',
+            requestList: [
+              { name: '识记', command: 1 },
+              { name: '理解', command: 2 },
+              { name: '掌握', command: 3 },
+              { name: '运用', command: 4 },
+            ],
+          },
+        ],
+
+        // 难度
+        difficult: [
+          {
+            titleName: '易',
+            difficultList: [
+              { name: '易 ', command: 1 },
+              { name: '中', command: 2 },
+              { name: '难', command: 3 },
+            ],
+          },
+        ],
+
+        //版本
+        paperRangeList: [
+          // 1苏少版 2人教版 3人音版 6湘艺版 8鲁教版 10上教版
+          {
+            type: '音乐',
+            paperRange: [
+              {
+                titleName: '苏少版',
+                paperRangeList: [
+                  { name: '苏少版 ', command: 1 },
+                  { name: '人教版 ', command: 2 },
+                  { name: '人音版 ', command: 3 },
+                  { name: '湘艺版 ', command: 6 },
+                  { name: '鲁教版 ', command: 8 },
+                  { name: '上教版 ', command: 10 },
+                ],
+              },
+            ],
+          },
+          // 1苏少版 2人教版 4人美版 5岭南版 8鲁教版 9湘美版 10上教版
+          {
+            type: '美术',
+            paperRange: [
+              {
+                titleName: '苏少版',
+                paperRangeList: [
+                  { name: '苏少版 ', command: 1 },
+                  { name: '人教版 ', command: 2 },
+                  { name: '人美版 ', command: 4 },
+                  { name: '岭南版 ', command: 5 },
+                  { name: '鲁教版 ', command: 8 },
+                  { name: '湘美版 ', command: 9 },
+                  { name: '上教版 ', command: 10 },
+                ],
+              },
+            ],
+          },
+        ],
+      }
       this.dropdownList.paperRangeList.forEach((ele) => {
         // console.log(ele)
-        return (ele.paperRange[0].titleName = '版本')
+        return (ele.paperRange[0].titleName = '苏少版')
       })
 
       this.getknowledgeList(val)
@@ -696,7 +865,6 @@ export default {
     },
     // 上传文件获取文件地址
     subjectContentFileChange() {
-      this.index++
       // console.log(this.testQuestionlists.content)
       const localFile = this.$refs.subjectContentFile.files[0]
 
@@ -705,11 +873,14 @@ export default {
       formData.append('file_name', localFile)
       this.$http.post('/makeExercises/uploadFile', formData).then((res) => {
         if (res || res.code == 0) {
-          console.log(res.data)
-          console.log(this.testQuestionlists.content)
+          // console.log(res.data)
+
           this.testQuestionlists.content =
-            this.testQuestionlists.content + '\n' + res.data.file_path
-          console.log(this.testQuestionlists)
+            this.testQuestionlists.content +
+            '\n' +
+            `<img>${res.data.file_path}</img>`
+          this.index = this.testQuestionlists.content.split('\n').length - 1
+          console.log(this.testQuestionlists.content.split('\n').length - 1)
         }
       })
     },
@@ -720,12 +891,13 @@ export default {
       )
       this.testQuestionlists.checked_cid = this.checked_cid.join(',')
       if (this.textRadio === '音乐') {
-        let obj1 = { jp_music_pic: this.jp_music_pic }
-        let obj2 = { wx_music_pic: this.wx_music_pic }
-        let arr = []
-        arr.push(obj1)
-        arr.push(obj2)
-        this.testQuestionlists.answer = arr
+        let obj1 = {
+          jp_music_pic: this.jp_music_pic,
+          wx_music_pic: this.wx_music_pic,
+        }
+        // let arr = []
+        // arr.push(obj1)
+        this.testQuestionlists.answer = obj1
         if (this.radioDefault === '单项选择题') {
           this.testQuestionlists.correct = this.singleSelectionVal
             ? this.singleSelectionVal
@@ -776,12 +948,19 @@ export default {
           )
           .then((res) => {
             console.log(res)
+            if (res && res.code === 0) {
+              console.log(res)
+              this.question_id = res.data.question_id
+              this.confirmSubmitPopupStatus = true
+            } else if (res.code === 400) {
+              this.$message.error('选项格式有错误')
+            }
           })
       } else {
-        let obj = { jp_music_pic: this.art_pic }
-        let arr = []
-        arr.push(obj)
-        this.testQuestionlists.answer = arr
+        let obj = { art_pic: this.art_pic }
+        // let arr = []
+        // arr.push(obj)
+        this.testQuestionlists.answer = obj
         if (this.radioDefault === '单项选择题') {
           this.testQuestionlists.correct = this.singleSelectionVal
             ? this.singleSelectionVal
@@ -825,6 +1004,7 @@ export default {
           })
           console.log(this.testQuestionlists)
         }
+        // 表现题
         this.$store
           .dispatch(
             'makeTestquestion/getExercisesArtType',
@@ -832,6 +1012,13 @@ export default {
           )
           .then((res) => {
             console.log(res)
+            if (res && res.code === 0) {
+              console.log(res)
+              this.question_id = res.data.question_id
+              this.confirmSubmitPopupStatus = true
+            } else if (res.code === 400) {
+              this.$message.error('选项格式有错误')
+            }
           })
       }
     },
@@ -847,11 +1034,9 @@ export default {
       'judgmentradioChangeVal',
     ]),
     marginBottomHeight() {
-      console.log(this.index)
       return (this.index == 0 ? 20 : 10 + Number(this.index) * 30) + 'px'
     },
     lineHeight() {
-      console.log(this.index)
       return 32 + Number(this.index) * 30 + 'px'
     },
   },
@@ -874,15 +1059,26 @@ export default {
   },
   components: {
     topicTheme,
+    confirmSubmitPopup,
   },
 }
 </script>
 
-<style lang="scss">
+<style lang="less">
 .multiple-choice-container {
-  padding: 0 44px;
   font-size: 12px;
   color: #303133;
+  .leftTitleText {
+    font-size: 12px;
+    font-family: Microsoft YaHei;
+    font-weight: bold;
+    color: #303133;
+  }
+  /deep/.stretchNone {
+    .el-textarea__inner {
+      resize: none;
+    }
+  }
   .chooseType {
     padding-bottom: 19px;
     .el-radio-group {
@@ -890,7 +1086,7 @@ export default {
       .el-radio-button {
         width: 100px;
         height: 32px;
-        background: #409eff;
+
         border-radius: 6px;
         margin-right: 16px;
         .el-radio-button__inner {
@@ -899,6 +1095,7 @@ export default {
           border-radius: 6px;
           line-height: 20px;
           padding: 5px 0;
+          border: none;
         }
       }
     }
@@ -911,7 +1108,7 @@ export default {
       .el-radio-button {
         width: 100px;
         height: 32px;
-        background: #409eff;
+
         border-radius: 6px;
         margin-right: 16px;
         text-align: center;
@@ -921,6 +1118,7 @@ export default {
           border-radius: 6px;
           line-height: 20px;
           padding: 5px 0;
+          border: none;
         }
       }
     }
@@ -957,7 +1155,6 @@ export default {
         font-family: Microsoft YaHei;
         font-weight: 400;
         line-height: 25px;
-        color: #909399;
       }
       // .el-button {
       //   position: absolute;
@@ -1008,6 +1205,10 @@ export default {
           height: 32px;
           position: relative;
           top: -4px;
+          font-size: 12px;
+          font-family: Microsoft YaHei;
+          font-weight: 400;
+          color: #909399;
         }
       }
       .el-button {
@@ -1031,7 +1232,21 @@ export default {
     display: flex;
     .el-form-item {
       .el-input {
-        width: 1360px;
+        width: 1368px;
+        height: 32px;
+        background: #ffffff;
+        // border: 1px solid #dcdfe6;
+        border-radius: 6px;
+
+        .el-input__inner {
+          width: 1368px;
+          height: 32px;
+          position: relative;
+          top: -4px;
+          font-size: 12px;
+          font-family: Microsoft YaHei;
+          font-weight: 400;
+        }
       }
     }
   }

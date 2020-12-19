@@ -336,7 +336,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="less">
 .messag-center-container {
   position: relative;
   .titleBar {
@@ -346,7 +346,6 @@ export default {
     background: #ffffff;
     border-radius: 8px;
     margin: auto;
-    margin-top: -20px;
     margin-bottom: 20px;
     span {
       display: block;
@@ -371,6 +370,11 @@ export default {
   }
   .el-card {
     .tableStyle {
+      th:nth-child(1) {
+        div {
+          margin-left: 4px;
+        }
+      }
       .el-table__header-wrapper {
         thead {
           font-size: 14px;

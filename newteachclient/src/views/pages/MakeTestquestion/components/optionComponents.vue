@@ -51,7 +51,7 @@
 
         <div class="rightBox-footer">
           <audio-part
-            v-if="item.audioState === 'mp3'"
+            v-if="item.audioState === 'mp3' || item.audioState === 'wav'"
             :id="'transferAudio' + i"
             :audioUrl="item.op_file"
           ></audio-part>
@@ -67,7 +67,7 @@
       hidden
       @change="fileChange($event)"
       v-if="changeRadioVal === '音乐'"
-      accept="image/png,image/jpeg,audio/mpeg"
+      accept="image/png,image/jpeg,audio/mpeg,.wav"
     />
     <input
       type="file"
@@ -101,7 +101,7 @@ export default {
   name: 'optionComponents',
   data() {
     return {
-      index: null,
+      chooseindex: null,
       radio: 0,
       multipleRadio: [0],
       optionsList: [
@@ -148,7 +148,7 @@ export default {
   methods: {
     // 清空数据
     clearData() {
-      this.index = null
+      this.chooseindex = null
       this.radio = 0
       this.multipleRadio = [0]
       this.singleChoiceList.forEach((element) => {
@@ -211,7 +211,7 @@ export default {
         // 读取完成后，将结果赋值给img的src
         // console.log(this.result)
 
-        that.singleChoiceList[that.index].imgfile = this.result
+        that.singleChoiceList[that.chooseindex].imgfile = this.result
       }
       // var reader = new FileReader()
       // reader.readAsDataURL(localFile)
@@ -220,27 +220,27 @@ export default {
       //   console.log(reader.result) //获取到base64格式图片
       //   url = reader.result
       // }
-      // this.singleChoiceList[this.index].imgfile = paths
+      // this.singleChoiceList[this.chooseindex].imgfile = paths
 
       const formData = new window.FormData()
       formData.append('file_name', localFile)
       this.$http.post('/makeExercises/uploadFile', formData).then((res) => {
         if (res || res.code == 0) {
           // console.log(res.data.file_path)
-          this.singleChoiceList[this.index].op_file = res.data.file_path
+          this.singleChoiceList[this.chooseindex].op_file = res.data.file_path
           var stringlength = res.data.file_path.length
           var newstring = res.data.file_path.substring(
             stringlength - 3,
             stringlength
           )
-          this.singleChoiceList[this.index].audioState = newstring
+          this.singleChoiceList[this.chooseindex].audioState = newstring
         }
       })
     },
     elButtonClick(item, i) {
       this.$refs.file.click()
       console.log(item, i)
-      this.index = i
+      this.chooseindex = i
     },
   },
   mounted() {
@@ -249,7 +249,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .option-components-container {
   position: relative;
 
@@ -259,10 +259,12 @@ export default {
     top: 13px;
   }
   .rightBox {
+    display: flex;
+    flex-wrap: wrap;
     margin-left: 56px;
     overflow: hidden;
     .rightBoxItem {
-      float: left;
+      width: 360px;
       margin-right: 16px;
       .rightBox-header {
         display: flex;
@@ -276,23 +278,31 @@ export default {
           line-height: 41px;
           margin-right: 12px;
         }
-        .elInput {
+        .el-input {
           width: 316px;
+          height: 32px;
           background: #ffffff;
           border-radius: 6px;
           font-size: 12px;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: #909399;
-          line-height: 41px;
           margin-right: 5px;
+          .el-input__inner {
+            width: 316px;
+            height: 32px;
+          }
         }
+
         i {
           width: 16px;
           height: 16px;
           font-size: 16px;
           color: #c0c4cc;
-          margin-top: 15px;
+          margin-top: 8px;
+        }
+        i:hover {
+          color: #f56c6c;
         }
       }
       .rightBox-body {
@@ -310,13 +320,16 @@ export default {
         }
       }
       .rightBox-footer {
+        .audio-part-wrap {
+          margin-left: 25px;
+        }
         .imgShow {
           max-width: 260px;
           max-height: 158px;
           margin: 0 0 10px 24px;
           img {
             margin-top: 15px;
-            max-height: 158px;
+            max-height: 138px;
             max-width: 260px;
           }
         }
@@ -324,8 +337,8 @@ export default {
     }
   }
   .footerBox {
+    padding: 0 115px 0 80px;
     display: flex;
-    padding-left: 68px;
     justify-content: space-between;
     .boxLeft {
       .el-button {

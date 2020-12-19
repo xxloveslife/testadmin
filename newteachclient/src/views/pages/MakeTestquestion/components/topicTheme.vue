@@ -104,7 +104,11 @@ export default {
   .leftTitle {
     position: absolute;
     left: 0;
-    top: 20px;
+    top: 10px;
+    font-size: 12px;
+    font-family: Microsoft YaHei;
+    font-weight: bold;
+    color: #303133;
   }
 }
 </style>

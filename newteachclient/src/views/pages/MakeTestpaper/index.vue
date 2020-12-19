@@ -25,6 +25,10 @@ export default {
   components: {
     MakeTestpaper,
   },
+  beforeRouteLeave(to, from, next) {
+    from.meta.keepAlive = false;
+    next();
+  },
 };
 </script>
 <style lang="scss" scoped>

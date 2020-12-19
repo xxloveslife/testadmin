@@ -17,7 +17,10 @@
         </el-header>
         <!-- 展示区   子路由出口 -->
         <el-main class="main">
-          <router-view />
+          <keep-alive>
+            <router-view v-if="$route.meta.keepAlive"></router-view>
+          </keep-alive>
+          <router-view v-if="!$route.meta.keepAlive"></router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -49,7 +52,7 @@ export default {
   },
 };
 </script>
-<style lang="scss" >
+<style lang="scss">
 @import "@/style/variable.scss";
 
 .home {
@@ -60,6 +63,7 @@ export default {
     height: 100%;
     .side {
       background-color: #409eff;
+      width: 12.5rem !important;
     }
     .rt_container {
       .main {
@@ -70,12 +74,13 @@ export default {
 }
 
 .el-main {
-  padding-left: 17px;
-  padding-right: 28px;
+  padding: 0;
+  padding-left: 1.0625rem;
+  padding-right: 1.75rem;
 }
 .header {
   // width: 107.5rem;
-  padding: 13px 28px 0 17px;
+  padding: 0.8125rem 1.75rem 0 1.0625rem;
   background-color: #f2f6fc;
 }
 </style>

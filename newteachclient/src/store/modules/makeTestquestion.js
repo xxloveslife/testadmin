@@ -2,6 +2,7 @@ import {
   getKnowledgePointData,
   makeExercisesMusicType,
   makeExercisesArtType,
+  getTestQuestionsedit,
 } from '../../api/getKnowledgePointData'
 // 制作试题
 const state = {
@@ -77,6 +78,18 @@ const actions = {
   getExercisesArtType({ commit }, data) {
     return new Promise((reslove, reject) => {
       makeExercisesArtType(data)
+        .then((res) => {
+          reslove(res)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+  // 获取试题编辑页面
+  makeTestQuestionsedit({ commit }, data) {
+    return new Promise((reslove, reject) => {
+      getTestQuestionsedit(data)
         .then((res) => {
           reslove(res)
         })

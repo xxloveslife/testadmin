@@ -6,7 +6,7 @@
         v-show="!musicUrl"
         class="avatar-uploader"
         id="music"
-        :text="text"
+        :text="textMusic"
         @getMusicUrl="getMusicUrl"
       ></avatar-uploader>
       <div class="audio-part-show" v-if="musicUrl">
@@ -15,17 +15,17 @@
           id="transferAudiopart"
           :audioUrl="musicUrl"
         ></audio-part>
-        <i class="el-icon-delete" @click="messageBoxStatus = true"></i>
+        <i class="el-icon-delete" @click="messageBoxStatusMUsic = true"></i>
       </div>
       <span>根据题目需求上传乐曲文件</span>
     </div>
     <message-box
       class="message-box"
-      :showMessageBoxText="showMessageBoxText"
-      :messageBoxStatus="messageBoxStatus"
-      @closeMessage="closeMessage"
-      @close="messageBoxStatus = false"
-      @removeMessage="removeMessage"
+      :showMessageBoxText="showMessageBoxTextMusic"
+      :messageBoxStatus="messageBoxStatusMUsic"
+      @closeMessage="closeMessageMUsic"
+      @close="messageBoxStatusMUsic = false"
+      @removeMessage="removeMessageMusic"
     ></message-box>
   </div>
 </template>
@@ -39,9 +39,9 @@ export default {
   name: 'uploadMusic',
   data() {
     return {
-      showMessageBoxText: '文件',
-      messageBoxStatus: false,
-      text: '上传文件',
+      showMessageBoxTextMusic: '文件',
+      messageBoxStatusMUsic: false,
+      textMusic: '上传文件',
       musicUrl: null,
       answer: {},
     }
@@ -58,19 +58,19 @@ export default {
       this.musicUrl = val
       this.testQuestionlists.background_file_url = val
     },
-    closeMessage() {
+    closeMessageMUsic() {
       this.musicUrl = null
       this.testQuestionlists.background_file_url = null
-      this.messageBoxStatus = false
+      this.messageBoxStatusMUsic = false
     },
-    removeMessage() {
+    removeMessageMusic() {
       this.musicUrl = null
       this.testQuestionlists.background_file_url = null
       document
         .getElementById('music')
         .querySelector('.boxBox')
         .click()
-      this.messageBoxStatus = false
+      this.messageBoxStatusMUsic = false
     },
   },
   components: {
@@ -95,6 +95,10 @@ export default {
     position: absolute;
     left: 0;
     top: 13px;
+    font-size: 12px;
+    font-family: Microsoft YaHei;
+    font-weight: bold;
+    color: #303133;
   }
   .rightBox {
     margin-left: 60px;

@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { getTestLibraryCategory } from '../../api/testLibrary'
+import { getTestLibraryCategory } from "../../api/testLibrary";
 export default {
   props: {
     infos: {
@@ -96,40 +96,40 @@ export default {
       third_radio: [],
 
       //current Radio   label
-      c_radio: '',
-      second_radio_default: '',
+      c_radio: "",
+      second_radio_default: "",
       //current SubRadio label
-      third_radio_default: '全部',
+      third_radio_default: "全部",
       //默认选择全部
 
       //后台接口必传字段,题库,类别,教材,默认选择全部
       m_select: {},
 
-      default_select: '默认选择全部',
+      default_select: "默认选择全部",
 
       // 搜索框
-      searchInput: '',
+      searchInput: "",
 
       // 当前所在位置
-      m_val: '全部',
-    }
+      m_val: "全部",
+    };
   },
   watch: {
-    c_radio: function(newV, oldV) {
+    c_radio: function (newV, oldV) {
       //   发生变化了,更新third_row的内容对象
       //  利用newV 找到,新的内容
       this.infos.forEach((item, i) => {
         if (this.infos) {
           if (item.title == newV) {
-            const savelabel = []
+            const savelabel = [];
             // 全都剃出来
             this.infos[i].category.forEach((item, i) => {
-              savelabel.push(item.label)
-            })
-            this.third_radio = savelabel
+              savelabel.push(item.label);
+            });
+            this.third_radio = savelabel;
           }
         }
-      })
+      });
     },
   },
 
@@ -137,43 +137,43 @@ export default {
     // 第一层的单项回调
     changeCate(val) {
       //change的时候给c_radio
-      this.c_radio = val
+      this.c_radio = val;
     },
     // 第二层的单选回调
     changeSubCate(val) {
       //当变化时设置subCate的label到m_select里面  ,
-      this.m_val = val
-      this.m_select[this.c_radio] = this.m_val
+      this.m_val = val;
+      this.m_select[this.c_radio] = this.m_val;
       // 修改已选择的详细显示
-      this.changeMyselecting()
+      this.changeMyselecting();
 
       // 切换的时候改回分页
-      this.m_select.currentPage = 1
+      this.m_select.currentPage = 1;
 
       //通知父组件发送请求
-      this.$emit('getItemfromCondition', this.m_select)
+      this.$emit("getItemfromCondition", this.m_select);
 
       // 父组件判断如果是题库里面子内容,调整star 和shared 的展示
-      this.$emit('changeOperationStyle', this.m_val)
+      this.$emit("changeOperationStyle", this.m_val, this.c_radio);
     },
     //修改右上角选择样式
     changeMyselecting() {
       //拼接m_select里面的值, 更换 default_select,
-      let selectedInfos = []
+      let selectedInfos = [];
       this.infos.forEach((item, i) => {
         if (
-          this.m_select[item.title] === '' ||
-          this.m_select[item.title] === '全部'
+          this.m_select[item.title] === "" ||
+          this.m_select[item.title] === "全部"
         ) {
           // 等于空字符串,或者全部,就不push,不加顿号
-          return
+          return;
         }
-        selectedInfos.push(this.m_select[item.title])
-      })
+        selectedInfos.push(this.m_select[item.title]);
+      });
 
-      const str_selected = selectedInfos.join('、')
+      const str_selected = selectedInfos.join("、");
       // console.log(str_selected);
-      this.default_select = '已选择 ' + str_selected
+      this.default_select = "已选择 " + str_selected;
     },
     getCurrentCate(radio) {
       //'题库'
@@ -181,9 +181,9 @@ export default {
         this.infos.forEach((item, i) => {
           if (item.title === radio) {
             // console.log("index", this.infos[i].category);
-            this.third_radio = this.infos[i].category
+            this.third_radio = this.infos[i].category;
           }
-        })
+        });
       }
     },
 
@@ -192,12 +192,12 @@ export default {
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
 
-      this.m_select.currentPage = val
+      this.m_select.currentPage = val;
 
       // console.log("fenye ", this.m_select);
 
       // 通知父组件
-      this.$emit('getItemfromCondition', this.m_select)
+      this.$emit("getItemfromCondition", this.m_select);
     },
     //重置选择
     resetSelect() {
@@ -212,42 +212,42 @@ export default {
       // //通知父组件发送请求
       // this.$emit("resetSelect");
 
-      location.reload()
+      location.reload();
     },
 
     // 搜索框搜索
     searchButtons() {
-      this.m_select.keyword = this.searchInput
+      this.m_select.keyword = this.searchInput;
       // 通知父组件
-      this.$emit('getItemfromCondition', this.m_select)
+      this.$emit("getItemfromCondition", this.m_select);
     },
   },
   mounted() {
-    this.second_radio_default = this.radio
-    this.c_radio = this.radio
+    this.second_radio_default = this.radio;
+    this.c_radio = this.radio;
     //设置v-model的第一个默认值
-    this.getCurrentCate(this.radio)
+    this.getCurrentCate(this.radio);
 
     // infos 设置m_selectd的key值;
     if (this.infos) {
       this.infos.forEach((item, i) => {
         // infos当前title作key值
-        this.m_select[item.title && item.title] = ''
-      })
+        this.m_select[item.title && item.title] = "";
+      });
     }
     // console.log("my_", this.m_select);
   },
   created() {
-    this.m_select.currentPage = 1
+    this.m_select.currentPage = 1;
     // console.log("fenyeinfos", this.pageSize, this.totalNum, this.currentPage);
 
     // 重新加载的时候也通知一次 ,当前currentLib为全部
-    this.$emit('changeOperationStyle', this.m_val)
+    this.$emit("changeOperationStyle", this.m_val);
   },
-}
+};
 </script>
 <style lang="scss">
-@import '../../style/variable.scss';
+@import "../../style/variable.scss";
 .top_row {
   width: 100%;
   height: 2rem;
@@ -260,10 +260,12 @@ export default {
       border: 0; // 去除未选中状态边框
       outline: none; // 去除选中状态边框
 
-      font-size: 0.875rem;
-      font-family: Microsoft YaHei;
-      font-weight: 400;
-      color: #c0c4cc;
+      &::placeholder {
+        font-size: 0.875rem;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        color: #c0c4cc;
+      }
     }
     button {
       width: 6.25rem;
@@ -353,7 +355,7 @@ export default {
         width: 100%;
         height: 2.8125rem;
 
-        font-size: 14px;
+        font-size: 0.875rem;
         font-family: Microsoft YaHei;
         font-weight: bold;
         color: #303133;
@@ -361,7 +363,7 @@ export default {
     }
     .is-active {
       span {
-        font-size: 14px;
+        font-size: 0.875rem;
         font-family: Microsoft YaHei;
         font-weight: bold;
         color: #ffffff !important;
@@ -375,16 +377,20 @@ export default {
   }
 }
 .third_row {
-  margin-top: 18px;
+  margin-top: 1.125rem;
   .el-radio-group {
     display: flex;
     flex-wrap: wrap;
     // justify-content: space-between;
 
+    .el-radio-button__inner {
+      border-radius: 0.375rem;
+    }
+
     span {
       width: 6.25rem;
       height: 2rem;
-      line-height: 8px;
+      line-height: 0.5rem;
       border-radius: 0.25rem;
       border: none;
       margin-right: 0.9375rem;
@@ -406,8 +412,16 @@ export default {
 }
 .m_pagination {
   background: #ffffff;
-  border-radius: 8px;
-  width: 105.25rem;
+  // border-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  // width: 105.25rem;
   height: 2.75rem;
+}
+
+.m_cascader {
+  .second_row .m_radio_group .m_radio .el-radio-button__inner:hover {
+    color: #409eff;
+  }
 }
 </style>

@@ -10,14 +10,12 @@
             class="elInput"
             type="text"
             placeholder="正确"
-            :disabled="true"
           />
           <el-input
             v-show="item.options === 'B'"
             class="elInput"
             type="text"
             placeholder="错误"
-            :disabled="true"
           />
         </div>
         <div class="rightBox-body">
@@ -63,13 +61,17 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .judgment-options-container {
   position: relative;
   .leftTitle {
     position: absolute;
     left: 0;
     top: 13px;
+    font-size: 12px;
+    font-family: Microsoft YaHei;
+    font-weight: bold;
+    color: #303133;
   }
   .rightBox {
     margin-left: 63px;
@@ -98,14 +100,19 @@ export default {
         }
         .elInput {
           width: 316px;
-          background: #ffffff;
-          border-radius: 6px;
           font-size: 12px;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: #909399;
-          line-height: 41px;
           margin-right: 5px;
+          height: 32px;
+          background: #ffffff;
+          border-radius: 6px;
+          .el-input__inner {
+            width: 316px;
+            height: 32px;
+            border: 1px solid #dcdfe6;
+          }
         }
       }
       .rightBox-body {

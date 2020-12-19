@@ -275,7 +275,7 @@
 
 <script>
 import addQuestype from "./components/addQuestype";
-
+import $axios from "../../../api/index";
 export default {
   props: {
     m_checkItems: {
@@ -368,7 +368,7 @@ export default {
       // 适用学年
       fitSemesterValue: "",
       allSemesterOptions: [
-        { mark: "", label: "全部" },
+        { mark: -1, label: "全部" },
         { mark: 1, label: "上学期" },
         { mark: 2, label: "下学期" },
       ],
@@ -376,7 +376,6 @@ export default {
       // 音乐单元
       musicUnit: "",
       allMusicUnitOptions: [
-        { mark: "", label: "全部音乐单元" },
         { mark: 1, label: "1单元" },
         { mark: 2, label: "2单元" },
         { mark: 3, label: "3单元" },
@@ -406,7 +405,6 @@ export default {
       // 美术单元
       artUnit: "",
       allArtUnitOptions: [
-        { mark: "", label: "全部美术单元" },
         { mark: 1, label: "1单元" },
         { mark: 2, label: "2单元" },
         { mark: 3, label: "3单元" },
@@ -472,6 +470,13 @@ export default {
       nullInstrument: true,
       // score为空
       nullScore: true,
+      // grade为空
+      nullGrade: true,
+      // semester为空
+      nullSemester: true,
+
+      //试题类型为空
+      nullCheckItems: true,
 
       // 显示音乐单元选择
       showMusicUnit: true,
@@ -484,7 +489,12 @@ export default {
   },
   methods: {
     changeCheck() {
+      // init
+      if (this.checkItemTypes.length < 1) {
+        this.this.allRequestInfos.stype = "";
+      }
       // console.log("val", this.checkItems);
+
       this.checkItemTypes = this.checkItems.map((item, i) => {
         return item;
       });
@@ -577,7 +587,7 @@ export default {
         this.requestInfos.art_offline_conf = m_list;
       }
 
-      console.log(this.requestInfos);
+      // console.log(this.requestInfos);
     },
 
     // 选择年级
@@ -638,6 +648,15 @@ export default {
       // 判断小乐器是否有值,在判断是否有演唱题,如果没有提示添加演唱题
       // 判断必填项是否有空值,有空值提示不能为空
       // console.log("all", this.allRequestInfos);
+
+      // 判断是否选择试题类型
+      if (!this.allRequestInfos.stype == "") {
+        this.nullCheckItems = false;
+        this.name_dialogVisible = true;
+      } else {
+        this.nullCheckItems = true;
+      }
+
       if (this.allRequestInfos.name == "") {
         this.name_dialogVisible = true;
       }
@@ -746,10 +765,71 @@ export default {
         }
       }
 
-      // ,再把requestInfos添加进paper_conf
+      // 判断适用年级
+      if (!this.allRequestInfos.grade || this.allRequestInfos.grade == "") {
+        this.nullGrade = false;
+        this.name_dialogVisible = true;
+      } else {
+        this.nullGrade = true;
+      }
+      // 判断适用学年
+      if (
+        !this.allRequestInfos.semester ||
+        this.allRequestInfos.semester == ""
+      ) {
+        this.nullSemester = false;
+        this.name_dialogVisible = true;
+      } else {
+        this.nullSemester = true;
+      }
 
-      this.allRequestInfos.paper_conf = this.requestInfos;
+      // 避免多次请求网络
+      // 弹出 过
+      if (this.name_dialogVisible) {
+        return;
+      }
+
+      // ,再把requestInfos添加进paper_conf  JSON.stringify(this.requestInfos)
+      this.allRequestInfos.paper_conf = JSON.stringify(this.requestInfos);
       console.log("allRequest", this.allRequestInfos);
+      // 判断当前是系统匹配还是手动添加
+      // console.log("currentSys", this.sys_checked, this.manual_checked);
+      // 系统匹配,请求网络带参跳转
+      if (this.sys_checked) {
+        //发送请求
+
+        $axios
+          .post("/examinationPaper/editPaper", this.allRequestInfos)
+          .then((res) => {
+            if (res.code == 0) {
+              const m_eid = res.data.eid;
+
+              return new Promise((resolve, reject) => {
+                resolve(m_eid);
+              });
+            }
+          })
+          .then((res) => {
+            $axios
+              .post("/examinationPaper/preview", { eid: res })
+              .then((res) => {
+                // console.log("thisres", res);
+                if (res.code == 0) {
+                  // 跳转系统匹配页;
+                  this.$router.push({
+                    name: "paperMadeSysMatch",
+                    params: { paperInfos: res.data },
+                  });
+                }
+              });
+          });
+      } else {
+        // 手动匹配,带参跳转,试卷编辑页面
+        this.$router.push({
+          name: "paperMadeManualMatch",
+          params: { paperInfos: this.allRequestInfos },
+        });
+      }
     },
   },
   computed: {
@@ -759,7 +839,9 @@ export default {
 
     // dialog
     whatEmpty: function () {
-      if (this.paperName == "") {
+      if (!this.nullCheckItems) {
+        return "请选择试题类型";
+      } else if (this.paperName == "") {
         return "试卷名称不能为空";
       } else if (!this.gotType3) {
         return "需要添加演唱题";
@@ -771,6 +853,10 @@ export default {
         return "请选择数量";
       } else if (!this.nullScore) {
         return "请选择分数";
+      } else if (!this.nullGrade) {
+        return "请选择年级";
+      } else if (!this.nullSemester) {
+        return "请选择学年";
       }
       return "";
     },
@@ -852,6 +938,14 @@ export default {
     },
   },
   created() {},
+
+  // beforeRouteLeave(to, from, next) {
+  //   if (to.name === "paperMadeManualMatch") {
+  //     console.log("jinlail ");
+  //     to.meta.keepAlive = true;
+  //   }
+  //   next();
+  // },
 };
 </script>
 <style lang="scss" >
@@ -859,54 +953,70 @@ export default {
   .testType {
     height: 2rem;
     align-items: center;
-    .span1 {
+    & > .span1 {
       font-size: 12px;
       font-family: Microsoft YaHei;
       font-weight: bold;
       color: #303133;
     }
   }
+
+  .multiSelect {
+    .el-checkbox-button {
+      margin-right: 1.0625rem;
+    }
+
+    .el-checkbox-button__inner {
+      width: 6.25rem;
+      height: 2rem;
+      line-height: 0.375rem;
+      font-size: 12px;
+      transition: none;
+      border: none;
+      border-radius: 0.375rem;
+    }
+  }
   .el-checkbox-button__inner {
     // height: 2rem;
-    border-radius: 0.375rem;
-    margin-right: 1rem;
-    font-size: 12px;
-    font-family: Microsoft YaHei;
-    font-weight: 400;
-    color: #409eff;
-    padding-top: 0.5625rem;
+    // border-radius: 0.375rem;
+    // margin-right: 1rem;
+    // font-size: 12px;
+    // font-family: Microsoft YaHei;
+    // font-weight: 400;
+    // color: #409eff;
+    // padding-top: 0.5625rem;
   }
 
   // checked
-  .el-checkbox-group {
-    .is-checked {
-      font-size: 12px;
-      font-family: Microsoft YaHei;
-      font-weight: 400;
-      color: #ffffff;
-    }
-  }
+  // .el-checkbox-group {
+  //   .is-checked {
+  //     font-size: 12px;
+  //     font-family: Microsoft YaHei;
+  //     font-weight: 400;
+  //     color: #ffffff;
+  //   }
+  // }
 
   .el-checkbox-button {
-    height: 2rem;
-    span {
-      width: 6.25rem;
-      height: 2rem;
-      border-radius: 0.375rem;
-      border: 0; // 去除未选中状态边框
-      outline: none; // 去除选中状态边框
-    }
+    // height: 2rem;
+    // span {
+    //   width: 6.25rem;
+    //   height: 2rem;
+    //   border-radius: 0.375rem;
+    //   border: 0; // 去除未选中状态边框
+    //   outline: none; // 去除选中状态边框
+    // }
   }
   .multiSelect {
     margin-left: 0.5rem;
   }
-  .el-checkbox-button:first-child .el-checkbox-button__inner {
-    border-left: 0;
-    border-radius: 0.375rem;
-  }
-  .el-checkbox-button:last-child .el-checkbox-button__inner {
-    border-radius: 0.375rem;
-  }
+  // .el-checkbox-button:first-child .el-checkbox-button__inner {
+  //   border-left: 0;
+  //   border-radius: 0.375rem;
+  // }
+  // .el-checkbox-button:last-child .el-checkbox-button__inner {
+  //   border-radius: 0.375rem;
+  // }
 
   // 单选
   .select_item {
@@ -929,9 +1039,12 @@ export default {
         font-family: Microsoft YaHei;
         font-weight: 400;
         border-radius: 0.375rem;
-        color: #409eff;
+        color: #303133;
         border: 0; // 去除未选中状态边框
         outline: none; // 去除选中状态边框
+        &:hover {
+          color: #409eff;
+        }
       }
       .el-radio-button__orig-radio:checked + .el-radio-button__inner {
         background-color: #409eff;
@@ -993,7 +1106,7 @@ export default {
   }
 
   .cut {
-    width: 1656px;
+    // width: 1656px;
     height: 1px;
     background: #eaeef9;
     border: 1px solid #eaeef9;
@@ -1210,11 +1323,18 @@ export default {
       }
     }
   }
+
+  .el-checkbox-button__inner {
+    color: #303133;
+    &:hover {
+      color: #409eff;
+    }
+  }
 }
 .makeTestPaper .el-checkbox-group .is-checked {
   span {
     background-image: url("../../../assets/imgs/makeTestPaper/checkback.png");
-    background-size: 6.25rem 2rem;
+    background-size: cover;
     background-repeat: no-repeat;
 
     font-size: 12px;

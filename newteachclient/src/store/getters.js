@@ -9,6 +9,10 @@ const getters = {
   art_pic: (state) => state.makeTestquestion.art_pic,
   judgmentradioChangeVal: (state) =>
     state.makeTestquestion.judgmentradioChangeVal,
+
+  //手动选择题
+  artInfos: (state) => state.manualSelectInfos.artInfos,
+  musicInfos: (state) => state.manualSelectInfos.musicInfos,
 }
 
 export default getters

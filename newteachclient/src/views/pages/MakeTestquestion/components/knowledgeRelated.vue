@@ -85,14 +85,7 @@ export default {
       value: [],
       // 二级数据
       secondKnowledgeList: [],
-      prop: {
-        expandTrigger: 'click',
-        multiple: true,
-        emitPath: false,
-        value: 'name',
-        label: 'name',
-        child: 'child',
-      },
+
       // 选择数据数组
       checked_cid: [],
       heightLength: 0,
@@ -145,8 +138,10 @@ export default {
         item.state = 0
         // 删除checked_cid数组中多个元素
         var arr = []
+        arr.push(item.cid)
         item.child.forEach((element) => {
           element.state = 0
+          arr.push(element.cid)
           element.child.forEach((ele) => {
             ele.state = 0
             arr.push(ele.cid)
@@ -158,15 +153,17 @@ export default {
         // console.log(this.checked_cid)
       } else {
         item.state = 1
+        this.checked_cid.push(item.cid)
         item.child.forEach((element) => {
           element.state = 1
+          this.checked_cid.push(element.cid)
           element.child.forEach((ele) => {
             ele.state = 1
             this.checked_cid.push(ele.cid)
           })
         })
         this.newArr(this.checked_cid)
-        // console.log(this.checked_cid)
+        console.log(this.checked_cid)
       }
     },
     secondBoxClick(item, i) {
@@ -174,6 +171,7 @@ export default {
       if (item.state) {
         item.state = 0
         var arr = []
+        arr.push(item.cid)
         item.child.forEach((element) => {
           // console.log(element.name)
           element.state = 0
@@ -185,13 +183,14 @@ export default {
         // console.log(this.checked_cid)
       } else {
         item.state = 1
+        this.checked_cid.push(item.cid)
         item.child.forEach((element) => {
           // console.log(element.name)
           element.state = 1
           this.checked_cid.push(element.cid)
         })
         this.newArr(this.checked_cid)
-        // console.log(this.checked_cid)
+        console.log(this.checked_cid)
       }
       this.invertedSelectionMethod(item.cid)
     },
@@ -387,16 +386,20 @@ export default {
     position: absolute;
     left: 0;
     top: 20px;
+    font-size: 12px;
+    font-family: Microsoft YaHei;
+    font-weight: bold;
+    color: #303133;
   }
 
   .cascader {
     display: inline-block;
     position: relative;
-    width: 1358px;
+    width: 85.5rem;
     height: 32px;
     background: #ffffff;
     border-radius: 6px;
-    margin-left: 56px;
+    margin-left: 61px;
     margin-top: 15px;
     margin-right: 10px;
   }
@@ -448,15 +451,15 @@ export default {
       position: relative;
       margin-left: 62px;
       margin-top: 11px;
-      max-width: 1358px;
+      max-width: 1368px;
 
       border-radius: 6px;
       .cascaderBodyCander {
-        width: 1358px;
+        width: 1368px;
       }
       .cascaderBodyHeader {
         height: 35px;
-        max-width: 1358px;
+        max-width: 85.5rem;
         display: flex;
         text-align: center;
         font-family: Microsoft YaHei;
@@ -488,7 +491,7 @@ export default {
         }
       }
       .cascaderBodyBt {
-        width: 1358px;
+        width: 1368px;
         position: absolute;
         margin-top: 36px;
         display: flex;
@@ -544,7 +547,6 @@ export default {
       width: 75px;
       height: 32px;
       line-height: 7px;
-      background: #409eff;
       border-radius: 6px;
     }
   }

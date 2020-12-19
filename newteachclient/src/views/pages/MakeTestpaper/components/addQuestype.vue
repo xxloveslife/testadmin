@@ -66,12 +66,23 @@
           <span class="deleteItem" @click="deleteTest(item, i)"></span>
         </div>
         <!-- 添加按钮 -->
-        <div
-          class="addButton wrap_flex_allcenter"
-          @click="addTest"
-          :class="title == '笔试题型' && 'changeAddbutton'"
-        >
-          <span>{{ (title == "小乐器" && "添加乐器") || "添加题型" }}</span>
+
+        <div class="wrap_flex_center last_row">
+          <div
+            class="addButton wrap_flex_allcenter"
+            @click="addTest"
+            :class="title == '笔试题型' && 'changeAddbutton'"
+          >
+            <span>{{ (title == "小乐器" && "添加乐器") || "添加题型" }}</span>
+          </div>
+          <!-- 计算总分 -->
+          <span
+            >{{
+              title == "小乐器" ||
+              (title == "音乐题型" && "音乐总分:") ||
+              "美术总分:"
+            }}{{ computedAllScore }}</span
+          >
         </div>
       </div>
     </div>
@@ -82,6 +93,22 @@
         <span>至少保留一项</span>
         <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="atleast_dialogVisible = false"
+            >确 定</el-button
+          >
+        </span>
+      </el-dialog>
+    </div>
+
+    <!-- 重复弹窗 -->
+    <div class="atleast">
+      <el-dialog
+        title="提示"
+        :visible.sync="typeRepeat_dialogVisible"
+        width="20%"
+      >
+        <span>题型重复</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="typeRepeat_dialogVisible = false"
             >确 定</el-button
           >
         </span>
@@ -106,6 +133,9 @@ export default {
 
       // 至少保留一项
       atleast_dialogVisible: false,
+
+      // 题型重复
+      typeRepeat_dialogVisible: false,
       value: "",
       // amount: "",
     };
@@ -137,10 +167,6 @@ export default {
 
     // 改变单选选择
     changeVal(val, item, i) {
-      item.currentVal = val;
-      // console.log("thisval", val);
-      // console.log("thisitem", item);
-      // console.log("thisi", i);
       // this.paperTypes[i].question_type = item.mark;
       let valMark = "";
       this.options.forEach((item, i) => {
@@ -149,10 +175,25 @@ export default {
           return;
         }
       });
+      // console.log("valMark", valMark);
+      // 如果题型重复
+      let repeatVal = this.paperTypes.some((item) => {
+        return item.question_type == valMark;
+      });
+      // console.log("repeat", repeatVal);
+      if (repeatVal) {
+        // 跳弹窗
+        this.typeRepeat_dialogVisible = true;
 
-      this.paperTypes[i].question_type = valMark;
+        // 清空
+        item.currentVal = "";
+      } else {
+        this.typeRepeat_dialogVisible = false;
+        item.currentVal = val;
+        this.paperTypes[i].question_type = valMark;
+      }
 
-      console.log("current", this.paperTypes);
+      console.log("currentpapertypes", this.paperTypes);
       this.emitParent();
     },
 
@@ -161,7 +202,8 @@ export default {
       // console.log("amountanditem", amount, item);
 
       item.number = amount;
-
+      // 重新计算下单个item总分
+      item.total = item.score * item.number;
       this.emitParent();
     },
 
@@ -171,7 +213,12 @@ export default {
         // console.log("jinlail");
         item.number = 1;
       }
+
       item.score = scoreVal;
+      // 重新计算下单个item总分
+      item.total = item.score * item.number;
+      // this.$set(item, score, scoreVal);
+      console.log("score", this.paperTypes);
       this.emitParent();
     },
 
@@ -213,6 +260,18 @@ export default {
         }
         return "正在合计分数值";
       };
+    },
+
+    // 计算总分
+    computedAllScore: function () {
+      let total = 0;
+      // console.log("zongfen", this.paperTypes);
+
+      this.paperTypes.forEach((item) => {
+        total += item.total;
+      });
+
+      return (total && total) || "";
     },
   },
   created() {
@@ -403,6 +462,17 @@ export default {
   }
   .el-input__inner {
     height: 32px;
+  }
+
+  .last_row {
+    justify-content: space-between;
+    & > span {
+      margin-right: 60px;
+      font-size: 12px;
+      font-family: Microsoft YaHei;
+      font-weight: 400;
+      color: #409eff;
+    }
   }
 }
 </style>

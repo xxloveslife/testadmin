@@ -129,59 +129,63 @@ export default {
   // width: 200px;
   height: 100%;
   overflow: hidden;
-}
+  .sidebar > ul {
+    width: 100%;
+    // background-color: white !important;
+  }
 
-.sidebar > ul {
-  width: 100%;
-  // background-color: white !important;
-}
+  .logo {
+    height: 118px;
+    background-color: #409eff;
+  }
+  .el-icon-arrow-down:before {
+    color: #ffffff;
+  }
 
-.logo {
-  height: 118px;
-  background-color: #409eff;
-}
-.el-icon-arrow-down:before {
-  color: #ffffff;
-}
+  // el-menu-item > li {
+  //   padding-left: 60px !important;
+  // }
 
-// el-menu-item > li {
-//   padding-left: 60px !important;
-// }
+  .el-menu {
+    background-color: white !important;
+  }
 
-.el-menu {
-  background-color: white !important;
-}
+  // 工作台
 
-// 工作台
+  .el-menu-item > span {
+    font-size: 16px;
+    margin-left: 20px;
+  }
 
-.el-menu-item > span {
-  font-size: 16px;
-  margin-left: 20px;
-}
+  // .el-menu-item:focus {
+  //   background-color: #79bbff !important;
+  //   margin-left: 5px;
+  // }
 
-.el-menu-item:focus {
-  background-color: #79bbff !important;
-  margin-left: 5px;
-}
+  .el-menu-item.is-active {
+    background-color: #79bbff !important;
+    margin-left: 5px;
+  }
 
-// .el-menu-item:hover {
-//   background-color: #409eff !important;
-// }
+  // .el-menu-item:hover {
+  //   background-color: #409eff !important;
+  // }
 
-//题库题卷
-.el-submenu__title > span {
-  font-size: 16px;
-  margin-left: 20px;
-}
+  //题库题卷
+  .el-submenu__title > span {
+    font-size: 16px;
+    margin-left: 20px;
+  }
 
-// .el-submenu__title:hover {
-//   background-color: #409eff !important;
-// }
+  // .el-submenu__title:hover {
+  //   background-color: #409eff !important;
+  // }
 
-//二级 制作试题
-.cussubitem > li {
-  // margin-left: 60px;
-  font-size: 14px;
-  padding-left: 60px !important;
+  //二级 制作试题
+  .cussubitem > li {
+    // margin-left: 60px;
+    font-size: 14px;
+    padding-left: 60px !important;
+  }
 }
 </style>

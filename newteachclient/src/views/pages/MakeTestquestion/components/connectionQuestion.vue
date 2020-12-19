@@ -1,7 +1,7 @@
 <template>
   <div class="connection-question-container">
     <div class="headerBox">
-      <div class="leftTitle">第一列 :</div>
+      <div class="leftTitle leftTitleText">第一列 :</div>
       <option-components
         :singleChoiceList="singleChoiceList"
         class="optionBox"
@@ -10,7 +10,7 @@
         :radioDefault="radioDefault"
       ></option-components>
     </div>
-    <div class="footerBox">
+    <div class="footerBox leftTitleText">
       <div class="bodyTitle">第二列 :</div>
       <option-components
         :singleChoiceList="singleChoiceList1"
@@ -20,7 +20,7 @@
         :radioDefault="radioDefault"
       ></option-components>
     </div>
-    <div class="footerBox">
+    <div class="footerBox leftTitleText">
       <div class="footer">答 案 :</div>
       <el-input
         v-model="testQuestionlists.correct"
@@ -64,9 +64,15 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .connection-question-container {
   position: relative;
+  .leftTitleText {
+    font-size: 12px;
+    font-family: Microsoft YaHei;
+    font-weight: bold;
+    color: #303133;
+  }
   .leftTitle {
     position: absolute;
     left: 0;
@@ -87,15 +93,22 @@ export default {
     position: absolute;
     top: -10px;
     left: 55px;
-    width: 316px;
+    width: 641px;
+    height: 32px;
     background: #ffffff;
     border-radius: 6px;
     font-size: 12px;
     font-family: Microsoft YaHei;
     font-weight: 400;
     color: #909399;
-    line-height: 41px;
     margin-right: 5px;
+    /deep/.el-input__inner {
+      width: 641px;
+      height: 32px;
+      background: #ffffff;
+      border: 1px solid #dcdfe6;
+      border-radius: 6px;
+    }
   }
 }
 </style>

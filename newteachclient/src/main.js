@@ -5,6 +5,7 @@ import store from "./store";
 import ElementUI from "element-ui";
 import '@/style/index.scss'   //global css
 import 'element-ui/lib/theme-chalk/index.css';
+import 'lib-flexible'
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI)

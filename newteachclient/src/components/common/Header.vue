@@ -51,25 +51,26 @@ export default {
 .home_header {
   float: left;
   width: 100%;
-  height: 80px;
+  height: 5rem;
   background-color: #ffffff;
+  border-radius: 0.25rem;
   .teacher {
     float: left;
 
     span {
-      line-height: 80px;
-      margin-left: 53px;
+      line-height: 5rem;
+      margin-left: 1.5625rem;
       font-family: PingFang-SC-Heavy;
-      font-size: 24px;
+      font-size: 1.5rem;
       color: #303133;
     }
   }
   .teacherInfo {
-    margin-left: 24px;
+    margin-left: 1.5rem;
     float: left;
     span {
       display: inline-block;
-      margin-top: 37px;
+      margin-top: 2.3125rem;
       font-family: PingFang-SC-Medium;
       color: #909399;
     }
@@ -78,18 +79,18 @@ export default {
     width: 2.5rem;
     cursor: pointer;
     float: right;
-    margin-top: 17px;
-    margin-right: 27px;
+    margin-top: 1.0625rem;
+    margin-right: 1.6875rem;
     background-image: url("../../assets/imgs/workbench/logout.png");
     background-size: 2.5rem 2.5rem;
     background-repeat: no-repeat;
     span {
       display: inline-block;
-      width: 40px;
-      height: 40px;
+      width: 2.5rem;
+      height: 2.5rem;
       // background-color: orange;
       text-align: center;
-      line-height: 40px;
+      line-height: 2.5rem;
     }
   }
   .logout:hover {

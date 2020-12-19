@@ -1,6 +1,8 @@
 @import './variable.scss';
 html {
   height: 100%;
+  // font-size: 16px;
+  overflow-x:hidden; 
 }
 body,
 div,
@@ -28,6 +30,10 @@ td {
   margin: 0;
   padding: 0;
   // overflow: hidden;
+}
+span{
+  // 默认不换行
+  white-space: nowrap;   
 }
 table {
   border-collapse: collapse;
@@ -61,6 +67,7 @@ body {
     Microsoft YaHei, SimSun, sans-serif;
   margin: 0;
   padding: 0;
+  
 }
 
 #app {
@@ -119,5 +126,14 @@ div{
   opacity: 0.5;
   filter: alpha(opacity=40); /* 针对 IE8 以及更早的版本 */
 }
+
+.tenpx {
+  display: block;
+  font-size: 12px;
+  transform: scale(0.83, 0.83);
+  *font-size: 10px;
+}
+
+
 
 

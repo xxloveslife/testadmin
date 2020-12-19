@@ -11,7 +11,7 @@
       type="file"
       ref="uploadFile"
       hidden
-      accept="audio/mpeg"
+      accept="audio/mpeg,.wav"
       @change="uploadFileChangeAudio"
     />
     <input

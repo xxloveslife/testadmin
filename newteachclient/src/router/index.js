@@ -46,20 +46,30 @@ const routes = [
       //制作试卷
       {
         path: '/maketestpaper',
+        name: 'maketestpaper',
         component: () =>
           import(
             /* webpackChunkName: "maketestpaper" */ '@/views/pages/MakeTestpaper/index.vue'
           ),
+        meta: {
+          keepAlive: true,
+        },
       },
       // 课程列表
       {
         path: '/courselist',
-        component: () => import( /* webpackChunkName: "courselist" */ '@/views/pages/CourseList/index.vue')
+        component: () =>
+          import(
+            /* webpackChunkName: "courselist" */ '@/views/pages/CourseList/index.vue'
+          ),
       },
       // 新建课表
       {
         path: '/newcourse',
-        component: () => import( /* webpackChunkName: "newcourse" */ '@/views/pages/NewCourse/index.vue')
+        component: () =>
+          import(
+            /* webpackChunkName: "newcourse" */ '@/views/pages/NewCourse/index.vue'
+          ),
       },
       // 个人资料
       {
@@ -89,9 +99,7 @@ const routes = [
       {
         path: '/test',
         component: () =>
-          import(
-            /* webpackChunkName: "test" */ '@/views/pages/Test/index.vue'
-          ),
+          import(/* webpackChunkName: "test" */ '@/views/pages/Test/index.vue'),
       },
       // edit paper
       {
@@ -99,6 +107,53 @@ const routes = [
         component: () =>
           import(
             /* webpackChunkName: "editpaper" */ '@/views/pages/EditTestPaper/index.vue'
+          ),
+      },
+
+      // 课件预览页
+      {
+        path: '/coursePreview',
+        name: 'coursePreviewLink',
+        component: () =>
+          import(
+            /* webpackChunkName: "coursepreview" */ '@/views/pages/CoursePreviewPage/index.vue'
+          ),
+      },
+
+      // 课件编辑页
+      {
+        path: '/courseEditPage',
+        name: 'courseEditLink',
+        component: () =>
+          import(
+            /* webpackChunkName: "courseditpage" */ '@/views/pages/CourseEditPage/index.vue'
+          ),
+      },
+      {
+        path: '/reEditpage',
+        name: 'reEditpage',
+        component: () =>
+          import(
+            /* webpackChunkName: "courseditpage" */ '@/views/pages/MakeTestquestion/components/reEditpage.vue'
+          ),
+      },
+      // 制作试卷系统匹配页
+      {
+        path: '/paperMadeSysMatch',
+        name: 'paperMadeSysMatch',
+        component: () =>
+          import(
+            /* webpackChunkName: "paperMadeSysMatch" */ '@/views/pages/PaperMadeSysMatch/index.vue'
+          ),
+      },
+      // 制作试卷手动匹配页
+      {
+        path: '/paperMadeManualMatch',
+        name: 'paperMadeManualMatch',
+
+        component: () =>
+          import(
+            /* webpackChunkName: "paperMadeManualMatch" */ '@/views/pages/PaperMadeManualMatch/index.vue'
           ),
       },
     ],

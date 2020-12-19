@@ -207,6 +207,10 @@ export default {
     position: absolute;
     left: 0;
     top: 13px;
+    font-size: 12px;
+    font-family: Microsoft YaHei;
+    font-weight: bold;
+    color: #303133;
   }
 
   .rightBox {
@@ -252,6 +256,10 @@ export default {
       }
       .el-button {
         margin-right: 11px;
+        width: 77px;
+        height: 32px;
+        padding: 8px 10px;
+        border-radius: 6px;
       }
     }
   }

@@ -17,3 +17,10 @@ export function makeExercisesArtType(data) {
   const url = '/makeExercises/makeExercisesArtType'
   return $axios.post(url, data)
 }
+
+// 获取试题编辑页面
+export function getTestQuestionsedit(data) {
+  // getTestLibraryCategory  by   data
+  const url = '/exercises/edit'
+  return $axios.post(url, data)
+}

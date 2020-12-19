@@ -103,6 +103,36 @@ import messageBox from './components/messageBox'
 export default {
   name: 'personalInformation',
   data() {
+    var checkOldPwd = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入旧密码'))
+      } else if (value.toString().length < 5 || value.toString().length > 20) {
+        callback(new Error('密码长度在 5 到 20 个字符'))
+      }
+    }
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入新密码'))
+      } else if (!/^[^\u4e00-\u9fa5]{0,}$/.test(value)) {
+        callback(new Error('密码不能包含汉字'))
+      } else if (value.toString().length < 5 || value.toString().length > 20) {
+        callback(new Error('密码长度在 5 到 20 个字符'))
+      } else {
+        if (this.changePasswordList.checkPass !== '') {
+          this.$refs.changePasswordForm.validateField('pwd2')
+        }
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.changePasswordList.pwd) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
       phoneNumber: '',
       messageBoxStatus: false,
@@ -114,21 +144,17 @@ export default {
         pwd2: '',
       },
       changePasswordFormRule: {
-        before: [
-          { required: true, message: '请输入当前密码', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
-        ],
         pwd: [
-          { required: true, message: '请输入新的设置密码', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
+          //新密码
+          { validator: validatePass, trigger: 'blur' },
         ],
         pwd2: [
-          {
-            required: true,
-            message: '请重复输入新的设置密码',
-            trigger: 'blur',
-          },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
+          //确认密码
+          { validator: validatePass2, trigger: 'blur' },
+        ],
+        before: [
+          //旧密码
+          { validator: checkOldPwd, trigger: 'blur' },
         ],
       },
     }
@@ -186,7 +212,6 @@ export default {
     background: #ffffff;
     border-radius: 8px;
     margin: auto;
-    margin-top: -20px;
     margin-bottom: 20px;
     span {
       display: block;
