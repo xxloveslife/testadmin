@@ -10,7 +10,7 @@
       <span> {{ m_teacher_style }} | 系统账号: {{ login_account }}</span>
     </div>
     <!-- logout -->
-    <div class="logout">
+    <div class="logout" @click="logout">
       <span></span>
     </div>
   </div>
@@ -21,31 +21,38 @@ export default {
     teacher_name: String,
     teacher_style: {
       type: String,
-      default: "",
+      default: '',
     },
     login_account: String,
   },
   date() {
     return {
-      name: "XX",
-    };
+      name: 'XX',
+    }
   },
 
   computed: {
-    m_teacher_style: function () {
+    m_teacher_style: function() {
       if (this.teacher_style) {
-        if (this.teacher_style == "1") {
-          return "音乐";
-        } else if (this.teacher_style == "2") {
-          return "美术";
+        if (this.teacher_style == '1') {
+          return '音乐'
+        } else if (this.teacher_style == '2') {
+          return '美术'
         } else {
-          return "音乐 | 美术";
+          return '音乐 | 美术'
         }
       }
-      return "";
+      return ''
     },
   },
-};
+  methods: {
+    logout() {
+      // 退出登录
+      this.$store.commit('user/DEL_TOKEN')
+      this.$router.push('/login')
+    },
+  },
+}
 </script>
 <style lang="scss">
 .home_header {
@@ -81,7 +88,7 @@ export default {
     float: right;
     margin-top: 1.0625rem;
     margin-right: 1.6875rem;
-    background-image: url("../../assets/imgs/workbench/logout.png");
+    background-image: url('../../assets/imgs/workbench/logout.png');
     background-size: 2.5rem 2.5rem;
     background-repeat: no-repeat;
     span {

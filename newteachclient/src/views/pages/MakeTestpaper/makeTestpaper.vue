@@ -300,6 +300,38 @@ export default {
     m_art_checked: {
       type: Boolean,
     },
+    // 年级
+    m_grade: {
+      type: String,
+      default: "",
+    },
+    // 学期
+    m_semester: {
+      type: String,
+      default: "",
+    },
+    // 音乐单元
+    m_musicUnit: {
+      type: String,
+      default: "",
+    },
+    // 美术单元
+    m_artUnit: {
+      type: String,
+      default: "",
+    },
+
+    // 难度
+    m_difficult: {
+      type: String,
+      default: "",
+    },
+
+    // 编辑页进来的试卷id
+    m_paperid: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -334,7 +366,7 @@ export default {
       ],
 
       // 多选的数组  [0,1]
-      checkItemTypes: [],
+      checkItemTypes: ["音乐类"],
 
       //提交内容
       paper_selection: {},
@@ -348,7 +380,7 @@ export default {
       instrumentInfos: [],
 
       // 适用年级
-      fitGradeValue: "",
+      fitGradeValue: this.m_grade,
       allGradeOptions: [
         { mark: -1, label: "所有年级" },
         { mark: 4, label: "一年级" },
@@ -366,7 +398,7 @@ export default {
       ],
 
       // 适用学年
-      fitSemesterValue: "",
+      fitSemesterValue: this.m_semester,
       allSemesterOptions: [
         { mark: -1, label: "全部" },
         { mark: 1, label: "上学期" },
@@ -374,7 +406,7 @@ export default {
       ],
 
       // 音乐单元
-      musicUnit: "",
+      musicUnit: this.m_musicUnit,
       allMusicUnitOptions: [
         { mark: 1, label: "1单元" },
         { mark: 2, label: "2单元" },
@@ -403,7 +435,7 @@ export default {
         { mark: 25, label: "25单元" },
       ],
       // 美术单元
-      artUnit: "",
+      artUnit: this.m_artUnit,
       allArtUnitOptions: [
         { mark: 1, label: "1单元" },
         { mark: 2, label: "2单元" },
@@ -433,7 +465,7 @@ export default {
       ],
 
       // 难易度
-      difficultVal: "",
+      difficultVal: this.m_difficult,
       allDifficultOptions: [
         { mark: 0, label: "全部" },
         { mark: 1, label: "易" },
@@ -446,8 +478,13 @@ export default {
         stype: 1,
         paper_range: 1,
         source: 1,
-        name: "",
+        name: this.m_paperName,
         paper_conf: {},
+        // grade: this.findMark(this.allGradeOptions, this.m_grade),
+        // semester: this.findMark(this.allSemesterOptions, this.m_semester),
+        // unit: this.findMark(this.allMusicUnitOptions, this.m_musicUnit),
+        // art_unit: this.findMark(this.allArtUnitOptions, this.m_artUnit),
+        // difficult: this.findMark(this.allDifficultOptions, this.m_difficult),
       },
 
       // 系统匹配
@@ -489,16 +526,17 @@ export default {
   },
   methods: {
     changeCheck() {
-      // init
-      if (this.checkItemTypes.length < 1) {
-        this.this.allRequestInfos.stype = "";
-      }
-      // console.log("val", this.checkItems);
-
+      console.log("this.allItems", this.checkItems);
       this.checkItemTypes = this.checkItems.map((item, i) => {
         return item;
       });
-      // console.log(this.checkItemTypes);
+
+      // init
+      if (this.checkItemTypes.length == 0) {
+        this.allRequestInfos.stype = "";
+      }
+      // console.log("val", this.checkItems);
+
       if (this.checkItemTypes.length > 1) {
         // 音乐和美术
         this.infos = [
@@ -506,7 +544,7 @@ export default {
           { type: 2, label: "人教版" },
           { type: 5, label: "鲁教版" },
         ];
-        this.allRequestInfos.stype = 0;
+        this.allRequestInfos.stype = 3;
       } else if (this.checkItemTypes.length == 1) {
         if (this.checkItemTypes[0] == "音乐类") {
           //音乐
@@ -533,6 +571,8 @@ export default {
           this.allRequestInfos.stype = 2;
         }
       }
+
+      console.log("changeinfos", this.allRequestInfos.stype);
     },
 
     changeRadio(val) {
@@ -567,6 +607,8 @@ export default {
           let { question_type, ...other } = item;
           m_list.push(question_type);
         });
+
+        // console.log("小乐器,type列表", m_list);
       } else {
         msg1.forEach((item) => {
           let { amount, currentVal, scoreVal, ...conf } = item;
@@ -596,6 +638,20 @@ export default {
       this.allGradeOptions.forEach((item, i) => {
         if (item.label == val) {
           this.allRequestInfos.grade = item.mark;
+          // if (item.mark == -1) {
+          //   // 隐藏两个单元
+          //   this.showMusicUnit = false;
+          //   this.showArtUnit = false;
+          // } else {
+          //   console.log("当前多选项", this.checkItemTypes);
+          //   // 根据当前多选项判断
+          //   if (this.checkItemTypes.indexOf("音乐类") !== -1) {
+          //     this.showMusicUnit = true;
+          //   }
+          //   if (this.checkItemTypes.indexOf("美术类") !== -1) {
+          //     this.showArtUnit = true;
+          //   }
+          // }
           return;
         }
       });
@@ -606,7 +662,20 @@ export default {
       this.allSemesterOptions.forEach((item, i) => {
         if (item.label == val) {
           this.allRequestInfos.semester = item.mark;
-
+          // if (item.mark == -1) {
+          //   // 隐藏两个单元
+          //   this.showMusicUnit = false;
+          //   this.showArtUnit = false;
+          // } else {
+          //   console.log("当前多选项", this.checkItemTypes);
+          //   // 根据当前多选项判断
+          //   if (this.checkItemTypes.indexOf("音乐类") !== -1) {
+          //     this.showMusicUnit = true;
+          //   }
+          //   if (this.checkItemTypes.indexOf("美术类") !== -1) {
+          //     this.showArtUnit = true;
+          //   }
+          // }
           return;
         }
       });
@@ -650,8 +719,11 @@ export default {
       // console.log("all", this.allRequestInfos);
 
       // 判断是否选择试题类型
-      if (!this.allRequestInfos.stype == "") {
+      console.log("nextinfos", this.allRequestInfos);
+
+      if (this.allRequestInfos.stype == "") {
         this.nullCheckItems = false;
+
         this.name_dialogVisible = true;
       } else {
         this.nullCheckItems = true;
@@ -667,6 +739,7 @@ export default {
           // 判断小乐器有没有空
           if (item.instrumentInfos && item.instrumentInfos.length < 1) {
             this.nullInstrument = false;
+
             this.name_dialogVisible = true;
           } else {
             this.nullInstrument = true;
@@ -743,6 +816,7 @@ export default {
 
           if (item.score == "") {
             this.nullScore = false;
+
             this.name_dialogVisible = true;
           } else {
             this.nullScore = true;
@@ -758,16 +832,23 @@ export default {
 
         if (!this.gotType3) {
           // show  请选择演唱题
+
           this.name_dialogVisible = true;
         } else {
-          // 添加进requestInfos
-          this.requestInfos.music_conf.push(this.instrumentInfos);
+          // 添加进requestInfos,里面的question_type = 3 的演唱题对象里面,  key值为instrument_type
+          // this.requestInfos.music_conf.push(this.instrumentInfos);
+          this.requestInfos.music_conf.forEach((item) => {
+            if (item.question_type == 3) {
+              item.instrument_type = this.instrumentInfos;
+            }
+          });
         }
       }
 
       // 判断适用年级
       if (!this.allRequestInfos.grade || this.allRequestInfos.grade == "") {
         this.nullGrade = false;
+
         this.name_dialogVisible = true;
       } else {
         this.nullGrade = true;
@@ -778,26 +859,57 @@ export default {
         this.allRequestInfos.semester == ""
       ) {
         this.nullSemester = false;
+
         this.name_dialogVisible = true;
       } else {
         this.nullSemester = true;
       }
 
       // 避免多次请求网络
-      // 弹出 过
+      // 弹出窗 就 过
       if (this.name_dialogVisible) {
         return;
       }
-
+      this.allRequestInfos.paper_id = this.m_paperid;
+      console.log("paperid", this.allRequestInfos.paper_id);
       // ,再把requestInfos添加进paper_conf  JSON.stringify(this.requestInfos)
       this.allRequestInfos.paper_conf = JSON.stringify(this.requestInfos);
-      console.log("allRequest", this.allRequestInfos);
+
       // 判断当前是系统匹配还是手动添加
-      // console.log("currentSys", this.sys_checked, this.manual_checked);
+
       // 系统匹配,请求网络带参跳转
       if (this.sys_checked) {
         //发送请求
+        console.log("提交试卷信息", this.allRequestInfos);
+        $axios
+          .post("/examinationPaper/editPaper", this.allRequestInfos)
+          .then((res) => {
+            console.log("resresres", res);
+            if (res.code == 0) {
+              const m_eid = res.data.eid;
 
+              return new Promise((resolve, reject) => {
+                resolve(m_eid);
+              });
+            }
+          })
+          .then((res) => {
+            console.log("eid", res);
+            $axios
+              .post("/examinationPaper/preview", { eid: res })
+              .then((res) => {
+                // console.log("thisres", res);
+                console.log("回显预览查看题目id", res);
+                if (res.code == 0) {
+                  // 跳转系统匹配页;
+                  this.$router.push({
+                    name: "paperMadeSysMatch",
+                    params: { paperInfos: res.data },
+                  });
+                }
+              });
+          });
+      } else {
         $axios
           .post("/examinationPaper/editPaper", this.allRequestInfos)
           .then((res) => {
@@ -810,26 +922,38 @@ export default {
             }
           })
           .then((res) => {
+            console.log("eid", res);
             $axios
               .post("/examinationPaper/preview", { eid: res })
               .then((res) => {
-                // console.log("thisres", res);
+                console.log("回显预览查看题目id", res);
                 if (res.code == 0) {
-                  // 跳转系统匹配页;
+                  // 跳转手动匹配页;
                   this.$router.push({
-                    name: "paperMadeSysMatch",
+                    name: "paperMadeManualMatch",
                     params: { paperInfos: res.data },
                   });
                 }
               });
           });
-      } else {
-        // 手动匹配,带参跳转,试卷编辑页面
-        this.$router.push({
-          name: "paperMadeManualMatch",
-          params: { paperInfos: this.allRequestInfos },
-        });
+        // // 手动匹配,带参跳转,试卷编辑页面
+        // this.$router.push({
+        //   name: "paperMadeManualMatch",
+        //   params: { paperInfos: this.allRequestInfos },
+        // });
       }
+    },
+
+    // 匹配传参mark
+    findMark(allVals, val) {
+      let tempMark = "";
+      allVals.forEach((m_item) => {
+        if (m_item.label == val) {
+          console.log("myhmark", m_item.mark);
+          tempMark = m_item.mark;
+        }
+      });
+      return tempMark;
     },
   },
   computed: {
@@ -864,8 +988,6 @@ export default {
   watch: {
     // 监听设置requestInfos的值
     checkItemTypes(newV, oldV) {
-      console.log("change");
-      // console.log("newv", newV);
       if (newV.indexOf("音乐类") == -1) {
         this.requestInfos.music_conf = [];
       } else if (newV.indexOf("美术类") == -1) {
@@ -936,8 +1058,73 @@ export default {
         this.manual_checked = true;
       }
     },
+
+    // 监听音乐单元选择
+    showMusicUnit(newV, oldV) {
+      if (newV == false) {
+        this.allRequestInfos.unit = "";
+      }
+    },
+    // 监听美术单元选择
+    showArtUnit(newV, oldV) {
+      if (newV == false) {
+        this.allRequestInfos.art_unit = "";
+      }
+    },
+
+    // 监听年级和学年
+    fitGradeValue(newV, oldV) {
+      if (newV == "所有年级" || this.fitSemesterValue == "全部") {
+        this.showMusicUnit = false;
+        this.showArtUnit = false;
+      } else {
+        // console.log("zouxiamian ");
+        // console.log("xiamian11", this.checkItemTypes);
+        // console.log("xiamian", this.checkItemTypes.indexOf("音乐类"));
+        // 根据当前多选项判断
+        if (this.checkItemTypes.indexOf("音乐类") !== -1) {
+          this.showMusicUnit = true;
+        }
+        if (this.checkItemTypes.indexOf("美术类") !== -1) {
+          this.showArtUnit = true;
+        }
+      }
+    },
+
+    fitSemesterValue(newV, oldV) {
+      if (newV == "全部" || this.fitGradeValue == "所有年级") {
+        this.showMusicUnit = false;
+        this.showArtUnit = false;
+      } else {
+        // 根据当前多选项判断
+        if (this.checkItemTypes.indexOf("音乐类") !== -1) {
+          this.showMusicUnit = true;
+        }
+        if (this.checkItemTypes.indexOf("美术类") !== -1) {
+          this.showArtUnit = true;
+        }
+      }
+    },
   },
-  created() {},
+  created() {
+    if (this.m_artUnit != "") {
+      this.showArtUnit = true;
+    }
+
+    this.allRequestInfos = {
+      ...this.allRequestInfos,
+      grade: this.findMark(this.allGradeOptions, this.m_grade),
+      semester: this.findMark(this.allSemesterOptions, this.m_semester),
+      unit: this.findMark(this.allMusicUnitOptions, this.m_musicUnit),
+      art_unit: this.findMark(this.allArtUnitOptions, this.m_artUnit),
+      difficult: this.findMark(this.allDifficultOptions, this.m_difficult),
+    };
+    // console.log("createdinfos", this.allRequestInfos);
+    console.log("grade", this.m_grade);
+  },
+  mounted() {
+    // console.log("makepaper_conf", this.m_paperConf);
+  },
 
   // beforeRouteLeave(to, from, next) {
   //   if (to.name === "paperMadeManualMatch") {
@@ -948,7 +1135,7 @@ export default {
   // },
 };
 </script>
-<style lang="scss" >
+<style lang="scss">
 .makeTestPaper {
   .testType {
     height: 2rem;

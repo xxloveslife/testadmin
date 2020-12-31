@@ -37,8 +37,14 @@
           </li>
           <li>
             <span>绑定手机：</span>
-            <i>{{ phoneNumber.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') }}</i>
-            <el-button type="text" @click="messageBoxStatus = true"
+            <span v-if="!this.phoneNumber">当前未绑定手机号</span>
+            <i v-if="this.phoneNumber">{{
+              phoneNumber.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+            }}</i>
+            <el-button
+              type="text"
+              @click="messageBoxStatus = true"
+              v-if="this.phoneNumber"
               >解绑手机</el-button
             >
           </li>
@@ -89,17 +95,27 @@
         </el-form>
       </el-card>
     </div>
-    <!-- 弹出框 -->
+    <!-- 解绑手机发送验证码弹出框 -->
     <message-box
-      :phoneNumber="phoneNumber.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')"
+      :phoneNumber="phoneNumber"
       :messageBoxStatus="messageBoxStatus"
       @closeMessage="messageBoxStatus = false"
+      @unbindPhoneShow="unbindPhoneStatus = true"
     ></message-box>
+    <!-- 解绑手机弹出框-->
+    <unbind-phone
+      :phoneNumber="phoneNumber"
+      :unbindPhoneStatus="unbindPhoneStatus"
+      @close="unbindPhoneStatus = false"
+      @refrech="getList"
+    ></unbind-phone>
   </div>
 </template>
 
 <script>
 import messageBox from './components/messageBox'
+import unbindPhone from './components/unbindPhone'
+
 export default {
   name: 'personalInformation',
   data() {
@@ -135,6 +151,7 @@ export default {
     }
     return {
       phoneNumber: '',
+      unbindPhoneStatus: false,
       messageBoxStatus: false,
       tabstatus: true,
       list: {},
@@ -161,17 +178,21 @@ export default {
   },
   components: {
     messageBox,
+    unbindPhone,
   },
   created() {
-    this.$store.dispatch('manageAccount/makeUserInfo').then((res) => {
-      if (res || res.code == 0) {
-        this.list = res.data
-        this.phoneNumber = res.data.phone
-        console.log(this.list)
-      }
-    })
+    this.getList()
   },
   methods: {
+    getList() {
+      this.$store.dispatch('manageAccount/makeUserInfo').then((res) => {
+        if (res || res.code == 0) {
+          this.list = res.data
+          this.phoneNumber = res.data.phone
+          console.log(this.list)
+        }
+      })
+    },
     changeTabstatus() {
       if (this.tabstatus) {
         this.tabstatus = false
@@ -180,24 +201,18 @@ export default {
       }
     },
     changePasswordOperating() {
-      // 预验证并修改
-      this.$refs.changePasswordForm.validate((valid) => {
-        if (valid) {
-          this.$store
-            .dispatch('manageAccount/resetPwd', this.changePasswordList)
-            .then((res) => {
-              if (res || res.code == 0) {
-                this.$message.success('修改密码成功')
-              } else if (res.code == 400) {
-                this.$message.error('原密码输入有误')
-              } else {
-                this.$message.error('修改密码失败，请稍后重试')
-              }
-            })
-        } else {
-          return this.$message.error('修改密码有误，请重新输入')
-        }
-      })
+      this.$store
+        .dispatch('manageAccount/resetPwd', this.changePasswordList)
+        .then((res) => {
+          console.log(res)
+          if (res && res.code == 0) {
+            this.$message.success('修改密码成功')
+          } else if (res.code == 400) {
+            this.$message.error('原密码输入有误')
+          } else {
+            this.$message.error('修改密码失败，请稍后重试')
+          }
+        })
     },
   },
 }

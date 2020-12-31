@@ -2106,134 +2106,145 @@ export default {
         difficult: this.testQuestionlists.difficult,
         background_file_url: this.musicUrl,
       }
-
-      if (this.textRadio === '音乐') {
-        let obj1 = {
-          jp_music_pic: this.textList1.imageUrl,
-          wx_music_pic: this.textList.imageUrl,
-        }
-        data.answer = obj1
-        console.log(data)
-
-        if (this.radioDefault === '单项选择题') {
-          data.correct = this.changeradio
-          data.op_text = []
-          data.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            data.op_text.push(ele.op_text)
-            data.op_file.push(ele.op_file)
-          })
-          data.question_type = 1
-          console.log(data)
-        } else if (this.radioDefault === '多项选择题') {
-          data.correct = this.multipleRadio
-          data.op_text = []
-          data.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            data.op_text.push(ele.op_text)
-            data.op_file.push(ele.op_file)
-          })
-          data.question_type = 2
-          console.log(data)
-        } else if (this.radioDefault === '判断题') {
-          data.op_text = ['正确', '错误']
-          data.correct = this.judgmentradio
-          data.question_type = 10
-          console.log(data)
-        } else {
-          data.op_text = []
-          data.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            data.op_text.push(ele.op_text)
-            data.op_file.push(ele.op_file)
-          })
-          data.op_text = []
-          data.op_file = []
-          this.singleChoiceList1.forEach((ele) => {
-            data.op_text.push(ele.op_text)
-            data.op_file.push(ele.op_file)
-          })
-          data.question_type = 11
-          data.correct = this.testQuestionlists.correct
-          console.log(data)
-        }
-
-        this.$store
-          .dispatch('makeTestquestion/getExercisesMusicType', data)
-          .then((res) => {
-            console.log(res)
-            if (res && res.code === 0) {
-              console.log(res)
-              // this.question_id = res.data.question_id
-              this.confirmSubmitPopupStatus = true
-            } else if (res.code === 400) {
-              this.$message.error('选项格式有错误')
-            }
-          })
+      if (data.content === '') {
+        this.$message.error('题目内容不能为空')
       } else {
-        let obj1 = {
-          art_pic: this.textList2.imageUrl,
-        }
-        data.answer = obj1
-        console.log(data)
-        if (this.radioDefault === '单项选择题') {
-          data.correct = this.changeradio
-          data.op_text = []
-          data.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            data.op_text.push(ele.op_text)
-            data.op_file.push(ele.op_file)
-          })
-          data.question_type = 1
-          console.log(data)
-        } else if (this.radioDefault === '多项选择题') {
-          data.correct = this.multipleRadio
-          data.op_text = []
-          data.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            data.op_text.push(ele.op_text)
-            data.op_file.push(ele.op_file)
-          })
-          data.question_type = 2
-          console.log(data)
-        } else if (this.radioDefault === '判断题') {
-          data.op_text = ['正确', '错误']
-          data.correct = this.judgmentradio
-          data.question_type = 3
-          console.log(data)
-        } else if (this.radioDefault === '连线题') {
-          data.op_text = []
-          data.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            data.op_text.push(ele.op_text)
-            data.op_file.push(ele.op_file)
-          })
-          data.op_text = []
-          data.op_file = []
-          this.singleChoiceList1.forEach((ele) => {
-            data.op_text.push(ele.op_text)
-            data.op_file.push(ele.op_file)
-          })
-          data.question_type = 4
-          data.correct = this.testQuestionlists.correct
-          console.log(data)
+        if (data.checked_cid === '') {
+          this.$message.error('知识相关必须选择')
         } else {
-          data.question_type = 5
-        }
-        this.$store
-          .dispatch('makeTestquestion/getExercisesArtType', data)
-          .then((res) => {
-            console.log(res)
-            if (res && res.code === 0) {
-              console.log(res)
-              // this.question_id = res.data.question_id
-              this.confirmSubmitPopupStatus = true
-            } else if (res.code === 400) {
-              this.$message.error('选项格式有错误')
+          if (data.answer_parse === '' || data.answer_range === '') {
+            this.$message.error('题目解析和考点范围不能为空')
+          } else {
+            if (this.textRadio === '音乐') {
+              let obj1 = {
+                jp_music_pic: this.textList1.imageUrl,
+                wx_music_pic: this.textList.imageUrl,
+              }
+              data.answer = obj1
+              console.log(data)
+
+              if (this.radioDefault === '单项选择题') {
+                data.correct = this.changeradio
+                data.op_text = []
+                data.op_file = []
+                this.singleChoiceList.forEach((ele) => {
+                  data.op_text.push(ele.op_text)
+                  data.op_file.push(ele.op_file)
+                })
+                data.question_type = 1
+                console.log(data)
+              } else if (this.radioDefault === '多项选择题') {
+                data.correct = this.multipleRadio
+                data.op_text = []
+                data.op_file = []
+                this.singleChoiceList.forEach((ele) => {
+                  data.op_text.push(ele.op_text)
+                  data.op_file.push(ele.op_file)
+                })
+                data.question_type = 2
+                console.log(data)
+              } else if (this.radioDefault === '判断题') {
+                data.op_text = ['正确', '错误']
+                data.correct = this.judgmentradio
+                data.question_type = 10
+                console.log(data)
+              } else {
+                data.op_text = []
+                data.op_file = []
+                this.singleChoiceList.forEach((ele) => {
+                  data.op_text.push(ele.op_text)
+                  data.op_file.push(ele.op_file)
+                })
+                data.op_text = []
+                data.op_file = []
+                this.singleChoiceList1.forEach((ele) => {
+                  data.op_text.push(ele.op_text)
+                  data.op_file.push(ele.op_file)
+                })
+                data.question_type = 11
+                data.correct = this.testQuestionlists.correct
+                console.log(data)
+              }
+
+              this.$store
+                .dispatch('makeTestquestion/getExercisesMusicType', data)
+                .then((res) => {
+                  console.log(res)
+                  if (res && res.code === 0) {
+                    console.log(res)
+                    // this.question_id = res.data.question_id
+                    this.confirmSubmitPopupStatus = true
+                  } else if (res.code === 400) {
+                    this.$message.error('选项格式有错误')
+                  }
+                })
+            } else {
+              let obj1 = {
+                art_pic: this.textList2.imageUrl,
+              }
+              data.answer = obj1
+              console.log(data)
+              if (this.radioDefault === '单项选择题') {
+                data.correct = this.changeradio
+                data.op_text = []
+                data.op_file = []
+                this.singleChoiceList.forEach((ele) => {
+                  data.op_text.push(ele.op_text)
+                  data.op_file.push(ele.op_file)
+                })
+                data.question_type = 1
+                console.log(data)
+              } else if (this.radioDefault === '多项选择题') {
+                data.correct = this.multipleRadio
+                data.op_text = []
+                data.op_file = []
+                this.singleChoiceList.forEach((ele) => {
+                  data.op_text.push(ele.op_text)
+                  data.op_file.push(ele.op_file)
+                })
+                data.question_type = 2
+                console.log(data)
+              } else if (this.radioDefault === '判断题') {
+                data.op_text = ['正确', '错误']
+                data.correct = this.judgmentradio
+                data.question_type = 3
+                console.log(data)
+              } else if (this.radioDefault === '连线题') {
+                data.op_text = []
+                data.op_file = []
+                this.singleChoiceList.forEach((ele) => {
+                  data.op_text.push(ele.op_text)
+                  data.op_file.push(ele.op_file)
+                })
+                data.op_text = []
+                data.op_file = []
+                this.singleChoiceList1.forEach((ele) => {
+                  data.op_text.push(ele.op_text)
+                  data.op_file.push(ele.op_file)
+                })
+                data.question_type = 4
+                data.correct = this.testQuestionlists.correct
+                console.log(data)
+              } else {
+                data.question_type = 5
+              }
+              this.$store
+                .dispatch('makeTestquestion/getExercisesArtType', data)
+                .then((res) => {
+                  console.log(res)
+                  if (res && res.code === 0) {
+                    console.log(res)
+                    // this.question_id = res.data.question_id
+                    this.confirmSubmitPopupStatus = true
+                  } else if (res.code === 400) {
+                    this.$message.error('选项格式有错误')
+                  }
+                })
             }
-          })
+            this.confirmSubmitPopupStatustwo = true
+          }
+        }
       }
-      this.confirmSubmitPopupStatustwo = true
     },
     ContinueUploading() {
       this.$router.push('/maketestquestion')

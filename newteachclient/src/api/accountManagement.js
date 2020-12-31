@@ -33,3 +33,17 @@ export function getlogAction(data) {
   const url = '/accountManage/logAction'
   return $axios.post(url, data)
 }
+
+// /accountManage/sendMessageCode/ 发送验证码
+export function sendMessageCode(data) {
+  // getTestLibraryCategory  by   data
+  const url = '/accountManage/sendMessageCode'
+  return $axios.post(url, data)
+}
+
+// 解绑手机 /accountManage/unbindPhone
+export function unbindPhone(data) {
+  // getTestLibraryCategory  by   data
+  const url = '/accountManage/unbindPhone'
+  return $axios.post(url, data)
+}

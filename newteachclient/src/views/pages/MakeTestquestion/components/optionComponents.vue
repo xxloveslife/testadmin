@@ -67,7 +67,7 @@
       hidden
       @change="fileChange($event)"
       v-if="changeRadioVal === '音乐'"
-      accept="image/png,image/jpeg,audio/mpeg,.wav"
+      accept="image/png,image/jpeg,audio/mpeg,.wav,image/gif"
     />
     <input
       type="file"
@@ -75,7 +75,7 @@
       hidden
       @change="fileChange"
       v-else
-      accept="image/png,image/jpeg"
+      accept="image/png,image/jpeg,image/gif"
     />
     <div class="footerBox">
       <div class="boxLeft">

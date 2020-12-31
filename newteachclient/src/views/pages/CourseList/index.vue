@@ -1,120 +1,126 @@
 <template>
-  <div class="course_list">
-    <m-cascader
-      :radio="infos[0].title"
-      :infos="infos"
-      @getItemfromCondition="getItems"
-      @changeOperationStyle="changeOpstyle"
-      :pageSize="pagesize"
-      :totalNum="parseInt(allNum)"
-      :currentPage="currentP"
-    >
-      <div class="show_list">
-        <el-table
-          ref="multipleTable"
-          :data="tableData"
-          tooltip-effect="dark"
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" width="68"> </el-table-column>
-          <el-table-column label="序号" width="58">
-            <template slot-scope="scope">{{ scope.$index }}</template>
-          </el-table-column>
-
-          <el-table-column
-            prop="name"
-            label="课件名称"
-            show-overflow-tooltip
-            width="250"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="stype"
-            label="课件类型"
-            show-overflow-tooltip
-            width="289"
-          >
-          </el-table-column>
-
-          <el-table-column
-            prop="paper_range"
-            label="教材"
-            show-overflow-tooltip
-            width="171"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="grade"
-            label="年级"
-            show-overflow-tooltip
-            width="185"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="semester"
-            label="学期"
-            show-overflow-tooltip
-            width="185"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="source"
-            label="来源"
-            show-overflow-tooltip
-            width="187"
-          >
-          </el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope">
-              <div class="list_operation wrap_flex_center">
-                <!-- 预览 -->
-                <i
-                  title="预览"
-                  class="preview"
-                  @click="handlePreview(scope.$index, scope.row)"
-                ></i>
-                <!-- 编辑 -->
-                <i
-                  class="edit"
-                  title="编辑"
-                  @click="handleEdit(scope.$index, scope.row)"
-                ></i>
-                <!-- 删除 -->
-                <i
-                  class="delete"
-                  title="删除"
-                  @click="handleDelete(scope.$index, scope.row)"
-                ></i>
-                <!-- 开始教学 -->
-                <div
-                  class="start_teach wrap_flex_allcenter"
-                  title="开始教学"
-                  @click="handleStartTeach(scope.$index, scope.row)"
-                >
-                  <!-- <i></i> -->
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-    </m-cascader>
-
-    <!-- 弹窗 -->
-    <div class="m_dialog">
-      <el-dialog
-        title="提示"
-        :visible.sync="dialogVisible"
-        width="20%"
-        :before-close="handleClose"
+  <div>
+    <div class="course_list" v-if="false">
+      <m-cascader
+        :radio="infos[0].title"
+        :infos="infos"
+        @getItemfromCondition="getItems"
+        @changeOperationStyle="changeOpstyle"
+        :pageSize="pagesize"
+        :totalNum="parseInt(allNum)"
+        :currentPage="currentP"
       >
-        <span>确定删除</span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="confirmDialog">确 定</el-button>
-        </span>
-      </el-dialog>
+        <div class="show_list">
+          <el-table
+            ref="multipleTable"
+            :data="tableData"
+            tooltip-effect="dark"
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column type="selection" width="68"> </el-table-column>
+            <el-table-column label="序号" width="58">
+              <template slot-scope="scope">{{ scope.$index }}</template>
+            </el-table-column>
+
+            <el-table-column
+              prop="name"
+              label="课件名称"
+              show-overflow-tooltip
+              width="250"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="stype"
+              label="课件类型"
+              show-overflow-tooltip
+              width="289"
+            >
+            </el-table-column>
+
+            <el-table-column
+              prop="paper_range"
+              label="教材"
+              show-overflow-tooltip
+              width="171"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="grade"
+              label="年级"
+              show-overflow-tooltip
+              width="185"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="semester"
+              label="学期"
+              show-overflow-tooltip
+              width="185"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="source"
+              label="来源"
+              show-overflow-tooltip
+              width="187"
+            >
+            </el-table-column>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <div class="list_operation wrap_flex_center">
+                  <!-- 预览 -->
+                  <i
+                    title="预览"
+                    class="preview"
+                    @click="handlePreview(scope.$index, scope.row)"
+                  ></i>
+                  <!-- 编辑 -->
+                  <i
+                    class="edit"
+                    title="编辑"
+                    @click="handleEdit(scope.$index, scope.row)"
+                  ></i>
+                  <!-- 删除 -->
+                  <i
+                    class="delete"
+                    title="删除"
+                    @click="handleDelete(scope.$index, scope.row)"
+                  ></i>
+                  <!-- 开始教学 -->
+                  <div
+                    class="start_teach wrap_flex_allcenter"
+                    title="开始教学"
+                    @click="handleStartTeach(scope.$index, scope.row)"
+                  >
+                    <!-- <i></i> -->
+                  </div>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </m-cascader>
+
+      <!-- 弹窗 -->
+      <div class="m_dialog">
+        <el-dialog
+          title="提示"
+          :visible.sync="dialogVisible"
+          width="20%"
+          :before-close="handleClose"
+        >
+          <span>确定删除</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="confirmDialog">确 定</el-button>
+          </span>
+        </el-dialog>
+      </div>
+    </div>
+    <!-- iframe -->
+    <div>
+      <my-iframe :my_src="m_src"></my-iframe>
     </div>
   </div>
 </template>
@@ -122,9 +128,13 @@
 <script>
 import mCascader from "../../../components/common/Mcascader";
 import $axios from "../../../api/index";
+import myIframe from "../../../components/common/MyIframe";
 export default {
   data() {
     return {
+      // iframe src
+      m_src: "http://test.laoshi.yishenhang.com/teach/",
+
       tableData: [],
       infos: [
         {
@@ -337,6 +347,7 @@ export default {
   },
   components: {
     mCascader,
+    myIframe,
   },
   created() {
     let resDate = {};
@@ -381,7 +392,7 @@ export default {
   },
 };
 </script>
-<style lang="scss" >
+<style lang="scss">
 .show_list {
   .el-table th > .cell {
     padding: 0;

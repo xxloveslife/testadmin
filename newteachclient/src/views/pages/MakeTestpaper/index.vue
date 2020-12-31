@@ -12,24 +12,26 @@
 </template>
 
 <script>
-import MakeTestpaper from "./makeTestpaper";
+import MakeTestpaper from './makeTestpaper'
 
 export default {
   data() {
     return {
-      multiCheck: ["音乐类"],
-      radio: "苏少版",
-      paperName: "",
-    };
+      multiCheck: ['音乐类'],
+      radio: '苏少版',
+      paperName: '',
+    }
   },
   components: {
     MakeTestpaper,
   },
   beforeRouteLeave(to, from, next) {
-    from.meta.keepAlive = false;
-    next();
+    from.meta.keepAlive = false
+    next()
   },
-};
+  created() {
+    this.$store.commit('editTestPaper/setEditPaperConf', {})
+  },
+}
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

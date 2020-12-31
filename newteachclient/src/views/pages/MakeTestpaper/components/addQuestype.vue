@@ -20,12 +20,13 @@
           v-for="(item, i) in paperTypes"
           :key="i + 'A'"
         >
+          <!-- 礼拜一修改 -->
           <div class="m_dropdown">
             <el-select
-              v-model="item.currentVal"
+              v-model="item.currentLabel"
               :popper-append-to-body="false"
               placeholder="请选择题型"
-              @change="changeVal(item.currentVal, item, i)"
+              @change="changeVal(item.currentLabel, item, i)"
             >
               <el-option
                 v-for="item in options"
@@ -40,20 +41,20 @@
           <!-- 数量 -->
           <div class="amount">
             <el-input
-              v-model="item.amount"
+              v-model="item.number"
               :disabled="title == '笔试题型' || title == '小乐器'"
               :placeholder="computedNum"
-              @change="changeAmount(item.amount, item)"
+              @change="changeAmount(item.number, item)"
             ></el-input>
           </div>
 
           <!-- 分值 -->
           <div class="score">
             <el-input
-              v-model="item.scoreVal"
+              v-model="item.score"
               :placeholder="computedScore"
               :disabled="title == '小乐器'"
-              @change="changeScore(item.scoreVal, item)"
+              @change="changeScore(item.score, item)"
             ></el-input>
           </div>
           <!-- 总共 -->
@@ -78,8 +79,7 @@
           <!-- 计算总分 -->
           <span
             >{{
-              title == "小乐器" ||
-              (title == "音乐题型" && "音乐总分:") ||
+              ((title == "小乐器" || title == "音乐题型") && "音乐总分:") ||
               "美术总分:"
             }}{{ computedAllScore }}</span
           >
@@ -118,15 +118,17 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   props: {
     title: {
       type: String,
     },
+    testConf: {},
   },
   data() {
     return {
-      // 数据类型分小乐器和其他
+      // 数据类型分小乐器和其他    空对象为false
       paperTypes: [{ question_type: "", number: "", score: "", total: "" }],
       // paperTypes: [],
       options: [],
@@ -144,7 +146,12 @@ export default {
     // 添加题型
     addTest() {
       if (this.title == "小乐器") {
-        this.paperTypes.push("");
+        this.paperTypes.push({
+          question_type: "",
+          number: "",
+          score: "",
+          total: "",
+        });
       } else {
         this.paperTypes.push({
           question_type: "",
@@ -167,29 +174,38 @@ export default {
 
     // 改变单选选择
     changeVal(val, item, i) {
+      console.log("options", this.options);
       // this.paperTypes[i].question_type = item.mark;
+      console.log("val", val, item, i);
+      //  当前选择值的mark值
       let valMark = "";
       this.options.forEach((item, i) => {
         if (item.label == val) {
           valMark = item.mark;
+
           return;
         }
       });
-      // console.log("valMark", valMark);
+
       // 如果题型重复
-      let repeatVal = this.paperTypes.some((item) => {
+      let repeatVal = this.paperTypes.some((item, i) => {
         return item.question_type == valMark;
       });
       // console.log("repeat", repeatVal);
       if (repeatVal) {
         // 跳弹窗
         this.typeRepeat_dialogVisible = true;
-
+        // console.log("题型重复了");
         // 清空
         item.currentVal = "";
+        item.question_type = "";
       } else {
         this.typeRepeat_dialogVisible = false;
+        // console.log("题型不重复");
+        // console.log("item.currentV:", item, "VAL", val);
+        // console.log("总的list", this.paperTypes);
         item.currentVal = val;
+        // console.log("过来了");
         this.paperTypes[i].question_type = valMark;
       }
 
@@ -199,7 +215,7 @@ export default {
 
     // 改变数量
     changeAmount(amount, item) {
-      // console.log("amountanditem", amount, item);
+      console.log("amountanditem", amount, item);
 
       item.number = amount;
       // 重新计算下单个item总分
@@ -218,7 +234,7 @@ export default {
       // 重新计算下单个item总分
       item.total = item.score * item.number;
       // this.$set(item, score, scoreVal);
-      console.log("score", this.paperTypes);
+      // console.log("score", this.paperTypes);
       this.emitParent();
     },
 
@@ -227,36 +243,59 @@ export default {
       this.$emit("changeForm", this.paperTypes, this.title);
       // console.log("tijiaotypes", this.paperTypes);
     },
+
+    // 兼容编辑试卷显示
+    // selectedItem(item) {
+    //   if (this.editPaperConf) {
+    //     let label = "";
+    //     this.options.forEach((m_item) => {
+    //       if (m_item.mark == item.question_type) {
+    //         label = m_item.label;
+    //         console.log("wojinlail", label);
+    //       }
+    //     });
+
+    //     return label;
+    //   } else {
+    //     return item.currentVal;
+    //   }
+    // },
   },
   computed: {
+    ...mapGetters(["yanchangtiScore", "editPaperConf"]),
     computedNum: function () {
       if (this.title == "笔试题型") {
         return "1";
       } else if (this.title == "小乐器") {
         // 拿到当前音乐题型里的演唱题的分值 ,如果没有,默认显示空字符串
 
-        return "与演唱题一致";
+        return this.yanchangtiScore.number;
       } else {
         return "请输入题型数量";
       }
     },
     computedScore: function () {
       if (this.title == "小乐器") {
-        return "与演唱题一致";
+        return this.yanchangtiScore.score;
       } else {
         return "请输入题型分值";
       }
     },
     computedTotal: function () {
+      // @change="changeAmount(item.number, item)"
       return function (item) {
-        if (this.title == "笔试题型" && item.scoreVal) {
-          item.total = item.scoreVal;
-          return item.scoreVal;
+        // console.log("input框的计算总分属性");
+        if (this.title == "笔试题型" && item.total) {
+          // item.total = item.scoreVal;
+          return item.total;
         }
-        if (item.amount && item.scoreVal) {
+        if (item.number && item.score) {
           // console.log("jinlai l ", item.scoreVal * item.amount);
-          item.total = item.scoreVal * item.amount;
-          return item.amount * item.scoreVal;
+          item.total = item.number * item.score;
+          return item.number * item.score;
+        }
+        if (this.title == "小乐器") {
+          return this.yanchangtiScore.total;
         }
         return "正在合计分数值";
       };
@@ -264,17 +303,61 @@ export default {
 
     // 计算总分
     computedAllScore: function () {
-      let total = 0;
-      // console.log("zongfen", this.paperTypes);
+      if (this.title == "小乐器") {
+        return this.yanchangtiScore.total;
+      } else {
+        // console.log("小乐器计算总分计算属性");
+        let total = 0;
+        // console.log("zongfen", this.paperTypes);
 
-      this.paperTypes.forEach((item) => {
-        total += item.total;
-      });
+        this.paperTypes.forEach((item) => {
+          // 判断演唱题
 
-      return (total && total) || "";
+          //判断演唱题的总分值
+          if (this.title == "音乐题型" && item.question_type == 3) {
+            // console.log("item", item);
+            const yanchangtiTotal = item.total;
+            const yangchangtiNumber = item.number;
+            const yangchangtiScore = item.score;
+
+            // 传入store
+            this.$store.commit("makeTestPaper/setYanchangtiScore", {
+              total: yanchangtiTotal,
+              number: yangchangtiNumber,
+              score: yangchangtiScore,
+            });
+          }
+          total += parseInt(item.total);
+        });
+
+        return (total && total) || "";
+      }
+    },
+
+    selectedItem: {
+      get() {
+        return function (item) {
+          let label = "";
+          if (this.editPaperConf) {
+            this.options.forEach((m_item) => {
+              if (m_item.mark == item.question_type) {
+                label = m_item.label;
+              }
+            });
+
+            return label;
+          } else {
+            return label;
+          }
+        };
+      },
+      set(val) {
+        this.label = val;
+      },
     },
   },
   created() {
+    // 判断options
     if (this.title && this.title == "音乐题型") {
       this.options = [
         { mark: "1", label: "单项选择题", currentVal: "" },
@@ -309,6 +392,82 @@ export default {
       this.options = [{ mark: "5", label: " 表现题", currentVal: "" }];
     }
 
+    // 兼容编辑试卷,判断store里面的paperConf 是不是为空 Object.keys(this.editPaperConf)
+    console.log("storeinfos", this.editPaperConf);
+
+    if (Object.keys(this.editPaperConf).length != 0) {
+      // 区别于制作试卷,点击开始考试的时候,store里面置空
+      // 不是空的
+
+      if (this.title == "音乐题型") {
+        console.log("走音乐题型");
+        // 设置v-model的label值
+
+        this.editPaperConf.music_conf.forEach((m_item) => {
+          this.options.forEach((sub_item) => {
+            if (m_item.question_type == sub_item.mark) {
+              m_item.currentLabel = sub_item.label;
+            }
+          });
+        });
+        this.paperTypes = this.editPaperConf.music_conf;
+        // console.log("音乐题型", this.editPaperConf);
+        // console.log("音乐题型", this.paperTypes);
+        // console.log("yinyuelei", this.paperTypes);
+
+        // console.log("yinyuetixing ", this.editPaperConf.music_conf);
+      } else if (this.title == "美术题型") {
+        // 设置v-model的label值
+        console.log("走美术题型");
+        this.editPaperConf.art_conf.forEach((m_item) => {
+          this.options.forEach((sub_item) => {
+            if (m_item.question_type == sub_item.mark) {
+              m_item.currentLabel = sub_item.label;
+            }
+          });
+        });
+        this.paperTypes = this.editPaperConf.art_conf;
+
+        // console.log("美术题型", this.editPaperConf);
+        // console.log("美术题型", this.paperTypes);
+      } else if (this.title == "小乐器") {
+        console.log("走小乐器");
+        // 看下小乐器的结构
+        let tempList = this.editPaperConf.instrumentconf;
+        let temPaperType = [];
+        tempList.forEach((m_item) => {
+          temPaperType.push({
+            question_type: m_item,
+            number: "",
+            score: "",
+            total: "",
+          });
+        });
+        // 设置v-model的label值
+        temPaperType.forEach((m_item) => {
+          this.options.forEach((sub_item) => {
+            if (m_item.question_type == sub_item.mark) {
+              m_item.currentLabel = sub_item.label;
+            }
+          });
+        });
+
+        this.paperTypes = temPaperType;
+      } else if (this.title == "笔试题型") {
+        console.log("走笔试题型");
+        // 设置v-model的label值
+        this.editPaperConf.paper_question_conf.forEach((m_item) => {
+          this.options.forEach((sub_item) => {
+            if (m_item.question_type == sub_item.mark) {
+              m_item.currentLabel = sub_item.label;
+            }
+          });
+        });
+        this.paperTypes = this.editPaperConf.paper_question_conf;
+      }
+    }
+    console.log("storelidezhi", this.editPaperConf.music_conf);
+    console.log("this.paperType", this.title, this.paperTypes);
     // 组件生成就新建为空的对象
     this.$emit("changeForm", this.paperTypes, this.title);
   },

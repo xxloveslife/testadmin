@@ -46,8 +46,6 @@ export default {
   created() {
     this.$store.dispatch("user/getWorkBench").then((res) => {
       this.userWorkBench = this.$store.getters.userWorkBench;
-      // console.log("res", res);
-      // console.log("benchworkinfos", this.$store.getters.userWorkBench);
     });
   },
 };

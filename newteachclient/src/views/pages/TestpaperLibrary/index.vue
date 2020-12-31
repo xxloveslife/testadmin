@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="testpaper-library-container">
     <m-cascader
       :radio="infos[0].title"
       :infos="infos"
@@ -21,9 +21,9 @@
           <span class="span7">年级</span>
           <span class="span8">学期</span>
           <span class="span9">{{
-            (currentLib == "我的卷库" && "来源") ||
-            (currentLib == "校本卷库" && "来源") ||
-            "总分/题数"
+            (currentLib == '我的卷库' && '来源') ||
+              (currentLib == '校本卷库' && '来源') ||
+              '总分/题数'
           }}</span>
           <span class="span10">操作</span>
         </div>
@@ -45,22 +45,26 @@
             </div>
             <div class="showType">
               <span> {{ item.stype }}</span>
+              <div class="showType_tig" v-if="item.paper_question_conf.length">
+                <span>|</span>
+                <span class="text">含笔试</span>
+              </div>
             </div>
             <div class="showDiff">
               <span>
                 {{
-                  (item.difficult == 0 && "不限") ||
-                  (item.difficult == 1 && "易") ||
-                  (item.difficult == 2 && "中") ||
-                  (item.difficult == 3 && "难")
+                  (item.difficult == 0 && '不限') ||
+                    (item.difficult == 1 && '易') ||
+                    (item.difficult == 2 && '中') ||
+                    (item.difficult == 3 && '难')
                 }}</span
               >
             </div>
             <div class="showMaterial wrap_flex_allcenter">
               <span>
                 {{
-                  (item.pager_range == null && "全部") ||
-                  (item.pager_range && item.pager_range)
+                  (item.pager_range == null && '全部') ||
+                    (item.pager_range && item.pager_range)
                 }}</span
               >
             </div>
@@ -69,7 +73,7 @@
             </div>
             <div class="showSemester wrap_flex_allcenter">
               <span>
-                {{ (item.semester == -1 && "通用") || item.semester }}</span
+                {{ (item.semester == -1 && '通用') || item.semester }}</span
               >
             </div>
             <div class="showScore">
@@ -85,13 +89,14 @@
               title="添加试卷"
             ></i>
             <i
-              v-if="showPractice"
+              v-if="showPractice && !item.paper_question_conf.length"
               class="practice"
               @click="showPracticeDialog(item, i)"
               title="布置练习"
             ></i>
+            <i v-else class="zhanwei"></i>
             <i
-              v-if="showExam"
+              v-if="windowStatus !== undefined"
               class="examination"
               @click="showExamination(item, i)"
               title="考试"
@@ -113,19 +118,18 @@
               title="编辑"
               @click="
                 $router.push({
-                  path: '/editPaper',
+                  name: 'editPaper',
                   params: { item: item },
                 })
               "
             ></i>
             <div
-              v-if="showDelete"
+              v-if="item.admin_id == mineId"
               class="delete"
               title="删除"
               @click="deletePaper(item, i)"
-            >
-              <span></span>
-            </div>
+            ></div>
+            <div class="deleteelse" v-else v-show="currentLib !== '全部'"></div>
             <div
               v-if="showCancleShared"
               class="cancleShared"
@@ -138,12 +142,7 @@
           </div>
         </div>
 
-        <el-dialog
-          :title="dialog_id"
-          :visible.sync="dialogVisible"
-          width="30%"
-          :before-close="handleClose"
-        >
+        <el-dialog :title="dialog_id" :visible.sync="dialogVisible" width="30%">
           <!-- dialog 显示内容 -->
         </el-dialog>
       </div>
@@ -166,31 +165,39 @@
       </el-dialog>
     </div>
     <!-- dialog 布置练习 -->
-    <div class="practice">
-      <el-dialog
-        title="布置练习"
-        :visible.sync="practice_dialogVisible"
-        width="20%"
-      >
-        <span>布置练习内容</span>
+    <setup-exercises
+      class="setup-exercises"
+      :practice_dialogVisible="practice_dialogVisible"
+      :tempItem="tempItem"
+      :currentLib="currentLib"
+      :openPopubItem="openPopubItem"
+      @close="practice_dialogVisible = false"
+    ></setup-exercises>
+    <!-- dialog 考试功能  将系统试卷保存到我的试卷中 -->
+    <textpaper-tomine
+      v-if="
+        (openTig !== 1 && currentLib === '') ||
+          (openTig !== 1 && currentLib === '全部')
+      "
+      class="setup-exercises"
+      :exam_dialogVisible="exam_dialogVisible"
+      :tempItem="tempItem"
+      @close="exam_dialogVisible = false"
+      @openItem="openItem"
+    ></textpaper-tomine>
 
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="practice_dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="makePractice">确 定</el-button>
-        </span>
-      </el-dialog>
-    </div>
-    <!-- dialog 考试功能 -->
-    <div class="examination">
-      <el-dialog title="考试" :visible.sync="exam_dialogVisible" width="20%">
-        <span>考试测验</span>
+    <!-- 开始考试 -->
+    <start-exam
+      class="setup-exercises"
+      v-if="
+        currentLib === '我的卷库' || currentLib === '校本卷库' || openTig === 1
+      "
+      @close="close"
+      :tempItem="tempItem"
+      :startExamText="startExamText"
+      :exam_dialogVisible="exam_dialogVisible"
+    ></start-exam>
 
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="exam_dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="examination">确 定</el-button>
-        </span>
-      </el-dialog>
-    </div>
     <!-- dialog 分享 -->
     <div class="paper_share">
       <el-dialog
@@ -198,7 +205,7 @@
         :visible.sync="share_dialogVisible"
         width="20%"
       >
-        <span>{{ (this.tempItem.is_share == 1 && "取消") || "" }}分享试卷</span>
+        <span>{{ (this.tempItem.is_share == 1 && '取消') || '' }}分享试卷</span>
 
         <span slot="footer" class="dialog-footer">
           <el-button @click="share_dialogVisible = false">取 消</el-button>
@@ -225,108 +232,117 @@
 </template>
 
 <script>
-import mCascader from "../../../components/common/Mcascader";
-import $axios from "../../../api/index";
+import mCascader from '../../../components/common/Mcascader'
+import setupExercises from './components/setupExercises'
+import textpaperTomine from './components/textpaperTomine'
+import startExam from './components/startExam'
+
+import $axios from '../../../api/index'
 export default {
   data() {
     return {
+      mineId: '',
+      openPopubItem: '成功',
+      openTig: 0,
+      startExamText: '成功',
       // item ID
-      dialog_id: "",
+      dialog_id: '',
       dialogVisible: false,
+      windowStatus: window.client,
       infos: [
         {
-          title: "卷库",
-          attr: "_from",
+          title: '卷库',
+          attr: '_from',
           category: [
-            { label: "全部", mark: "" },
-            { label: "我的卷库", mark: 1 },
-            { label: "校本卷库", mark: 2 },
+            { label: '全部', mark: '' },
+            { label: '我的卷库', mark: 1 },
+            { label: '校本卷库', mark: 2 },
           ],
         },
         {
-          title: "类别",
-          attr: "category",
+          title: '类别',
+          attr: 'category',
           category: [
-            { label: "全部", mark: "" },
-            { label: "音乐类", mark: 1 },
-            { label: "美术类", mark: 2 },
+            { label: '全部', mark: '' },
+            { label: '音乐类', mark: 1 },
+            { label: '美术类', mark: 2 },
           ],
         },
         {
-          title: "教材",
-          attr: "paper_range",
+          title: '教材',
+          attr: 'paper_range',
           category: [
-            { label: "全部", mark: "" },
-            { label: "苏少版", mark: 1 },
-            { label: "人教版", mark: 2 },
-            { label: "人音版", mark: 3 },
-            { label: "人美版", mark: 4 },
-            { label: "岭南版", mark: 5 },
-            { label: "湘艺版", mark: 6 },
-            { label: "苏科版", mark: 7 },
-            { label: "鲁教版", mark: 8 },
-            { label: "湘美版", mark: 9 },
-            { label: "上教版", mark: 10 },
+            { label: '全部', mark: '' },
+            { label: '苏少版', mark: 1 },
+            { label: '人教版', mark: 2 },
+            { label: '人音版', mark: 3 },
+            { label: '人美版', mark: 4 },
+            { label: '岭南版', mark: 5 },
+            { label: '湘艺版', mark: 6 },
+            { label: '苏科版', mark: 7 },
+            { label: '鲁教版', mark: 8 },
+            { label: '湘美版', mark: 9 },
+            { label: '上教版', mark: 10 },
           ],
         },
         {
-          title: "年级",
-          attr: "grade",
+          title: '年级',
+          attr: 'grade',
           category: [
-            { label: "全部", mark: "" },
-            { label: "一年级", mark: 4 },
-            { label: "二年级", mark: 5 },
-            { label: "三年级", mark: 6 },
-            { label: "四年级", mark: 7 },
-            { label: "五年级", mark: 8 },
-            { label: "六年级", mark: 9 },
-            { label: "七年级", mark: 1 },
-            { label: "八年级", mark: 2 },
-            { label: "九年级", mark: 3 },
-            { label: "高一", mark: 10 },
-            { label: "高二", mark: 11 },
-            { label: "高三", mark: 12 },
+            { label: '全部', mark: '' },
+            { label: '一年级', mark: 4 },
+            { label: '二年级', mark: 5 },
+            { label: '三年级', mark: 6 },
+            { label: '四年级', mark: 7 },
+            { label: '五年级', mark: 8 },
+            { label: '六年级', mark: 9 },
+            { label: '七年级', mark: 1 },
+            { label: '八年级', mark: 2 },
+            { label: '九年级', mark: 3 },
+            { label: '高一', mark: 10 },
+            { label: '高二', mark: 11 },
+            { label: '高三', mark: 12 },
           ],
         },
         {
-          title: "学期",
-          attr: "semester",
+          title: '学期',
+          attr: 'semester',
           category: [
-            { label: "全部", mark: "" },
-            { label: "上学期", mark: 1 },
-            { label: "下学期", mark: 2 },
+            { label: '全部', mark: '' },
+            { label: '上学期', mark: 1 },
+            { label: '下学期', mark: 2 },
           ],
         },
         {
-          title: "单元(课)",
-          attr: "unit",
+          title: '单元(课)',
+          attr: 'unit',
           category: [
-            { label: "全部", mark: "" },
-            { label: "1单元", mark: 1 },
-            { label: "2单元", mark: 2 },
-            { label: "3单元", mark: 3 },
-            { label: "4单元", mark: 4 },
-            { label: "5单元", mark: 5 },
-            { label: "6单元", mark: 6 },
-            { label: "7单元", mark: 7 },
-            { label: "8单元", mark: 8 },
-            { label: "9单元", mark: 9 },
-            { label: "10单元", mark: 10 },
-            { label: "11单元", mark: 11 },
-            { label: "12单元", mark: 12 },
-            { label: "13单元", mark: 13 },
-            { label: "14单元", mark: 14 },
-            { label: "15单元", mark: 15 },
-            { label: "16单元", mark: 16 },
-            { label: "17单元", mark: 17 },
-            { label: "18单元", mark: 18 },
-            { label: "19单元", mark: 19 },
-            { label: "20单元", mark: 20 },
-            { label: "21单元", mark: 21 },
-            { label: "22单元", mark: 22 },
-            { label: "23单元", mark: 23 },
-            { label: "24单元", mark: 24 },
-            { label: "25单元", mark: 25 },
+            { label: '全部', mark: '' },
+            { label: '1单元', mark: 1 },
+            { label: '2单元', mark: 2 },
+            { label: '3单元', mark: 3 },
+            { label: '4单元', mark: 4 },
+            { label: '5单元', mark: 5 },
+            { label: '6单元', mark: 6 },
+            { label: '7单元', mark: 7 },
+            { label: '8单元', mark: 8 },
+            { label: '9单元', mark: 9 },
+            { label: '10单元', mark: 10 },
+            { label: '11单元', mark: 11 },
+            { label: '12单元', mark: 12 },
+            { label: '13单元', mark: 13 },
+            { label: '14单元', mark: 14 },
+            { label: '15单元', mark: 15 },
+            { label: '16单元', mark: 16 },
+            { label: '17单元', mark: 17 },
+            { label: '18单元', mark: 18 },
+            { label: '19单元', mark: 19 },
+            { label: '20单元', mark: 20 },
+            { label: '21单元', mark: 21 },
+            { label: '22单元', mark: 22 },
+            { label: '23单元', mark: 23 },
+            { label: '24单元', mark: 24 },
+            { label: '25单元', mark: 25 },
           ],
         },
         // {
@@ -361,19 +377,19 @@ export default {
         //   ],
         // },
         {
-          title: "难度",
-          attr: "difficult",
+          title: '难度',
+          attr: 'difficult',
           category: [
-            { label: "全部", mark: "" },
-            { label: "易", mark: 1 },
-            { label: "中", mark: 2 },
-            { label: "难", mark: 3 },
+            { label: '全部', mark: '' },
+            { label: '易', mark: 1 },
+            { label: '中', mark: 2 },
+            { label: '难', mark: 3 },
           ],
         },
       ],
       // listItems: [1, 2, 3, 4, 5, 6],
       templibDatas: {},
-      requestObj: { _from: "", category: "", paper_range: "" },
+      requestObj: { _from: '', category: '', paper_range: '' },
       pagesize: 20,
       showAdd: true,
       showPractice: true,
@@ -395,57 +411,58 @@ export default {
       delPaper_dialogVisible: false,
 
       // 新试卷名  +  试卷名
-      paper_name: "",
-      new_paper_name: "",
+      paper_name: '',
+      new_paper_name: '',
 
       // 当前所在库
-      currentLib: "",
+      currentLib: '全部',
 
       tempItem: {},
       tempI: 0,
-    };
+    }
   },
-  components: { mCascader },
+  components: { mCascader, setupExercises, textpaperTomine, startExam },
   methods: {
     getItems(val) {
-      this.requestObj.keyword = (val.keyword && val.keyword) || "";
-      this.requestObj.page = val.currentPage && val.currentPage;
+      this.requestObj.keyword = (val.keyword && val.keyword) || ''
+      this.requestObj.page = val.currentPage && val.currentPage
       // console.log("requestObjfirst", this.requestObj);
       this.requestObj = {
         ...this.requestObj,
         ...this.reformVal(val, this.infos),
-      };
+      }
 
       // 如果_from的值是空字符串 ,传系统题库接口
       if (!this.requestObj._from) {
         // 过滤不需要的属性
-        let { is_share, _from, ...params } = this.requestObj;
+        let { is_share, _from, ...params } = this.requestObj
         // console.log("传系统接口", params);
 
         this.$store
-          .dispatch("testlibrary/getSysTestPaperLibResult", params)
+          .dispatch('testlibrary/getSysTestPaperLibResult', params)
           .then((res) => {
-            this.templibDatas = res.data && res.data;
+            this.templibDatas = res.data && res.data
             // console.log("templibDatas", this.templibDatas);
-          });
+          })
       } else {
         // console.log("传我的和校本接口", this.requestObj);
-        let shared = this.requestObj._from - 1;
+        let shared = this.requestObj._from - 1
 
-        this.requestObj.is_share = shared;
+        this.requestObj.is_share = shared
         this.$store
-          .dispatch("testlibrary/getTestPaperLibResult", this.requestObj)
+          .dispatch('testlibrary/getTestPaperLibResult', this.requestObj)
           .then((res) => {
-            this.templibDatas = res.data && res.data;
+            this.templibDatas = res.data && res.data
 
-            console.log("templibDatas", this.templibDatas);
-          });
+            console.log('templibDatas', this.templibDatas)
+            this.mineId = this.templibDatas.member_uid
+          })
       }
     },
 
     reformVal(val, infos) {
       // 三个必传字段
-      let tempSave = { _from: "", category: "", paper_range: "" };
+      let tempSave = { _from: '', category: '', paper_range: '' }
       // 根据val对象,找到对应的attr 和 传参value
       Object.keys(val).forEach((key) => {
         //题库类型  :   校本题库
@@ -454,112 +471,180 @@ export default {
           if (itemsub.title == key) {
             itemsub.category.forEach((item, i) => {
               if (item.label == val[key]) {
-                tempSave[itemsub.attr] = item.mark;
+                tempSave[itemsub.attr] = item.mark
               }
-            });
+            })
           }
-        });
-      });
+        })
+      })
 
       // console.log("tempSave", tempSave);
-      return tempSave;
+      return tempSave
     },
 
     itemGetClick(item) {
+      console.log(item.paper_question_conf.length)
+      // console.log('当前在', this.currentLib)
+      // console.log(item)
       //  显示dialog
-      this.dialogVisible = true;
+      // this.dialogVisible = true
       // 当前选择试题id
-      this.dialog_id = item;
+      this.dialog_id = item
+
+      // 请求type值,当前所在lib
+      let temType = 1
+      if (this.currentLib == '我的卷库') {
+        temType = 2
+      } else if (this.currentLib == '校本卷库') {
+        temType = 3
+      }
       //请求网络判断
+      $axios
+        .post('/examinationPaper/getPaperInfo', {
+          paper_id: item.id,
+          type: temType,
+        })
+        .then((res) => {
+          // console.log("返回的res", res);
+          if (res.code == 0) {
+            // 重构res结构
+            let newData = {}
+            newData = res.data.data
+            newData.exam_conf = res.data.exam_conf
+            // newData.list = res.data.data.list;
+            // newData.exam_conf = res.data.exam_conf;
+            console.log('wo de  res ', newData)
+            if (res.data.data.list)
+              // 点击跳转到试卷详情页
+              this.$router.push({
+                name: 'paperDetailPage',
+                params: {
+                  paperInfos: newData,
+                  currentLib: this.currentLib,
+                  paperconfigs: item.paper_question_conf.length,
+                  itemList: item,
+                },
+              })
+          }
+        })
+
+      // 点击跳转到试卷详情页
+      // this.$router.push({
+      //   name: "paperDetailPage",
+      //   params: { paperInfos: item },
+      // });
     },
 
     // 改变操作样式
     changeOpstyle(val, pval) {
-      if (pval == "卷库") {
-        if (val == "校本卷库" || val == "我的卷库" || val == "全部") {
-          this.currentLib = val;
+      if (pval == '卷库') {
+        if (val == '校本卷库' || val == '我的卷库' || val == '全部') {
+          this.currentLib = val
         }
       }
       // this.currentLib = val;
-      if (this.currentLib == "校本卷库") {
-        this.showExam = true;
-        this.showPractice = true;
-        this.showAdd = true;
-        this.showCancleShared = true;
-        this.showShared = false;
-        this.showDelete = true;
-        this.showEdit = false;
-      } else if (this.currentLib == "我的卷库") {
-        this.showExam = true;
-        this.showPractice = true;
-        this.showShared = true;
-        this.showEdit = true;
-        this.showDelete = true;
-        this.showAdd = false;
-        this.showCancleShared = false;
-      } else if (this.currentLib == "全部") {
-        this.showAdd = true;
-        this.showPractice = true;
-        this.showExam = true;
-        this.showShared = false;
-        this.showEdit = false;
-        this.showDelete = false;
-        this.showCancleShared = false;
+      if (this.currentLib == '校本卷库') {
+        this.showExam = true
+        this.showPractice = true
+        this.showAdd = true
+        this.showCancleShared = true
+        this.showShared = false
+        this.showDelete = true
+        this.showEdit = false
+      } else if (this.currentLib == '我的卷库') {
+        this.showExam = true
+        this.showPractice = true
+        this.showShared = true
+        this.showEdit = true
+        this.showDelete = true
+        this.showAdd = false
+        this.showCancleShared = false
+      } else if (this.currentLib == '全部') {
+        this.showAdd = true
+        this.showPractice = true
+        this.showExam = true
+        this.showShared = false
+        this.showEdit = false
+        this.showDelete = false
+        this.showCancleShared = false
       }
     },
 
     // 添加到我的卷库
     add2mine() {
-      let w_shared = 0;
-      if (this.currentLib == "校本卷库") {
-        w_shared = 1;
+      let w_shared = 0
+      if (this.currentLib == '校本卷库') {
+        w_shared = 1
       }
-      console.log("currentShared", w_shared);
+      console.log('currentShared', w_shared)
 
       // 添加接口
       $axios
-        .post("/examinationPaper/addPaperToSystem", {
+        .post('/examinationPaper/addPaperToSystem', {
           name: this.new_paper_name,
           paper_id: this.tempItem.id,
           is_share: w_shared,
         })
         .then((res) => {
-          console.log("addres", res);
-        });
-      this.add_dialogVisible = false;
+          console.log('addres', res)
+        })
+      this.add_dialogVisible = false
     },
 
     showAddDialog(item, i) {
-      this.tempItem = item;
-      this.paper_name = this.tempItem.name;
-      this.add_dialogVisible = true;
+      this.tempItem = item
+      this.paper_name = this.tempItem.name
+      this.add_dialogVisible = true
 
       // console.log("item", this.tempItem);
     },
 
     // 布置练习
     makePractice() {
-      this.practice_dialogVisible = false;
+      this.practice_dialogVisible = false
     },
     showPracticeDialog(item, i) {
-      this.tempItem = item;
-      this.practice_dialogVisible = true;
+      console.log(i)
+      this.tempItem = item
+      this.practice_dialogVisible = true
     },
 
     // 考试
-    examination() {
-      this.exam_dialogVisible = false;
-    },
+
     showExamination(item, i) {
-      this.tempItem = item;
-      this.exam_dialogVisible = true;
+      this.tempItem = item
+      console.log(item)
+
+      // 判断是否是我的卷库和系统卷库页面
+      if (this.currentLib === '我的卷库' || this.currentLib === '校本卷库') {
+        console.log(111)
+        console.log(this.tempItem.id)
+        // 先发请求判断
+        // 先验证是否符合条件
+        this.$store
+          .dispatch('testlibrary/getCheckExamStart', {
+            paper_id: this.tempItem.id,
+          })
+          .then((res) => {
+            if (res.code === 0) {
+              console.log(res)
+              this.startExamText = '成功'
+            } else {
+              this.startExamText = res.msg
+              // console.log(title)
+            }
+            this.exam_dialogVisible = true
+          })
+      } else {
+        this.exam_dialogVisible = true
+      }
     },
 
     // 试卷分享
     paperShare() {
       // 请求分享接口
       $axios
-        .post("/examinationPaper/pullSchoolSharePaper", {
+        .post('/examinationPaper/pullSchoolSharePaper', {
           paper_id: this.tempItem.id,
         })
         .then((res) => {
@@ -568,101 +653,123 @@ export default {
             // 修改样式
             // 我的卷库的取消分享,改图标样式,  校本卷库的取消分享,删除条目
 
-            if (this.currentLib == "校本卷库") {
+            if (this.currentLib == '校本卷库') {
               if (this.tempItem.is_share == 1) {
                 // this.libDatas[i].is_share = 1;
                 const m_index = this.libDatas.findIndex((m_item) => {
-                  return m_item.id === this.tempItem.id;
-                });
+                  return m_item.id === this.tempItem.id
+                })
 
-                this.libDatas.splice(m_index, 1);
+                this.libDatas.splice(m_index, 1)
               }
             } else {
               this.libDatas[this.tempI].is_share =
-                (this.libDatas[this.tempI].is_share == 0 && 1) || 0;
+                (this.libDatas[this.tempI].is_share == 0 && 1) || 0
             }
           }
-        });
-      this.share_dialogVisible = false;
+        })
+      this.share_dialogVisible = false
     },
 
     showPaperShared(item, i) {
-      this.share_dialogVisible = true;
-      this.tempItem = item;
-      this.tempI = i;
+      this.share_dialogVisible = true
+      this.tempItem = item
+      this.tempI = i
     },
 
     // 删除试卷
     deletePaper(item, i) {
-      this.delPaper_dialogVisible = true;
-      this.tempItem = item;
+      this.delPaper_dialogVisible = true
+      this.tempItem = item
     },
 
     paperDel() {
       // 请求删除的接口
 
       let w_share =
-        (this.currentLib == "我的卷库" && 0) ||
-        (this.currentLib == "校本卷库" && 1);
+        (this.currentLib == '我的卷库' && 0) ||
+        (this.currentLib == '校本卷库' && 1)
 
-      console.log("w_share", w_share);
+      console.log('w_share', w_share)
 
       $axios
-        .post("/examinationPaper/deletePaper", {
+        .post('/examinationPaper/deletePaper', {
           paper_id: this.tempItem.id,
           is_share: w_share,
         })
         .then((res) => {
-          console.log("res", res);
+          console.log('res', res)
           if (res.code == 0) {
-            this.delPaper_dialogVisible = false;
+            this.delPaper_dialogVisible = false
             // 删除一条
 
             const m_index = this.libDatas.findIndex((m_item) => {
-              return m_item.id === this.tempItem.id;
-            });
+              return m_item.id === this.tempItem.id
+            })
 
-            this.libDatas.splice(m_index, 1);
+            this.libDatas.splice(m_index, 1)
           }
-        });
+        })
+    },
+    openItem(val) {
+      console.log(111, val)
+      this.startExamText = val
+      this.openTig = 1
+      console.log(this.startExamText)
+    },
+    close() {
+      this.exam_dialogVisible = false
+      this.openTig = 0
+      this.startExamText = '成功'
     },
   },
   created() {
     // this.requestObj = { category: "" };
     //请求网络
+    console.log(window.client)
     this.$store
-      .dispatch("testlibrary/getSysTestPaperLibResult", this.requestObj)
+      .dispatch('testlibrary/getSysTestPaperLibResult', this.requestObj)
       .then((res) => {
-        this.templibDatas = res.data && res.data;
-        console.log("templibdata", this.templibDatas);
-      });
+        this.templibDatas = res.data && res.data
+        console.log('templibdata', this.templibDatas)
+      })
   },
   computed: {
-    libDatas: function () {
-      return this.templibDatas.list;
+    libDatas: function() {
+      return this.templibDatas.list
     },
-    allNum: function () {
-      return (this.templibDatas.total && this.templibDatas.total) || 0;
+    allNum: function() {
+      return (this.templibDatas.total && this.templibDatas.total) || 0
     },
-    currentP: function () {
-      return (this.templibDatas.page && this.templibDatas.page) || 0;
+    currentP: function() {
+      return (this.templibDatas.page && this.templibDatas.page) || 0
     },
-    allScoreAndfrom: function () {
-      return function (item) {
-        if (this.currentLib == "全部") {
-          return item.score_total + "分/" + item.question_total + "题";
+    allScoreAndfrom: function() {
+      return function(item) {
+        if (this.currentLib == '全部') {
+          return item.score_total + '分/' + item.question_total + '题'
         } else if (item.source == 1) {
-          return "系统";
+          return '系统'
         } else {
-          return "手动";
+          return '手动'
         }
-      };
+      }
     },
   },
-};
+}
 </script>
 <style lang="scss" scoped>
-@import "../../../style/variable.scss";
+@import '../../../style/variable.scss';
+.testpaper-library-container {
+  position: relative;
+  .setup-exercises {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
 .listItems {
   border-radius: 0.5rem;
   // width: 105.25rem;
@@ -688,7 +795,7 @@ export default {
       margin-left: 1.625rem;
     }
     .span2 {
-      margin-left: 6rem;
+      margin-left: 5rem;
     }
     .span3 {
       margin-left: 12.0625rem;
@@ -727,15 +834,21 @@ export default {
     }
     .showID {
       width: 2.5625rem;
-      margin-left: 6.6875rem;
+      margin-left: 5.6875rem;
     }
     .showPapertitle {
       width: 15.4375rem;
       margin-left: 6.25rem;
     }
     .showType {
-      margin-left: 4.875rem;
-      width: 2.625rem;
+      margin-left: 4rem;
+      width: 5rem;
+      .showType_tig {
+        display: inline;
+        .text {
+          color: #67c23a;
+        }
+      }
     }
     .showDiff {
       margin-left: 6.8125rem;
@@ -772,28 +885,33 @@ export default {
     .add {
       width: 1.1875rem;
       height: 1.1875rem;
-      background-image: url("../../../assets/imgs/testpaperlib/add.png");
+      background-image: url('../../../assets/imgs/testpaperlib/add.png');
       background-size: 1.1875rem 1.1875rem;
       margin-right: 1.75rem;
       // margin-left: 2.0625rem;
       &:hover {
         width: 1.1875rem;
         height: 1.1875rem;
-        background-image: url("../../../assets/imgs/testpaperlib/addhover.png");
+        background-image: url('../../../assets/imgs/testpaperlib/addhover.png');
         background-size: 1.1875rem 1.1875rem;
       }
+    }
+    .zhanwei {
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-right: 1.75rem;
     }
     .practice {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/practice.png");
+      background-image: url('../../../assets/imgs/testpaperlib/practice.png');
       background-size: 1.5rem 1.5rem;
       margin-right: 1.75rem;
     }
     .practice:hover {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/practicehover.png");
+      background-image: url('../../../assets/imgs/testpaperlib/practicehover.png');
       background-size: 1.5rem 1.5rem;
     }
 
@@ -801,62 +919,67 @@ export default {
     .examination {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/exam.png");
+      background-image: url('../../../assets/imgs/testpaperlib/exam.png');
       background-size: 1.5rem 1.5rem;
       margin-right: 1.75rem;
     }
     .examination:hover {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/examhover.png");
+      background-image: url('../../../assets/imgs/testpaperlib/examhover.png');
       background-size: 1.5rem 1.5rem;
     }
     // 分享
     .shared {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/shared.png");
+      background-image: url('../../../assets/imgs/testpaperlib/shared.png');
       background-size: 1.5rem 1.5rem;
       margin-right: 1.75rem;
     }
     .shared:hover {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/sharedhover.png");
+      background-image: url('../../../assets/imgs/testpaperlib/sharedhover.png');
       background-size: 1.5rem 1.5rem;
     }
 
     .change_paper_share {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/sharedhover.png");
+      background-image: url('../../../assets/imgs/testpaperlib/sharedhover.png');
       background-size: 1.5rem 1.5rem;
     }
 
     .edit {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/edit.png");
+      background-image: url('../../../assets/imgs/testpaperlib/edit.png');
       background-size: 1.5rem 1.5rem;
       margin-right: 1.75rem;
     }
     .edit:hover {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/edithover.png");
+      background-image: url('../../../assets/imgs/testpaperlib/edithover.png');
       background-size: 1.5rem 1.5rem;
     }
     .delete {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/del.png");
+      background-image: url('../../../assets/imgs/testpaperlib/del.png');
       background-size: 1.5rem 1.5rem;
+      margin-right: 1.75rem;
+    }
+    .deleteelse {
+      width: 1.5rem;
+      height: 1.5rem;
       margin-right: 1.75rem;
     }
     .delete:hover {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/delhover.png");
+      background-image: url('../../../assets/imgs/testpaperlib/delhover.png');
       background-size: 1.5rem 1.5rem;
     }
 
@@ -864,20 +987,20 @@ export default {
     .cancleShared {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/cancleShared.png");
+      background-image: url('../../../assets/imgs/testpaperlib/cancleShared.png');
       background-size: 1.5rem 1.5rem;
       margin-right: 1.75rem;
     }
     .cancleShared:hover {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/cancleSharedhover.png");
+      background-image: url('../../../assets/imgs/testpaperlib/cancleSharedhover.png');
       background-size: 1.5rem 1.5rem;
     }
     .canclePaperShared {
       width: 1.5rem;
       height: 1.5rem;
-      background-image: url("../../../assets/imgs/testpaperlib/cancleSharedhover.png");
+      background-image: url('../../../assets/imgs/testpaperlib/cancleSharedhover.png');
       background-size: 1.5rem 1.5rem;
       margin-right: 1.75rem;
     }

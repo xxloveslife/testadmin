@@ -3,168 +3,206 @@
     <div class="questiontyp-preview-container-header">
       <i class="el-icon-error" @click="$emit('close')"></i>
       <span class="spanText">ID:{{ questiontypeList.id }}</span>
-      <div class="icon-box">
-        <i
-          class="star"
-          @click="isfavorite()"
-          :class="
-            changeStar == this.questiontypeList.is_favorite ? 'changeStar' : ''
-          "
-          :title="
-            (this.questiontypeList.is_favorite == 1 && '已收藏') || '点击收藏'
-          "
-        ></i>
-        <i
-          class="share"
-          @click="isshare()"
-          :class="
-            changeShare == this.questiontypeList.is_share ? 'changeShare' : ''
-          "
-          :title="
-            (this.questiontypeList.is_share == 1 && '取消分享') || '点击分享'
-          "
-        ></i>
-        <!-- 纠错 -->
-        <i class="errorCorrection" @click="errorCorrection()" title="纠错"></i>
-      </div>
-    </div>
-    <div class="subject">
-      <!-- 题目以及题目图片 -->
-      <title-box :questiontypeList="questiontypeList"></title-box>
-      <!-- 节奏题 -->
-      <rhythm-question
-        v-if="
-          this.questiontypeList.stype == 1 &&
-            this.questiontypeList.question_type == 9
-        "
-      ></rhythm-question>
-      <!-- 单选多选判断 -->
-      <music-radio :questiontypeList="questiontypeList"></music-radio>
-    </div>
+      <!-- 收藏分享组件 -->
 
-    <div class="questionAnalysis">
-      <p class="question-analysis">试题解析</p>
-      <div class="analysis" v-if="questiontypeList.answer.correct">
-        <span class="analysis-title">【答案】</span>
-        <p class="analysis-text">
-          <span v-for="(item, i) in questiontypeList.answer.correct" :key="i">{{
-            options[item]
-          }}</span>
-        </p>
-      </div>
-      <div class="analysis">
-        <span class="analysis-title">【解析】</span>
-        <p class="analysis-text">{{ questiontypeList.answer_parse }}</p>
-      </div>
-      <div class="analysis">
-        <span class="analysis-title">【知识点】</span>
-        <p class="analysis-text">知识点没写</p>
-      </div>
-      <div class="analysis">
-        <span class="analysis-title">【难易程度】</span>
-        <p class="analysis-text">
-          <span v-if="this.questiontypeList.difficult == 1">易</span>
-          <span v-if="this.questiontypeList.difficult == 2">中</span>
-          <span v-else>难</span>
-        </p>
-      </div>
-      <div class="analysis">
-        <span class="analysis-title">【能力层次】</span>
-        <p class="analysis-text">
-          <span v-if="this.questiontypeList.request == 1">识记</span>
-          <span v-if="this.questiontypeList.request == 2">理解</span>
-          <span v-if="this.questiontypeList.request == 3">掌握</span>
-          <span v-else>运用</span>
-        </p>
-      </div>
-      <div class="analysis">
-        <span class="analysis-title">【题型】</span>
-        <p class="analysis-text">
-          <span v-if="this.questiontypeList.question_type == 1"
-            >单项选择题</span
-          >
-          <span v-if="this.questiontypeList.question_type == 2"
-            >多项选择题</span
-          >
-          <span
-            v-if="
-              this.questiontypeList.question_type == 3 ||
-                (this.questiontypeList.stype == 1 &&
-                  this.questiontypeList.question_type == 10)
-            "
-            >判断题</span
-          >
-          <span
-            v-if="
-              this.questiontypeList.stype == 1 &&
-                this.questiontypeList.question_type == 9
-            "
-            >节奏题</span
-          >
-          <span
-            v-if="
-              this.questiontypeList.stype == 1 &&
-                this.questiontypeList.question_type == 7
-            "
-            >演唱题</span
-          >
-          <span
-            v-if="
-              (this.questiontypeList.stype == 1 &&
-                this.questiontypeList.question_type == 11) ||
-                (this.questiontypeList.stype == 2 &&
-                  this.questiontypeList.question_type == 4)
-            "
-            >连线题</span
-          >
-          <span v-if="this.questiontypeList.question_type == 6">排序题</span>
-          <span
-            v-if="
-              this.questiontypeList.stype == 2 &&
-                this.questiontypeList.question_type == 7
-            "
-            >拼图题</span
-          >
-          <span v-if="this.questiontypeList.question_type == 5">表现题</span>
-          <span v-if="this.questiontypeList.question_type == 8">点线题</span>
-          <span
-            v-if="
-              this.questiontypeList.stype == 2 &&
-                this.questiontypeList.question_type == 9
-            "
-            >填色题</span
-          >
-          <span
-            v-if="
-              this.questiontypeList.stype == 2 &&
-                this.questiontypeList.question_type == 10
-            "
-            >配色题</span
-          >
-          <span
-            v-if="
-              this.questiontypeList.stype == 2 &&
-                this.questiontypeList.question_type == 11
-            "
-            >填空题</span
-          >
-        </p>
+      <div class="icon-box">
+        <favorite-sharing
+          :is_sys="is_sys"
+          :questiontypeList="questiontypeList"
+          :currentLib="currentLib"
+          :question_index="question_index"
+          @isfavorite="isfavorite"
+          @isshare="isshare"
+        ></favorite-sharing>
+        <!-- 纠错 -->
+        <i class="errorCorrection" @click="errorCorrectionClc" title="纠错"></i>
       </div>
     </div>
-    <div>{{ questiontypeList }}</div>
+    <span
+      class="btn-left"
+      v-if="question_index !== 0"
+      @click="btnLeftClick"
+    ></span>
+    <span
+      class="btn-right"
+      v-if="question_index !== libDatas.length - 1"
+      @click="btnRightClick"
+    ></span>
+    <div class="questiontyp-preview-container-auto">
+      <div class="subject">
+        <!-- 题目以及题目图片 -->
+        <title-box :questiontypeList="questiontypeList"></title-box>
+        <!-- 节奏题，演唱题 -->
+        <rhythm-question
+          v-if="
+            questionAnalyzeList.type_name === '节奏题' ||
+              questionAnalyzeList.type_name === '演唱题'
+          "
+          :questionAnalyzeList="questionAnalyzeList"
+        ></rhythm-question>
+        <!-- 单选多选判断 -->
+        <music-radio
+          v-if="
+            questionAnalyzeList.type_name === '单项选择题' ||
+              questionAnalyzeList.type_name === '多项选择题' ||
+              questionAnalyzeList.type_name === '判断题'
+          "
+          :questiontypeList="questiontypeList"
+        ></music-radio>
+        <!-- 连线题 -->
+        <connection-question
+          v-if="questionAnalyzeList.type_name === '连线题'"
+          :questionAnalyzeList="questionAnalyzeList"
+        ></connection-question>
+        <!-- 排序题 -->
+        <sorting-questions
+          v-if="questionAnalyzeList.type_name === '排序题'"
+          :questionAnalyzeList="questionAnalyzeList"
+          :questiontypeList="questiontypeList"
+        ></sorting-questions>
+        <!-- 填空题 -->
+        <div
+          class="fillinTheBlank"
+          v-if="questionAnalyzeList.type_name === '填空题'"
+        >
+          <div
+            v-for="(item, i) in questiontypeList.answer.options"
+            :key="i"
+            class="fillinTheBlank-item"
+          >
+            <span>{{ i + 1 }}. </span>
+            <span> {{ item.text }}</span>
+          </div>
+        </div>
+        <!-- 拼图题 -->
+        <div
+          v-if="questionAnalyzeList.type_name === '拼图题'"
+          class="puzzle-question"
+        >
+          <div
+            class="puzzle-question-box"
+            :style="{
+              backgroundImage:
+                'url(' + questiontypeList.answer.pt_art_pic + ')',
+            }"
+          ></div>
+        </div>
+        <!-- 填色题 -->
+        <coloring-questions
+          v-if="questionAnalyzeList.type_name === '填色题'"
+          :questionAnalyzeList="questionAnalyzeList"
+          :questiontypeList="questiontypeList"
+        ></coloring-questions>
+        <!-- 配色题 -->
+        <color-question
+          v-if="questionAnalyzeList.type_name === '配色题'"
+          :questionAnalyzeList="questionAnalyzeList"
+          :questiontypeList="questiontypeList"
+        ></color-question>
+        <!-- 点线题 -->
+        <dot-andline
+          v-show="questionAnalyzeList.type_name === '点线题'"
+          :questionAnalyzeList="questionAnalyzeList"
+          :questiontypeList="questiontypeList"
+        >
+        </dot-andline>
+      </div>
+
+      <div class="questionAnalysis">
+        <p class="question-analysis">试题解析</p>
+        <div
+          class="analysis"
+          v-if="
+            questiontypeList.answer.correct &&
+              questionAnalyzeList.type_name !== '排序题' &&
+              questionAnalyzeList.type_name !== '填空题' &&
+              questionAnalyzeList.type_name !== '拼图题' &&
+              questionAnalyzeList.type_name !== '填色题' &&
+              questionAnalyzeList.type_name !== '配色题' &&
+              questionAnalyzeList.type_name !== '点线题'
+          "
+        >
+          <span class="analysis-title">【答案】</span>
+          <p
+            class="analysis-text"
+            v-if="questionAnalyzeList.type_name === '连线题'"
+          >
+            <span v-for="(item, i) in questionAnalyzeList.answer" :key="i"
+              >{{ item }},</span
+            >
+          </p>
+          <p class="analysis-text" v-else>
+            <span
+              v-for="(item, i) in questiontypeList.answer.correct"
+              :key="i"
+              >{{ options[item] }}</span
+            >
+          </p>
+        </div>
+        <div class="analysis">
+          <span class="analysis-title">【解析】</span>
+          <p class="analysis-text">
+            {{ questiontypeList.answer_parse }}
+          </p>
+        </div>
+        <div class="analysis" v-if="questionAnalyzeList.cate_name.length !== 0">
+          <span class="analysis-title">【知识点】</span>
+          <p class="analysis-text">
+            <span v-for="(item, i) in questionAnalyzeList.cate_name" :key="i"
+              >{{ item }}、</span
+            >
+          </p>
+        </div>
+        <div class="analysis">
+          <span class="analysis-title">【难易程度】</span>
+          <p class="analysis-text">
+            <span>{{ questionAnalyzeList.difficult }}</span>
+          </p>
+        </div>
+        <div class="analysis">
+          <span class="analysis-title">【能力层次】</span>
+          <p class="analysis-text">
+            <span>{{ questionAnalyzeList.request }}</span>
+          </p>
+        </div>
+        <div class="analysis">
+          <span class="analysis-title">【题型】</span>
+          <p class="analysis-text">
+            <span>{{ questionAnalyzeList.type_name }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- 纠错框 -->
+    <error-correction
+      :questiontypeList="questiontypeList"
+      class="error-correction"
+      @close="errorCorrectionStatus = false"
+      :errorCorrectionStatus="errorCorrectionStatus"
+    ></error-correction>
   </div>
 </template>
 
 <script>
+// 收藏分享
+import favoriteSharing from './components/favoriteSharing'
 import titleBox from './components/titleBox'
 import rhythmQuestion from './components/rhythmQuestion'
 import musicRadio from './components/musicRadio'
+import connectionQuestion from './components/connectionQuestion'
+import sortingQuestions from './components/sortingQuestions'
+import coloringQuestions from './components/coloringQuestions'
+import colorQuestion from './components/colorQuestion'
+import dotAndline from './components/dotAndline'
+// 纠错
+import errorCorrection from './components/errorCorrection'
+
 export default {
   name: 'questiontypePreview',
   data() {
     return {
-      changeStar: 1,
-      changeShare: 1,
+      errorCorrectionStatus: false,
+
       options: ['A', 'B', 'C', 'D', 'E'],
     }
   },
@@ -184,11 +222,52 @@ export default {
     incomingAddress: {
       type: Number,
     },
+    questionAnalyzeList: {
+      type: Object,
+    },
+    question_index: {
+      type: Number,
+    },
+    libDatas: {
+      type: Array,
+    },
+    is_sys: {
+      type: Number,
+    },
   },
-  components: { titleBox, musicRadio, rhythmQuestion },
+  components: {
+    titleBox,
+    musicRadio,
+    rhythmQuestion,
+    connectionQuestion,
+    sortingQuestions,
+    coloringQuestions,
+    colorQuestion,
+    dotAndline,
+    errorCorrection,
+    favoriteSharing,
+  },
   methods: {
-    isfavorite() {},
-    isshare() {},
+    btnLeftClick() {
+      console.log(this.question_index - 1)
+      this.$emit('btnClick', this.question_index - 1)
+    },
+    btnRightClick() {
+      this.$emit('btnClick', this.question_index + 1)
+    },
+    // 纠错
+    errorCorrectionClc() {
+      console.log('纠错')
+      console.log(this.questiontypeList.id)
+      this.errorCorrectionStatus = true
+    },
+    isfavorite(val, val1) {
+      console.log(val, val1)
+      this.$emit('isfavorite', val, val1)
+    },
+    isshare(val, val1) {
+      this.$emit('isshare', val, val1)
+    },
   },
 }
 </script>
@@ -199,10 +278,51 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   height: 40rem;
   width: 68rem;
-  overflow: auto;
   background-color: #fff;
   border-radius: 8px;
   padding: 4.625rem 0 2.1875rem;
+  .error-correction {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .btn-left {
+    z-index: 1000;
+    position: absolute;
+    left: 40px;
+    top: 35%;
+    display: inline-block;
+    width: 12px;
+    height: 22px;
+    background-image: url('../../../assets/imgs/testquestlibrary/previous.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .btn-left:hover {
+    background-image: url('../../../assets/imgs/testquestlibrary/previoushover.png');
+  }
+  .btn-right {
+    z-index: 1000;
+    position: absolute;
+    right: 40px;
+    top: 35%;
+    display: inline-block;
+    width: 12px;
+    height: 22px;
+    background-image: url('../../../assets/imgs/testquestlibrary/next.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .btn-right:hover {
+    background-image: url('../../../assets/imgs/testquestlibrary/nexthover.png');
+  }
+  .questiontyp-preview-container-auto {
+    height: 570px;
+    overflow: auto;
+  }
   .questiontyp-preview-container-header {
     z-index: 999;
     display: flex;
@@ -237,48 +357,7 @@ export default {
         width: 1.3125rem;
         margin-left: 0.5rem;
       }
-      // 收藏
-      .star {
-        // z-index: 1;
-        // position: relative;
-        width: 1.125rem;
-        height: 1.125rem;
-        cursor: pointer;
-        background-image: url('../../../assets/imgs/testquestlibrary/stardefault.png');
-        background-size: 1.125rem;
-        background-repeat: no-repeat;
-      }
-      .star:hover {
-        background-image: url('../../../assets/imgs/testquestlibrary/starhover.png');
-      }
 
-      .changeStar {
-        background-image: url('../../../assets/imgs/testquestlibrary/starsc.png');
-        &:hover {
-          background-image: url('../../../assets/imgs/testquestlibrary/starsc.png');
-        }
-      }
-      // 分享
-      .share {
-        // z-index: 1;
-        // position: relative;
-        width: 1.125rem;
-        height: 1.125rem;
-        cursor: pointer;
-        background-image: url('../../../assets/imgs/testquestlibrary/sharedefault.png');
-        background-size: 1.125rem;
-        background-repeat: no-repeat;
-      }
-      .share:hover {
-        background-image: url('../../../assets/imgs/testquestlibrary/sharedhover.png');
-      }
-
-      .changeShare {
-        background-image: url('../../../assets/imgs/testquestlibrary/cancleShareddefault.png');
-        &:hover {
-          background-image: url('../../../assets/imgs/testquestlibrary/cancleSharedhover.png');
-        }
-      }
       // 纠错
       .errorCorrection {
         width: 1.125rem;
@@ -295,7 +374,32 @@ export default {
   }
   .subject {
     border-bottom: 1px solid #ebeef5;
-    padding: 20px 0 0;
+    padding: 1.25rem 0 0;
+  }
+  .fillinTheBlank {
+    font-size: 0.875rem;
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    color: #64666a;
+    text-align: center;
+    .fillinTheBlank-item {
+      margin-bottom: 10px;
+    }
+  }
+  .puzzle-question {
+    position: relative;
+    margin: 0 auto 20px;
+    width: 32.4375rem;
+    height: 16.6875rem;
+    // background: red;
+    border: 1px solid #ebeef5;
+    .puzzle-question-box {
+      width: 100%;
+      height: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
   }
   .questionAnalysis {
     padding: 20px 25px;

@@ -86,163 +86,165 @@ export default {
       rowMessageBoxStatus: false,
       messageBoxStatus: false,
       tabstatus: true,
-      list: [
-        {
-          id: '0',
-          system_id: '',
-          name: '校方',
-          school_id: '',
-          admin_id: '',
-          urgency: '',
-          status: '1',
-          title: '添加作业：（2020-2021）第一学年期中测试卷',
-          contents:
-            '多场景、多语种、高精度的文字检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。',
-          time: '2020-11-23 16:00',
-        },
-        {
-          id: '1',
-          system_id: '',
-          name: '校方',
-          school_id: '',
-          admin_id: '',
-          urgency: '',
-          status: '0',
-          title: '添加作业：（2020-2021）第一学年期中测试卷',
-          contents:
-            '多场景、多语种、高精度的文字检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。111',
-          time: '2020-11-23 16:00',
-        },
-        {
-          id: '2',
-          system_id: '',
-          name: '校方',
-          school_id: '',
-          admin_id: '',
-          urgency: '',
-          status: '1',
-          title: '添加作业：（2020-2021）第一学年期中测试卷',
-          contents:
-            '多场景、多语种、高精度的文字检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。222',
-          time: '2020-11-23 16:00',
-        },
-        {
-          id: '3',
-          system_id: '',
-          name: '校方',
-          school_id: '',
-          admin_id: '',
-          urgency: '',
-          status: '0',
-          title: '添加作业：（2020-2021）第一学年期中测试卷',
-          contents:
-            '多场景、多语种、高精度的文字检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。333',
-          time: '2020-11-23 16:00',
-        },
-        {
-          id: '4',
-          system_id: '',
-          name: '校方',
-          school_id: '',
-          admin_id: '',
-          urgency: '',
-          status: '0',
-          title: '添加作业：（2020-2021）第一学年期中测试卷',
-          contents:
-            '多场景、多语种、高精度的文字检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。3444',
-          time: '2020-11-23 16:00',
-        },
-      ],
-      list1: [
-        {
-          id: '00',
-          system_id: '',
-          name: '校方1',
-          school_id: '',
-          admin_id: '',
-          urgency: '',
-          status: '0',
-          title: '添加作业：（2020-2021）第一学年期中测试卷',
-          contents:
-            '多场景、多语种、高精度的文字检测与识别asssssssssssssssssss服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。',
-          time: '2020-11-23 16:00',
-        },
-        {
-          id: '100',
-          system_id: '',
-          name: '校方1',
-          school_id: '',
-          admin_id: '',
-          urgency: '',
-          status: '0',
-          title: '添加作业：（2020-2021）第一学年期中测试卷',
-          contents:
-            '多场景、多语种、高精度的文字检测2ewsadsadasssssssssssssssssss与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。',
-          time: '2020-11-23 16:00',
-        },
-        {
-          id: '200',
-          system_id: '',
-          name: '校方1',
-          school_id: '',
-          admin_id: '',
-          urgency: '',
-          status: '1',
-          title: '添加作业：（2020-2021）第一学年期中测试卷',
-          contents:
-            '多场景、多语种、高精度的文字111111111111111111111111111111111111检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。',
-          time: '2020-11-23 16:00',
-        },
-        {
-          id: '300',
-          system_id: '',
-          name: '校方1',
-          school_id: '',
-          admin_id: '',
-          urgency: '',
-          status: '0',
-          title: '添加作业：（2020-2021）第一学年期中测试卷',
-          contents: 'asdadsadfasdasdasdsadasd',
-          time: '2020-11-23 16:00',
-        },
-        {
-          id: '400',
-          system_id: '',
-          name: '校方1',
-          school_id: '',
-          admin_id: '',
-          urgency: '',
-          status: '0',
-          title: '添加作业：（2020-2021）第一学年期中测试卷',
-          contents:
-            '多场景、多语种、12121212高精度的文字检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。',
-          time: '2020-11-23 16:00',
-        },
-        {
-          id: '500',
-          system_id: '',
-          name: '校方1',
-          school_id: '',
-          admin_id: '',
-          urgency: '',
-          status: '0',
-          title: '添加作业：（2020-2021）第一学年期中测试卷',
-          contents: 's',
-          time: '2020-11-23 16:00',
-        },
-        {
-          id: '600',
-          system_id: '',
-          name: '校方1',
-          school_id: '',
-          admin_id: '',
-          urgency: '',
-          status: '0',
-          title: '添加作业：（2020-2021）第一学年期中测试卷',
-          contents: 'sddddewq',
-          time: '2020-11-23 16:00',
-        },
-      ],
+      list: [],
+      list1: [],
+      // list: [
+      //   {
+      //     id: '0',
+      //     system_id: '',
+      //     name: '校方',
+      //     school_id: '',
+      //     admin_id: '',
+      //     urgency: '',
+      //     status: '1',
+      //     title: '添加作业：（2020-2021）第一学年期中测试卷',
+      //     contents:
+      //       '多场景、多语种、高精度的文字检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。',
+      //     time: '2020-11-23 16:00',
+      //   },
+      //   {
+      //     id: '1',
+      //     system_id: '',
+      //     name: '校方',
+      //     school_id: '',
+      //     admin_id: '',
+      //     urgency: '',
+      //     status: '0',
+      //     title: '添加作业：（2020-2021）第一学年期中测试卷',
+      //     contents:
+      //       '多场景、多语种、高精度的文字检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。111',
+      //     time: '2020-11-23 16:00',
+      //   },
+      //   {
+      //     id: '2',
+      //     system_id: '',
+      //     name: '校方',
+      //     school_id: '',
+      //     admin_id: '',
+      //     urgency: '',
+      //     status: '1',
+      //     title: '添加作业：（2020-2021）第一学年期中测试卷',
+      //     contents:
+      //       '多场景、多语种、高精度的文字检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。222',
+      //     time: '2020-11-23 16:00',
+      //   },
+      //   {
+      //     id: '3',
+      //     system_id: '',
+      //     name: '校方',
+      //     school_id: '',
+      //     admin_id: '',
+      //     urgency: '',
+      //     status: '0',
+      //     title: '添加作业：（2020-2021）第一学年期中测试卷',
+      //     contents:
+      //       '多场景、多语种、高精度的文字检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。333',
+      //     time: '2020-11-23 16:00',
+      //   },
+      //   {
+      //     id: '4',
+      //     system_id: '',
+      //     name: '校方',
+      //     school_id: '',
+      //     admin_id: '',
+      //     urgency: '',
+      //     status: '0',
+      //     title: '添加作业：（2020-2021）第一学年期中测试卷',
+      //     contents:
+      //       '多场景、多语种、高精度的文字检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。3444',
+      //     time: '2020-11-23 16:00',
+      //   },
+      // ],
+      // list1: [
+      //   {
+      //     id: '00',
+      //     system_id: '',
+      //     name: '校方1',
+      //     school_id: '',
+      //     admin_id: '',
+      //     urgency: '',
+      //     status: '0',
+      //     title: '添加作业：（2020-2021）第一学年期中测试卷',
+      //     contents:
+      //       '多场景、多语种、高精度的文字检测与识别asssssssssssssssssss服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。',
+      //     time: '2020-11-23 16:00',
+      //   },
+      //   {
+      //     id: '100',
+      //     system_id: '',
+      //     name: '校方1',
+      //     school_id: '',
+      //     admin_id: '',
+      //     urgency: '',
+      //     status: '0',
+      //     title: '添加作业：（2020-2021）第一学年期中测试卷',
+      //     contents:
+      //       '多场景、多语种、高精度的文字检测2ewsadsadasssssssssssssssssss与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。',
+      //     time: '2020-11-23 16:00',
+      //   },
+      //   {
+      //     id: '200',
+      //     system_id: '',
+      //     name: '校方1',
+      //     school_id: '',
+      //     admin_id: '',
+      //     urgency: '',
+      //     status: '1',
+      //     title: '添加作业：（2020-2021）第一学年期中测试卷',
+      //     contents:
+      //       '多场景、多语种、高精度的文字111111111111111111111111111111111111检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。',
+      //     time: '2020-11-23 16:00',
+      //   },
+      //   {
+      //     id: '300',
+      //     system_id: '',
+      //     name: '校方1',
+      //     school_id: '',
+      //     admin_id: '',
+      //     urgency: '',
+      //     status: '0',
+      //     title: '添加作业：（2020-2021）第一学年期中测试卷',
+      //     contents: 'asdadsadfasdasdasdsadasd',
+      //     time: '2020-11-23 16:00',
+      //   },
+      //   {
+      //     id: '400',
+      //     system_id: '',
+      //     name: '校方1',
+      //     school_id: '',
+      //     admin_id: '',
+      //     urgency: '',
+      //     status: '0',
+      //     title: '添加作业：（2020-2021）第一学年期中测试卷',
+      //     contents:
+      //       '多场景、多语种、12121212高精度的文字检测与识别服务，多项ICDAR指标居世界第一；广泛适用于远程身份认证、财税报销、文档电子化等场景，为企业降本增效；提供稳定易用的在线API、离线SDK、软件部署包多种服务形式，适配各种应用场景。',
+      //     time: '2020-11-23 16:00',
+      //   },
+      //   {
+      //     id: '500',
+      //     system_id: '',
+      //     name: '校方1',
+      //     school_id: '',
+      //     admin_id: '',
+      //     urgency: '',
+      //     status: '0',
+      //     title: '添加作业：（2020-2021）第一学年期中测试卷',
+      //     contents: 's',
+      //     time: '2020-11-23 16:00',
+      //   },
+      //   {
+      //     id: '600',
+      //     system_id: '',
+      //     name: '校方1',
+      //     school_id: '',
+      //     admin_id: '',
+      //     urgency: '',
+      //     status: '0',
+      //     title: '添加作业：（2020-2021）第一学年期中测试卷',
+      //     contents: 'sddddewq',
+      //     time: '2020-11-23 16:00',
+      //   },
+      // ],
       ids: [],
       rowObj: {},
     }
@@ -258,10 +260,10 @@ export default {
         .dispatch('manageAccount/makeSystemInformation', { type: 1 })
         .then((res) => {
           console.log(res)
-          // if (res || res.code == 0) {
-          //   console.log(res)
-          //   // this.list=res.data.list
-          // }
+          if (res && res.code == 0) {
+            console.log(res)
+            this.list = res.data.list
+          }
         })
     },
     getSystemInformationList1() {
@@ -269,10 +271,10 @@ export default {
         .dispatch('manageAccount/makeSystemInformation', { type: 2 })
         .then((res) => {
           console.log(res)
-          //   if (res || res.code == 0) {
-          //     console.log(res)
-          //     // this.list1=res.data.list
-          //   }
+          if (res && res.code == 0) {
+            console.log(res)
+            this.list1 = res.data.list
+          }
         })
     },
     changeTabstatus() {

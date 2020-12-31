@@ -1,7 +1,11 @@
 <template>
   <div class="sidebar">
     <!-- logo -->
-    <div class="logo">logo</div>
+    <div class="logo">
+      <div class="logo_box">
+        <img src="../../assets/header-logo/header-logo.png" />
+      </div>
+    </div>
     <!-- sidebar -->
     <el-menu
       :unique-opened="uniqueopen"
@@ -40,79 +44,149 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
       uniqueopen: true,
-      items: [
-        {
-          icon: "",
-          index: "/dashboard",
-          title: "工作台",
-        },
-        {
-          icon: "",
-          index: "",
-          title: "题库卷库",
-          //二级菜单
-          subs: [
-            {
-              index: "/testquestionlibrary",
-              title: "试题库",
-            },
-            {
-              index: "/maketestquestion",
-              title: "制作试题",
-            },
-            {
-              index: "/testpaperlibrary",
-              title: "试卷库",
-            },
-            {
-              index: "/maketestpaper",
-              title: "制作试卷",
-            },
-          ],
-        },
-        // 课堂教学
-        {
-          icon: "",
-          index: "",
-          title: "课堂教学",
-          subs: [
-            { index: "/courselist", title: "课程列表" },
-            {
-              index: "/newcourse",
-              title: "新建课件",
-            },
-          ],
-        },
-        {
-          icon: "",
-          index: "",
-          title: "账号中心",
-          //二级菜单
-          subs: [
-            {
-              index: "/personalInformation",
-              title: "个人资料",
-            },
-            {
-              index: "/operationLog",
-              title: "操作日志",
-            },
-            {
-              index: "/messageCenter",
-              title: "消息中心",
-            },
-          ],
-        },
-        {
-          icon: "",
-          index: "/test",
-          title: "test",
-        },
-      ],
+      items: [],
+      // items: [
+      //   {
+      //     icon: "",
+      //     index: "/dashboard",
+      //     title: "工作台",
+      //   },
+      //   {
+      //     icon: "",
+      //     index: "",
+      //     title: "题库卷库",
+      //     //二级菜单
+      //     subs: [
+      //       {
+      //         index: "/testquestionlibrary",
+      //         title: "试题库",
+      //       },
+      //       {
+      //         index: "/maketestquestion",
+      //         title: "制作试题",
+      //       },
+      //       {
+      //         index: "/testpaperlibrary",
+      //         title: "试卷库",
+      //       },
+      //       {
+      //         index: "/maketestpaper",
+      //         title: "制作试卷",
+      //       },
+      //     ],
+      //   },
+      //   // 课堂教学
+      //   {
+      //     icon: "",
+      //     index: "",
+      //     title: "课堂教学",
+      //     subs: [
+      //       { index: "/courselist", title: "课程列表" },
+      //       {
+      //         index: "/newcourse",
+      //         title: "新建课件",
+      //       },
+      //     ],
+      //   },
+      //   // 考试中心
+      //   {
+      //     icon: "",
+      //     index: "",
+      //     title: "考试中心",
+      //     subs: [
+      //       { index: "/examRecorder", title: "考试记录" },
+      //       {
+      //         index: "/studentdata",
+      //         title: "学生数据",
+      //       },
+      //     ],
+      //   },
+      //   // 教务管理
+      //   {
+      //     icon: "",
+      //     index: "",
+      //     title: "教务管理",
+      //     subs: [
+      //       { index: "/teachermanage", title: "老师管理" },
+      //       {
+      //         index: "/studentmanage",
+      //         title: "学生管理",
+      //       },
+      //       {
+      //         index: "/classmanage",
+      //         title: "班级管理",
+      //       },
+      //       {
+      //         index: "/studentturnout",
+      //         title: "学生出勤",
+      //       },
+      //     ],
+      //   },
+      //   // 课外练习
+      //   {
+      //     icon: "",
+      //     index: "",
+      //     title: "课外练习",
+      //     subs: [
+      //       { index: "/practicelib", title: "练习库" },
+      //       {
+      //         index: "/practicerecord",
+      //         title: "练习记录",
+      //       },
+      //     ],
+      //   },
+      //   // 过程性评价
+      //   {
+      //     icon: "",
+      //     index: "",
+      //     title: "过程性评价",
+      //     subs: [
+      //       {
+      //         index: "/processgrade",
+      //         title: "过程性评价评分",
+      //       },
+      //       {
+      //         index: "/datapreview",
+      //         title: "数据总览",
+      //       },
+      //       {
+      //         index: "/activity",
+      //         title: "艺术活动",
+      //       },
+      //     ],
+      //   },
+      //   // 账号管理
+      //   {
+      //     icon: "",
+      //     index: "",
+      //     title: "账号管理",
+      //     //二级菜单
+      //     subs: [
+      //       {
+      //         index: "/personalInformation",
+      //         title: "个人资料",
+      //       },
+      //       {
+      //         index: "/operationLog",
+      //         title: "操作日志",
+      //       },
+      //       {
+      //         index: "/messageCenter",
+      //         title: "消息中心",
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     icon: "",
+      //     index: "/test",
+      //     title: "test",
+      //   },
+      // ],
     };
   },
   methods: {
@@ -120,6 +194,12 @@ export default {
     //   // console.log("handleOpen");
     // },
     // handleClose() {},
+  },
+  computed: {
+    ...mapGetters(["sidebarItems"]),
+  },
+  created() {
+    this.items = this.sidebarItems;
   },
 };
 </script>
@@ -135,8 +215,18 @@ export default {
   }
 
   .logo {
-    height: 118px;
+    height: 7.375rem;
     background-color: #409eff;
+    .logo_box {
+      width: 4.55rem;
+      height: 3.88125rem;
+      margin-top: 1.3125rem;
+      margin-left: 3.8125rem;
+      img {
+        height: 100%;
+        width: 100%;
+      }
+    }
   }
   .el-icon-arrow-down:before {
     color: #ffffff;
@@ -153,8 +243,8 @@ export default {
   // 工作台
 
   .el-menu-item > span {
-    font-size: 16px;
-    margin-left: 20px;
+    font-size: 1rem;
+    margin-left: 1.25rem;
   }
 
   // .el-menu-item:focus {
@@ -164,7 +254,7 @@ export default {
 
   .el-menu-item.is-active {
     background-color: #79bbff !important;
-    margin-left: 5px;
+    margin-left: 0.3125rem;
   }
 
   // .el-menu-item:hover {
@@ -173,8 +263,8 @@ export default {
 
   //题库题卷
   .el-submenu__title > span {
-    font-size: 16px;
-    margin-left: 20px;
+    font-size: 1rem;
+    margin-left: 1.25rem;
   }
 
   // .el-submenu__title:hover {
@@ -184,8 +274,8 @@ export default {
   //二级 制作试题
   .cussubitem > li {
     // margin-left: 60px;
-    font-size: 14px;
-    padding-left: 60px !important;
+    font-size: 0.875rem;
+    padding-left: 3.75rem !important;
   }
 }
 </style>

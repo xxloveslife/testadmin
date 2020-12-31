@@ -10,12 +10,13 @@ const $axios = axios.create({
   timeout: 30000,
   // 基础url，会在请求url中自动添加前置链接
   // baseURL: process.env.VUE_APP_BASE_API,
-  baseURL: '/api/',
+  // baseURL: '/api/V2',
+  baseURL: process.env.VUE_APP_BASE_API,
 
   // headers: { "Content-Type": "multipart/form-data" },
 })
 Vue.prototype.$http = axios.create({
-  baseURL: '/api/',
+  baseURL: '/api/V2',
   timeout: 50000,
   headers: { 'Content-Type': 'multipart/form-data' },
 }) // 并发请求

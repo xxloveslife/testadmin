@@ -1,12 +1,23 @@
 <template>
-  <div>制作试卷手动匹配</div>
+  <div>
+    <m-paperdetail :paperInfos="infos"></m-paperdetail>
+  </div>
 </template>
 
 <script>
+import mPaperdetail from "../../../components/common/PaperDetail";
 export default {
+  data() {
+    return {
+      infos: {},
+    };
+  },
+  components: {
+    mPaperdetail,
+  },
   created() {
-    const infos = this.$route.params.paperInfos;
-    // console.log("infos", infos);
+    this.infos = this.$route.params.paperInfos;
+    console.log("infos", this.infos);
   },
 
   beforeRouteLeave(to, from, next) {

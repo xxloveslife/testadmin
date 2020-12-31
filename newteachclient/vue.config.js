@@ -18,7 +18,16 @@
 // }
 
 module.exports = {
+  productionSourceMap: false,
+  lintOnSave: false, // 关闭eslint
+  // baseUrl: '/',
+  // publicPath: './',
+  assetsDir: 'static/teather',
+  indexPath: 'newindex.htm',
+  outputDir: 'dist',
   devServer: {
+    // host: 'www.yshtest.com',
+    // port: 8080,
     proxy: {
       "/api": {
         target: "http://test.laoshi.yishenhang.com/",

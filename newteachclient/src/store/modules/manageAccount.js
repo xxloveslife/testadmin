@@ -4,6 +4,8 @@ import {
   getSystemInformation,
   updateSystemMsgStatus,
   getlogAction,
+  sendMessageCode,
+  unbindPhone,
 } from '../../api/accountManagement'
 const state = {}
 const mutations = {}
@@ -62,6 +64,31 @@ const actions = {
   makelogAction({ commit }, data) {
     return new Promise((reslove, reject) => {
       getlogAction(data)
+        .then((res) => {
+          reslove(res)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  // 发送验证码 sendMessageCode
+  getMessageCode({ commit }, data) {
+    return new Promise((reslove, reject) => {
+      sendMessageCode(data)
+        .then((res) => {
+          reslove(res)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+  // 解绑手机号 unbindPhone
+  unbindPhoneNumber({ commit }, data) {
+    return new Promise((reslove, reject) => {
+      unbindPhone(data)
         .then((res) => {
           reslove(res)
         })

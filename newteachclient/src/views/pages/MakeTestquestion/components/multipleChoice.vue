@@ -28,8 +28,8 @@
 
     <el-form ref="testQuestionlistsForm" :model="testQuestionlists">
       <!-- 题目内容 -->
-      <div class="subjectContent" :style="{ marginBottom: marginBottomHeight }">
-        <div class="leftTitleText">题目内容 :</div>
+      <div class="subjectContent">
+        <span class="leftTitleText">题目内容 :</span>
         <div class="subjectContentItem">
           <el-form-item>
             <el-input
@@ -48,7 +48,7 @@
               ref="subjectContentFile"
               @change="subjectContentFileChange($event)"
               id="uploadFile"
-              accept="image/png,image/jpeg"
+              accept="image/png,image/jpeg,image/gif"
             />
           </el-form-item>
         </div>
@@ -286,7 +286,7 @@
                 </el-dropdown>
               </li>
             </ul>
-            <p>请选择试试卷版本</p>
+            <p>请选择试卷版本</p>
           </div>
           <el-button
             class="submit"
@@ -770,22 +770,26 @@ export default {
       this.$store
         .dispatch('makeTestquestion/getKnowledgePoints', data)
         .then((res) => {
-          // get listItems
-          res.msg.forEach((element) => {
-            element.child = Object.values(element.child)
-            // console.log(element.child)
-          })
-          res.msg.forEach((ele) => {
-            ele.state = 0
-            ele.child.forEach((eles) => {
-              eles.state = 0
-              eles.child.forEach((element) => {
-                element.state = 0
+          if (res || res.code === 0) {
+            // get listItems
+            res.msg.forEach((element) => {
+              element.child = Object.values(element.child)
+              // console.log(element.child)
+            })
+            res.msg.forEach((ele) => {
+              ele.state = 0
+              ele.child.forEach((eles) => {
+                eles.state = 0
+                eles.child.forEach((element) => {
+                  element.state = 0
+                })
               })
             })
-          })
-          // console.log(res.msg)
-          this.knowledgeList = res.msg
+            // console.log(res.msg)
+            this.knowledgeList = res.msg
+          } else {
+            this.$message.error('获取知识相关数据失败')
+          }
         })
     },
     changeSubRadio(val) {
@@ -885,141 +889,157 @@ export default {
       })
     },
     submitData() {
-      this.testQuestionlists.content = this.testQuestionlists.content.replace(
-        '\n',
-        ''
-      )
-      this.testQuestionlists.checked_cid = this.checked_cid.join(',')
-      if (this.textRadio === '音乐') {
-        let obj1 = {
-          jp_music_pic: this.jp_music_pic,
-          wx_music_pic: this.wx_music_pic,
-        }
-        // let arr = []
-        // arr.push(obj1)
-        this.testQuestionlists.answer = obj1
-        if (this.radioDefault === '单项选择题') {
-          this.testQuestionlists.correct = this.singleSelectionVal
-            ? this.singleSelectionVal
-            : 0
-          console.log(this.singleChoiceList)
-          this.testQuestionlists.op_text = []
-          this.testQuestionlists.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            this.testQuestionlists.op_text.push(ele.op_text)
-            this.testQuestionlists.op_file.push(ele.op_file)
-          })
-          console.log(this.testQuestionlists)
-        } else if (this.radioDefault === '多项选择题') {
-          this.testQuestionlists.correct = this.multipleSelectionVal
-            ? this.multipleSelectionVal
-            : [0]
-          this.testQuestionlists.op_text = []
-          this.testQuestionlists.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            this.testQuestionlists.op_text.push(ele.op_text)
-            this.testQuestionlists.op_file.push(ele.op_file)
-          })
-          console.log(this.multipleSelectionVal)
-          console.log(this.testQuestionlists)
-        } else if (this.radioDefault === '判断题') {
-          this.testQuestionlists.op_text = ['正确', '错误']
-          this.testQuestionlists.correct = this.judgmentradioChangeVal
-          console.log(this.testQuestionlists)
-        } else {
-          this.testQuestionlists.op_text = []
-          this.testQuestionlists.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            this.testQuestionlists.op_text.push(ele.op_text)
-            this.testQuestionlists.op_file.push(ele.op_file)
-          })
-          this.testQuestionlists.op_text2 = []
-          this.testQuestionlists.op_file2 = []
-          this.singleChoiceList1.forEach((ele) => {
-            this.testQuestionlists.op_text2.push(ele.op_text)
-            this.testQuestionlists.op_file2.push(ele.op_file)
-          })
-          console.log(this.testQuestionlists)
-        }
-        this.$store
-          .dispatch(
-            'makeTestquestion/getExercisesMusicType',
-            this.testQuestionlists
-          )
-          .then((res) => {
-            console.log(res)
-            if (res && res.code === 0) {
-              console.log(res)
-              this.question_id = res.data.question_id
-              this.confirmSubmitPopupStatus = true
-            } else if (res.code === 400) {
-              this.$message.error('选项格式有错误')
-            }
-          })
+      if (this.testQuestionlists.content === '') {
+        this.$message.error('题目内容不能为空')
       } else {
-        let obj = { art_pic: this.art_pic }
-        // let arr = []
-        // arr.push(obj)
-        this.testQuestionlists.answer = obj
-        if (this.radioDefault === '单项选择题') {
-          this.testQuestionlists.correct = this.singleSelectionVal
-            ? this.singleSelectionVal
-            : 0
-          console.log(this.singleChoiceList)
-          this.testQuestionlists.op_text = []
-          this.testQuestionlists.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            this.testQuestionlists.op_text.push(ele.op_text)
-            this.testQuestionlists.op_file.push(ele.op_file)
-          })
-          console.log(this.testQuestionlists)
-        } else if (this.radioDefault === '多项选择题') {
-          this.testQuestionlists.correct = this.multipleSelectionVal
-            ? this.multipleSelectionVal
-            : [0]
-          this.testQuestionlists.op_text = []
-          this.testQuestionlists.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            this.testQuestionlists.op_text.push(ele.op_text)
-            this.testQuestionlists.op_file.push(ele.op_file)
-          })
-          console.log(this.multipleSelectionVal)
-          console.log(this.testQuestionlists)
-        } else if (this.radioDefault === '判断题') {
-          this.testQuestionlists.op_text = ['正确', '错误']
-          this.testQuestionlists.correct = this.judgmentradioChangeVal
-          console.log(this.testQuestionlists)
-        } else {
-          this.testQuestionlists.op_text = []
-          this.testQuestionlists.op_file = []
-          this.singleChoiceList.forEach((ele) => {
-            this.testQuestionlists.op_text.push(ele.op_text)
-            this.testQuestionlists.op_file.push(ele.op_file)
-          })
-          this.testQuestionlists.op_text2 = []
-          this.testQuestionlists.op_file2 = []
-          this.singleChoiceList1.forEach((ele) => {
-            this.testQuestionlists.op_text2.push(ele.op_text)
-            this.testQuestionlists.op_file2.push(ele.op_file)
-          })
-          console.log(this.testQuestionlists)
-        }
-        // 表现题
-        this.$store
-          .dispatch(
-            'makeTestquestion/getExercisesArtType',
-            this.testQuestionlists
-          )
-          .then((res) => {
-            console.log(res)
-            if (res && res.code === 0) {
-              console.log(res)
-              this.question_id = res.data.question_id
-              this.confirmSubmitPopupStatus = true
-            } else if (res.code === 400) {
-              this.$message.error('选项格式有错误')
+        this.testQuestionlists.content = this.testQuestionlists.content.replace(
+          '\n',
+          ''
+        )
+        // console.log(this.checked_cid)
+        if (this.checked_cid && this.checked_cid.length) {
+          if (
+            this.testQuestionlists.answer_range === '' ||
+            this.testQuestionlists.answer_parse === ''
+          ) {
+            this.$message.error('题目解析和考点范围不能为空')
+          } else {
+            this.testQuestionlists.checked_cid = this.checked_cid.join(',')
+            if (this.textRadio === '音乐') {
+              let obj1 = {
+                jp_music_pic: this.jp_music_pic,
+                wx_music_pic: this.wx_music_pic,
+              }
+              // let arr = []
+              // arr.push(obj1)
+              this.testQuestionlists.answer = obj1
+              if (this.radioDefault === '单项选择题') {
+                this.testQuestionlists.correct = this.singleSelectionVal
+                  ? this.singleSelectionVal
+                  : 0
+                console.log(this.singleChoiceList)
+                this.testQuestionlists.op_text = []
+                this.testQuestionlists.op_file = []
+                this.singleChoiceList.forEach((ele) => {
+                  this.testQuestionlists.op_text.push(ele.op_text)
+                  this.testQuestionlists.op_file.push(ele.op_file)
+                })
+                console.log(this.testQuestionlists)
+              } else if (this.radioDefault === '多项选择题') {
+                this.testQuestionlists.correct = this.multipleSelectionVal
+                  ? this.multipleSelectionVal
+                  : [0]
+                this.testQuestionlists.op_text = []
+                this.testQuestionlists.op_file = []
+                this.singleChoiceList.forEach((ele) => {
+                  this.testQuestionlists.op_text.push(ele.op_text)
+                  this.testQuestionlists.op_file.push(ele.op_file)
+                })
+                console.log(this.multipleSelectionVal)
+                console.log(this.testQuestionlists)
+              } else if (this.radioDefault === '判断题') {
+                this.testQuestionlists.op_text = ['正确', '错误']
+                this.testQuestionlists.correct = this.judgmentradioChangeVal
+                console.log(this.testQuestionlists)
+              } else {
+                this.testQuestionlists.op_text = []
+                this.testQuestionlists.op_file = []
+                this.singleChoiceList.forEach((ele) => {
+                  this.testQuestionlists.op_text.push(ele.op_text)
+                  this.testQuestionlists.op_file.push(ele.op_file)
+                })
+                this.testQuestionlists.op_text2 = []
+                this.testQuestionlists.op_file2 = []
+                this.singleChoiceList1.forEach((ele) => {
+                  this.testQuestionlists.op_text2.push(ele.op_text)
+                  this.testQuestionlists.op_file2.push(ele.op_file)
+                })
+                console.log(this.testQuestionlists)
+              }
+              this.$store
+                .dispatch(
+                  'makeTestquestion/getExercisesMusicType',
+                  this.testQuestionlists
+                )
+                .then((res) => {
+                  console.log(res)
+                  if (res && res.code === 0) {
+                    console.log(res)
+                    this.question_id = res.data.question_id
+                    this.confirmSubmitPopupStatus = true
+                  } else if (res.code === 400) {
+                    this.$message.error('选项格式有错误')
+                  }
+                })
+            } else {
+              let obj = { art_pic: this.art_pic }
+              // let arr = []
+              // arr.push(obj)
+              this.testQuestionlists.answer = obj
+              if (this.radioDefault === '单项选择题') {
+                this.testQuestionlists.correct = this.singleSelectionVal
+                  ? this.singleSelectionVal
+                  : 0
+                console.log(this.singleChoiceList)
+                this.testQuestionlists.op_text = []
+                this.testQuestionlists.op_file = []
+                this.singleChoiceList.forEach((ele) => {
+                  this.testQuestionlists.op_text.push(ele.op_text)
+                  this.testQuestionlists.op_file.push(ele.op_file)
+                })
+                console.log(this.testQuestionlists)
+              } else if (this.radioDefault === '多项选择题') {
+                this.testQuestionlists.correct = this.multipleSelectionVal
+                  ? this.multipleSelectionVal
+                  : [0]
+                this.testQuestionlists.op_text = []
+                this.testQuestionlists.op_file = []
+                this.singleChoiceList.forEach((ele) => {
+                  this.testQuestionlists.op_text.push(ele.op_text)
+                  this.testQuestionlists.op_file.push(ele.op_file)
+                })
+                console.log(this.multipleSelectionVal)
+                console.log(this.testQuestionlists)
+              } else if (this.radioDefault === '判断题') {
+                this.testQuestionlists.op_text = ['正确', '错误']
+                this.testQuestionlists.correct = this.judgmentradioChangeVal
+                console.log(this.testQuestionlists)
+              } else {
+                this.testQuestionlists.op_text = []
+                this.testQuestionlists.op_file = []
+                this.singleChoiceList.forEach((ele) => {
+                  this.testQuestionlists.op_text.push(ele.op_text)
+                  this.testQuestionlists.op_file.push(ele.op_file)
+                })
+                this.testQuestionlists.op_text2 = []
+                this.testQuestionlists.op_file2 = []
+                this.singleChoiceList1.forEach((ele) => {
+                  this.testQuestionlists.op_text2.push(ele.op_text)
+                  this.testQuestionlists.op_file2.push(ele.op_file)
+                })
+                console.log(this.testQuestionlists)
+              }
+              // 表现题
+              this.$store
+                .dispatch(
+                  'makeTestquestion/getExercisesArtType',
+                  this.testQuestionlists
+                )
+                .then((res) => {
+                  console.log(res)
+                  if (res && res.code === 0) {
+                    console.log(res)
+                    this.question_id = res.data.question_id
+                    this.confirmSubmitPopupStatus = true
+                  } else if (res.code === 400) {
+                    this.$message.error('选项格式有错误')
+                  }
+                })
             }
-          })
+          }
+        } else {
+          this.$message.error('知识相关必须选择')
+        }
       }
     },
   },
@@ -1066,10 +1086,10 @@ export default {
 
 <style lang="less">
 .multiple-choice-container {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #303133;
   .leftTitleText {
-    font-size: 12px;
+    font-size: 0.75rem;
     font-family: Microsoft YaHei;
     font-weight: bold;
     color: #303133;
@@ -1080,21 +1100,22 @@ export default {
     }
   }
   .chooseType {
-    padding-bottom: 19px;
+    padding-bottom: 1.1875rem;
     .el-radio-group {
-      margin-left: 8px;
+      margin-left: 0.5rem;
       .el-radio-button {
-        width: 100px;
-        height: 32px;
-
-        border-radius: 6px;
-        margin-right: 16px;
+        width: 6.25rem;
+        height: 2rem;
+        font-size: 0.75rem;
+        border-radius: 0.375rem;
+        margin-right: 1rem;
         .el-radio-button__inner {
-          width: 100px;
-          height: 32px;
-          border-radius: 6px;
-          line-height: 20px;
-          padding: 5px 0;
+          font-size: 0.75rem;
+          width: 6.25rem;
+          height: 2rem;
+          border-radius: 0.375rem;
+          line-height: 1.25rem;
+          padding: 0.4375rem 0;
           border: none;
         }
       }
@@ -1102,22 +1123,23 @@ export default {
   }
 
   .multipleChoice {
-    padding-bottom: 19px;
+    padding-bottom: 1.1875rem;
     .el-radio-group {
-      margin-left: 8px;
+      margin-left: 0.5rem;
       .el-radio-button {
-        width: 100px;
-        height: 32px;
+        width: 6.25rem;
+        height: 2rem;
 
-        border-radius: 6px;
-        margin-right: 16px;
+        border-radius: 0.375rem;
+        margin-right: 1rem;
         text-align: center;
         .el-radio-button__inner {
-          width: 100px;
-          height: 32px;
-          border-radius: 6px;
-          line-height: 20px;
-          padding: 5px 0;
+          font-size: 0.75rem;
+          width: 6.25rem;
+          height: 2rem;
+          border-radius: 0.375rem;
+          line-height: 1.25rem;
+          padding: 0.4375rem 0;
           border: none;
         }
       }
@@ -1125,106 +1147,98 @@ export default {
   }
 
   .changeText {
-    width: 143px;
-    height: 12px;
-    font-size: 12px;
+    width: 8.9375rem;
+    height: 0.75rem;
+    font-size: 0.75rem;
     font-family: Microsoft YaHei;
     font-weight: 400;
     color: #909399;
-    line-height: 41px;
+    line-height: 2.5625rem;
   }
   .subjectContent {
-    position: relative;
-    // margin-bottom: 20px;
+    display: flex;
+    align-items: flex-top;
     div {
-      font-size: 12px;
-      line-height: 40px;
+      font-size: 0.75rem;
+      line-height: 2.5rem;
     }
     .el-textarea {
-      width: 640px;
-      // height: 32px;
+      width: 40rem;
+      height: 2rem;
       background: #ffffff;
       border: 1px solid #409eff;
-      border-radius: 6px;
+      border-radius: 0.375rem;
       border: 0; // 去除未选中状态边框
       outline: none; // 去除选中状态边框
-      margin-right: 15px;
+      margin-right: 0.9375rem;
       .el-textarea__inner {
         height: 100%;
-        font-size: 12px;
+        font-size: 0.75rem;
         font-family: Microsoft YaHei;
         font-weight: 400;
-        line-height: 25px;
+        line-height: 1.5625rem;
       }
-      // .el-button {
-      //   position: absolute;
-      //   left: 761px;
-      // }
     }
     .el-button-right {
-      position: absolute;
-      top: 10px;
-      left: 718px;
+      display: inline-block;
 
       .el-button {
         position: relative;
-        top: -4px;
-        margin-right: 17px;
-        width: 83px;
-        height: 33px;
-        padding: 7px 0;
-        font-size: 12px;
+        top: -0.25rem;
+        margin-right: 1.0625rem;
+        width: 5.1875rem;
+        height: 2.0625rem;
+        padding: 0.4375rem 0;
+        font-size: 0.75rem;
         font-family: Microsoft YaHei;
         font-weight: 400;
       }
       .changeText {
         position: relative;
-        top: -4px;
+        top: -0.25rem;
       }
     }
     .subjectContentItem {
-      position: absolute;
-      top: 0;
-      left: 62px;
-      display: flex;
+      display: inline-block;
+      width: 40.125rem;
+      margin-left: 0.5rem;
+      // display: flex;
       flex-direction: column;
       .el-form-item {
-        margin-bottom: 14px;
+        margin-bottom: 0.875rem;
       }
       .el-input {
-        width: 640px;
-        height: 32px;
+        width: 40rem;
+        height: 2rem;
         background: #ffffff;
-        border: 1px solid #409eff;
-        border-radius: 6px;
+        border: 0.0625rem solid #409eff;
+        border-radius: 0.375rem;
         border: 0; // 去除未选中状态边框
         outline: none; // 去除选中状态边框
-        margin-right: 15px;
+        margin-right: 0.9375rem;
         .el-input__inner {
-          width: 640px;
-          height: 32px;
+          width: 40rem;
+          height: 2rem;
           position: relative;
           top: -4px;
-          font-size: 12px;
+          font-size: 0.75rem;
           font-family: Microsoft YaHei;
           font-weight: 400;
           color: #909399;
         }
       }
       .el-button {
-        position: relative;
-        top: -4px;
-        margin-right: 17px;
-        width: 83px;
-        height: 33px;
-        padding: 7px 0;
-        font-size: 12px;
+        margin-right: 1.0625rem;
+        width: 5.1875rem;
+        height: 2.0625rem;
+        padding: 0.4375rem 0;
+        font-size: 0.75rem;
         font-family: Microsoft YaHei;
         font-weight: 400;
       }
       .changeText {
         position: relative;
-        top: -4px;
+        top: -0.25rem;
       }
     }
   }
@@ -1232,18 +1246,18 @@ export default {
     display: flex;
     .el-form-item {
       .el-input {
-        width: 1368px;
-        height: 32px;
+        width: 85.5rem;
+        height: 2rem;
         background: #ffffff;
         // border: 1px solid #dcdfe6;
-        border-radius: 6px;
+        border-radius: 0.375rem;
 
         .el-input__inner {
-          width: 1368px;
-          height: 32px;
+          width: 85.5rem;
+          height: 2rem;
           position: relative;
-          top: -4px;
-          font-size: 12px;
+          top: -0.25rem;
+          font-size: 0.75rem;
           font-family: Microsoft YaHei;
           font-weight: 400;
         }
@@ -1253,7 +1267,7 @@ export default {
   .footerBox {
     position: relative;
     p {
-      font-size: 12px;
+      font-size: 0.75rem;
       font-family: Microsoft YaHei;
       font-weight: 400;
       color: #909399;
@@ -1262,7 +1276,7 @@ export default {
       position: relative;
       .testSiteRangeTitle {
         position: absolute;
-        top: 10px;
+        top: 0.625rem;
 
         // padding-top: 10px;
         // margin-right: 5px;
@@ -1270,117 +1284,117 @@ export default {
     }
     .applicableGrade {
       position: relative;
-      height: 140px;
+      height: 8.75rem;
       overflow: hidden;
       .submit {
         position: relative;
-        left: 60px;
-        top: 27px;
-        width: 93px;
-        height: 32px;
-        padding: 8px 16px;
-        border-radius: 6px;
+        left: 3.75rem;
+        top: 1.6875rem;
+        width: 5.8125rem;
+        height: 2rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
       }
       .testSiteRangeTitle {
         position: absolute;
-        top: 10px;
+        top: 0.625rem;
 
         // padding-top: 10px;
         // margin-right: 5px;
       }
       .el-dropdown {
-        width: 93px;
-        height: 32px;
+        width: 5.8125rem;
+        height: 2rem;
         background: #ffffff;
-        border-radius: 6px;
+        border-radius: 0.375rem;
         .el-button {
-          padding: 0 19px;
-          width: 93px;
-          height: 32px;
+          padding: 0 1.1875rem;
+          width: 5.8125rem;
+          height: 2rem;
           background: #ffffff;
-          border-radius: 6px;
+          border-radius: 0.375rem;
           border: none;
           span {
             float: left;
-            font-size: 12px;
-            line-height: 32px;
+            font-size: 0.75rem;
+            line-height: 2rem;
             font-family: Microsoft YaHei;
             font-weight: 400;
             color: #909399;
           }
           img {
             float: right;
-            margin-top: 15px;
+            margin-top: 0.9375rem;
             position: relative;
-            left: 25px;
-            width: 8px;
-            height: 4px;
+            left: 1.5625rem;
+            width: 0.5rem;
+            height: 0.25rem;
           }
         }
       }
     }
 
     .applicableGradeLeft {
-      margin-left: 60px;
+      margin-left: 3.75rem;
       p {
         position: relative;
-        top: 5px;
+        top: 0.3125rem;
       }
       .applicableGradeLeftUl {
         overflow: hidden;
         li {
           float: left;
-          margin-right: 10px;
+          margin-right: 0.625rem;
         }
       }
     }
     .applicableGradeMiddle {
       position: absolute;
-      left: 350px;
-      top: 0px;
+      left: 21.875rem;
+      top: 0;
       p {
-        padding-left: 130px;
+        padding-left: 8.125rem;
       }
       .applicableGradeMiddleUl {
         overflow: hidden;
         li {
           float: left;
-          margin-right: 10px;
-          line-height: 30px;
+          margin-right: 0.625rem;
+          line-height: 1.875rem;
           span {
-            font-size: 12px;
+            font-size: 0.75rem;
             font-family: Microsoft YaHei;
             font-weight: 400;
             color: #303133;
           }
         }
         li:first-child {
-          margin-left: 70px;
+          margin-left: 4.375rem;
         }
       }
     }
     .applicableGradeRight {
       position: absolute;
-      left: 680px;
-      top: 0px;
+      left: 42.5rem;
+      top: 0;
       p {
-        padding-left: 130px;
+        padding-left: 8.125rem;
       }
       .applicableGradeRightUl {
         overflow: hidden;
         li {
           float: left;
-          margin-right: 10px;
-          line-height: 30px;
+          margin-right: 0.625rem;
+          line-height: 1.875rem;
           span {
-            font-size: 12px;
+            font-size: 0.75rem;
             font-family: Microsoft YaHei;
             font-weight: 400;
             color: #303133;
           }
         }
         li:first-child {
-          margin-left: 70px;
+          margin-left: 4.375rem;
         }
       }
     }
@@ -1393,19 +1407,19 @@ export default {
 .dropdown1,
 .el-dropdown-menu__item:not(.is-disabled) {
   box-shadow: none;
-  font-size: 12px;
+  font-size: 0.75rem;
   margin: 0;
-  width: 53px;
+  width: 3.3125rem;
   background: #ffffff;
   text-align: center;
 }
 .dropdown1 {
-  width: 93px;
+  width: 5.8125rem;
 }
 .dropdown1 {
   .el-dropdown-menu__item:focus,
   .el-dropdown-menu__item:not(.is-disabled):hover {
-    font-size: 12px;
+    font-size: 0.75rem;
     font-family: Microsoft YaHei;
     font-weight: 400;
     color: #ffffff;
@@ -1418,7 +1432,7 @@ export default {
 //   overflow: auto !important;
 // }
 .dropdown1:hover {
-  border: 1px solid #409eff;
+  border: 0.0625rem solid #409eff;
 }
 .dropdown1 {
   .el-popper .popper__arrow,
@@ -1428,7 +1442,7 @@ export default {
 }
 
 .dropdown1 {
-  max-height: 145px;
+  max-height: 9.0625rem;
   overflow: auto;
 }
 .dropdown1::-webkit-scrollbar {

@@ -5,7 +5,11 @@
         <i class="el-icon-error" @click="closeMessageBox"></i>
         <div class="card-text">
           <span>解绑手机号码</span>
-          <span>您确定解绑手机号码{{ phoneNumber }}吗？</span>
+          <span
+            >您确定解绑手机号码{{
+              phoneNumber.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+            }}吗？</span
+          >
           <span class="spanItem">解绑之后无法用该手机号修改找回密码</span>
         </div>
       </div>
@@ -33,7 +37,21 @@ export default {
       this.$emit('closeMessage')
     },
     removePhone() {
-      // 发请求解绑手机
+      // 发请求解绑手机 发送验证码 关闭当前弹窗 弹出新弹窗
+      console.log(1212)
+      this.$store
+        .dispatch('manageAccount/getMessageCode', {
+          type: 'unbind',
+          phone: this.phoneNumber,
+        })
+        .then((res) => {
+          console.log(res)
+          if (res && res.code == 0) {
+            console.log(res)
+            this.closeMessageBox()
+            this.$emit('unbindPhoneShow')
+          }
+        })
     },
   },
 }

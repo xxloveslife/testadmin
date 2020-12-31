@@ -19,7 +19,7 @@
       type="file"
       ref="uploadFile"
       hidden
-      accept="image/png,image/jpeg"
+      accept="image/png,image/jpeg,image/gif"
       @change="uploadFileChange"
     />
   </div>
